@@ -1,0 +1,54 @@
+# tablero en local: PostgreSQL 17, API y web.
+#   docker compose up --build --wait
+#   http://127.0.0.1:8080
+# Todos los puertos escuchan solo en 127.0.0.1: nada queda expuesto a tu red.
+name: tablero
+
+services:
+  db:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_USER: tablero
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cambiame}   # desechable, solo para local
+      POSTGRES_DB: tablero
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tablero -d tablero"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: api
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+    environment:
+      DATABASE_URL: postgresql://tablero:${POSTGRES_PASSWORD:-cambiame}@db:5432/tablero
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: web
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
