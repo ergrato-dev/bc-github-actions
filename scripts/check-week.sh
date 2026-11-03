@@ -144,8 +144,8 @@ evaluate() {
     exit0)       [[ "$code" -eq 0 ]] ;;
     "exit!=0")   [[ "$code" -ne 0 ]] ;;
     exit=*)      [[ "$code" -eq "${assertion#exit=}" ]] ;;
-    "stdout!~"*) ! grep -qE "${assertion#stdout!~}" <<<"$output" ;;
-    stdout~*)    grep -qE "${assertion#stdout~}" <<<"$output" ;;
+    "stdout!~"*) ! grep -qE -e "${assertion#stdout!~}" <<<"$output" ;;
+    stdout~*)    grep -qE -e "${assertion#stdout~}" <<<"$output" ;;
     *)
       red "ASERCION DESCONOCIDA: '$assertion'"
       gray "Validas: exit0, exit!=0, exit=N, stdout~RE, stdout!~RE"
