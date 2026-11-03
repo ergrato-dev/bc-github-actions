@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t02">
+  <title id="t02">Cómo un problem matcher convierte una línea del log en una anotación. Primero, un step registra el matcher con el comando add-matcher. Después, actionlint imprime una línea con archivo, línea, columna, mensaje y regla entre corchetes. El runner pasa esa línea por la expresión regular del matcher de owner actionlint: el grupo 1 da el archivo, el 2 la línea, el 3 la columna, el 4 el mensaje y el 5 el código. Con esos datos crea una anotación de error que aparece arriba del run y sobre la línea 24 del archivo en la pestaña Files changed del pull request. Si el archivo no existe en el repo, la anotación se descarta. remove-matcher con el owner retira el matcher</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Problem matcher: de una línea de texto a una anotación</text>
+    <text x="480" y="58" fill="#8b949e" font-size="13" text-anchor="middle">El runner pasa cada línea del log del job por la regex de los matchers registrados</text>
+
+    <!-- 0 registro -->
+    <rect x="30" y="78" width="900" height="44" rx="8" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="48" y="106" fill="#d2a8ff" font-size="13" font-weight="600">0. Registro</text>
+    <text x="160" y="106" fill="#f0f6fc" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace">echo "::add-matcher::.github/actionlint-matcher.json"</text>
+    <text x="912" y="106" fill="#8b949e" font-size="11" text-anchor="end">tras el checkout: la ruta es del workspace</text>
+
+    <!-- 1 línea -->
+    <text x="30" y="156" fill="#79c0ff" font-size="14" font-weight="600">1. Lo que imprime actionlint</text>
+    <rect x="30" y="166" width="900" height="44" rx="8" fill="#161b22" stroke="#79c0ff"/>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">
+      <text x="46.0" y="193" fill="#2088ff" xml:space="preserve">.github/workflows/ci-api.yml</text>
+      <text x="264.4" y="193" fill="#8b949e" xml:space="preserve">:</text>
+      <text x="272.2" y="193" fill="#3fb950" xml:space="preserve">24</text>
+      <text x="287.8" y="193" fill="#8b949e" xml:space="preserve">:</text>
+      <text x="295.6" y="193" fill="#e3b341" xml:space="preserve">3</text>
+      <text x="303.4" y="193" fill="#8b949e" xml:space="preserve">: </text>
+      <text x="319.0" y="193" fill="#f0f6fc" xml:space="preserve">unknown permission scope &quot;content&quot;...</text>
+      <text x="607.6" y="193" fill="#8b949e" xml:space="preserve"> [</text>
+      <text x="623.2" y="193" fill="#d2a8ff" xml:space="preserve">permissions</text>
+      <text x="709.0" y="193" fill="#8b949e" xml:space="preserve">]</text>
+    </g>
+    <path d="M480 210 L480 240" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+
+    <!-- 2 regex -->
+    <text x="30" y="262" fill="#79c0ff" font-size="14" font-weight="600">2. La regex del matcher (owner: actionlint), sin los grupos de color ANSI</text>
+    <rect x="30" y="272" width="900" height="120" rx="8" fill="#161b22" stroke="#2088ff"/>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">
+      <text x="307.2" y="306" fill="#8b949e" xml:space="preserve">^</text>
+      <text x="316.8" y="306" fill="#2088ff" xml:space="preserve">(.+?)</text>
+      <text x="364.8" y="306" fill="#8b949e" xml:space="preserve">:</text>
+      <text x="374.4" y="306" fill="#3fb950" xml:space="preserve">(\d+)</text>
+      <text x="422.4" y="306" fill="#8b949e" xml:space="preserve">:</text>
+      <text x="432.0" y="306" fill="#e3b341" xml:space="preserve">(\d+)</text>
+      <text x="480.0" y="306" fill="#8b949e" xml:space="preserve">: </text>
+      <text x="499.2" y="306" fill="#f0f6fc" xml:space="preserve">(.+?)</text>
+      <text x="547.2" y="306" fill="#8b949e" xml:space="preserve"> \[</text>
+      <text x="576.0" y="306" fill="#d2a8ff" xml:space="preserve">(.+?)</text>
+      <text x="624.0" y="306" fill="#8b949e" xml:space="preserve">\]$</text>
+    </g>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" text-anchor="middle">
+      <text x="340.8" y="334" fill="#2088ff">file ← 1</text>
+      <text x="398.4" y="352" fill="#3fb950">line ← 2</text>
+      <text x="456.0" y="334" fill="#e3b341">column ← 3</text>
+      <text x="523.2" y="352" fill="#f0f6fc">message ← 4</text>
+      <text x="600.0" y="334" fill="#d2a8ff">code ← 5</text>
+    </g>
+    <text x="480" y="380" fill="#8b949e" font-size="11" text-anchor="middle">sin "severity", el nivel por defecto es error · otro matcher con el mismo owner sustituye a este</text>
+    <path d="M480 392 L480 422" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+
+    <!-- 3 anotación -->
+    <text x="30" y="444" fill="#79c0ff" font-size="14" font-weight="600">3. Anotación en el PR, pestaña Files changed</text>
+    <rect x="30" y="454" width="900" height="110" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="476" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">.github/workflows/ci-api.yml</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="56" y="498" fill="#8b949e">23</text>
+      <text x="96" y="498" fill="#f0f6fc">permissions:</text>
+      <rect x="44" y="504" width="872" height="20" fill="#0d1117" stroke="#f85149"/>
+      <text x="56" y="518" fill="#8b949e">24</text>
+      <text x="96" y="518" fill="#f0f6fc" xml:space="preserve">  content: read</text>
+    </g>
+    <rect x="96" y="530" width="560" height="26" rx="4" fill="#0d1117" stroke="#f85149"/>
+    <text x="108" y="548" fill="#f85149" font-size="12" font-weight="600">✗ Error · permissions</text>
+    <text x="250" y="548" fill="#f0f6fc" font-size="12">unknown permission scope "content"...</text>
+    <text x="912" y="548" fill="#8b949e" font-size="11" text-anchor="end">si el archivo no existe, se descarta</text>
+
+    <text x="480" y="588" fill="#8b949e" font-size="12" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">echo "::remove-matcher owner=actionlint::"  retira el matcher para el resto del job</text>
+  </g>
+</svg>

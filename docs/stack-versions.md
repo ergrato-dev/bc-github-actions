@@ -36,6 +36,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | yq (mikefarah) | v4.54.1 | 01 | Release del 2026-09-29. Descarga con digest probada (2026-11-02). La imagen `ubuntu-24.04` del runner trae la misma versión (README de actions/runner-images, 2026-11-02) |
 | actionlint | 1.7.12 | 01 | Release del 2026-03-30. Descarga con digest probada (2026-11-02) |
 | zizmor | 1.31.1 | 08 (se instala en 01) | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
+| act | v0.2.94 | 08 | Release del 2026-10-31. `act_Linux_x86_64.tar.gz`, digest `sha256:33e6748e3c07affb6855f19fb7a28bc6c344c1d0888fae0564e6d34d4a71915a` comprobado (2026-11-02). Probado con `ci-api` (job `lint`) y `lint-workflows` en local |
 | uv | 0.13.6 | 03 | Release del 2026-10-27. El tarball trae `uv` y `uvx` |
 | pnpm | 12.16.1 | 04 | Release del 2026-10-27. Ejecutable autónomo `pnpm-linux-x64.tar.gz`, descarga con digest probada. `pnpm env` está deprecado en favor de `pnpm runtime` |
 | Node | 26 LTS (26.13.0); la web admite `>=24` (24.22.2, LTS Krypton) y el CI prueba las dos | 04 | `nodejs.org/dist/index.json`: 26.13.0, línea LTS "Lithium" (2026-11-02). Instalado con `pnpm runtime set node 26 -g`, probado |
@@ -68,6 +69,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | `python` | `3.15.2-slim-trixie` | 06 | Base de la imagen de la API (2026-11-02) |
 | `ghcr.io/astral-sh/uv` | `0.13.6` | 06 | Solo en la etapa de build de la API |
 | `node` | `26.13.0-trixie-slim` | 06 | Solo en la etapa de build de la web; pnpm entra con `ADD --checksum` |
+| `catthehacker/ubuntu` | `act-24.04-20260815` | 08 | Imagen de runner para act (Docker Hub, 2026-11-02). Digest `sha256:c58e2b364da03b0c804c7d660f2ecbedf2f221a382b9baa0b344b0144780ff43`. La etiqueta `act-24.04` se mueve: se fija la fechada |
 
 ## Referencia: se fija al escribir su semana
 
@@ -76,7 +78,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Pieza | Vigente (2026-11-02) | Semana | Nota |
 |---|---|:--:|---|
-| act | v0.2.94 | 08 | `act_Linux_x86_64.tar.gz`. Comprobar qué imagen usa para `ubuntu-24.04` |
 | `googleapis/release-please-action` | v5.0.0 | 14 | |
 | `actions/attest-build-provenance` | v4.2.2 | 14 | Comprobar si ya es un alias de `actions/attest` |
 | `actions/attest` | v4.2.2 | 14 | |

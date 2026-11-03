@@ -1,0 +1,50 @@
+# lint-workflows.yml — revisa con actionlint y zizmor cada cambio en los workflows de tablero.
+# Se copia a <tu-org>/tablero/.github/workflows/lint-workflows.yml.
+name: lint-workflows
+
+on:
+  push:
+    branches: [main]
+  # TODO 1: limita push y pull_request a cambios en .github/workflows/** y .github/actionlint-matcher.json.
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # TODO 2: declara ACTIONLINT_VERSION y ACTIONLINT_SHA256 en env: e instala el tarball de la
+    # release con curl, comprobándolo con sha256sum -c antes de descomprimirlo.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: actionlint con anotaciones
+        run: |
+          # TODO 3: registra .github/actionlint-matcher.json con ::add-matcher:: antes de ejecutar actionlint.
+          ./actionlint -color
+
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-24.04
+    # TODO 5: ponle un techo de tiempo a este job.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+      # TODO 4: instala zizmor 1.31.1 con uv tool install y ejecútalo sin red sobre .github/workflows/,
+      # con el formato que convierte cada hallazgo en una anotación.
+      - name: zizmor
+        run: echo "zizmor sin instalar" && exit 1

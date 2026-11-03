@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="t03">
+  <title id="t03">act frente al runner de GitHub. El runner real es una máquina virtual ubuntu-24.04 desechable que GitHub crea para cada job. act lee el mismo workflow y ejecuta cada job en un contenedor Docker de tu máquina con la imagen catthehacker/ubuntu:act-24.04 de fecha fija, que es intencionadamente incompleta. act imita: steps run y actions JavaScript, composite y Docker; needs, if, env, outputs y matrices; secretos y variables de prueba con -s y --var; la caché con su propio servidor local; y los artefactos solo con --artifact-server-path. act no imita, según su lista de funcionalidades no soportadas: permissions, concurrency y run-name, timeout-minutes y continue-on-error, problem matchers y anotaciones, el resumen del step, el contexto github completo, environment, la URL de OIDC y un GITHUB_TOKEN automático. Su matriz de soporte, incompleta, no da services por soportado</title>
+  <rect width="960" height="640" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">act frente al runner de GitHub</text>
+    <text x="480" y="58" fill="#8b949e" font-size="13" text-anchor="middle">El mismo YAML, dos sitios donde ejecutarlo</text>
+
+    <!-- workflow -->
+    <rect x="390" y="76" width="180" height="40" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="480" y="101" fill="#f0f6fc" font-size="13" font-weight="600" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">ci-api.yml</text>
+    <path d="M390 96 L230 96 L230 128" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <path d="M570 96 L730 96 L730 128" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+
+    <!-- runner real -->
+    <rect x="30" y="132" width="400" height="92" rx="10" fill="#161b22" stroke="#2088ff"/>
+    <text x="230" y="158" fill="#f0f6fc" font-size="15" font-weight="600" text-anchor="middle">Runner de GitHub</text>
+    <text x="230" y="180" fill="#8b949e" font-size="12" text-anchor="middle">máquina virtual ubuntu-24.04 nueva por job</text>
+    <text x="230" y="198" fill="#8b949e" font-size="12" text-anchor="middle">toda la imagen del runner · red de GitHub</text>
+    <text x="230" y="216" fill="#8b949e" font-size="12" text-anchor="middle">minutos de espera y ejecución</text>
+
+    <!-- act -->
+    <rect x="530" y="132" width="400" height="92" rx="10" fill="#161b22" stroke="#79c0ff"/>
+    <text x="730" y="158" fill="#f0f6fc" font-size="15" font-weight="600" text-anchor="middle">act en tu máquina</text>
+    <text x="730" y="180" fill="#8b949e" font-size="12" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">catthehacker/ubuntu:act-24.04-20260815</text>
+    <text x="730" y="198" fill="#8b949e" font-size="12" text-anchor="middle">un contenedor Docker por job · tu red (host)</text>
+    <text x="730" y="216" fill="#e3b341" font-size="12" text-anchor="middle">imagen incompleta a propósito</text>
+
+    <!-- imita -->
+    <rect x="30" y="244" width="900" height="168" rx="10" fill="#161b22" stroke="#3fb950"/>
+    <text x="50" y="270" fill="#3fb950" font-size="15" font-weight="600">✓ act lo imita</text>
+    <g font-size="13" fill="#f0f6fc">
+      <text x="50" y="300">Steps run: y actions JavaScript, composite y Docker</text>
+      <text x="50" y="326">needs:, if:, env:, outputs:, strategy.matrix (--matrix filtra)</text>
+      <text x="50" y="352">Secretos y variables de prueba: -s, --secret-file, --var, --var-file</text>
+      <text x="500" y="300">Caché: act levanta su propio servidor local</text>
+      <text x="500" y="326">Artefactos: solo con --artifact-server-path</text>
+      <text x="500" y="352">Evento: el que pidas; con -e, un JSON completo</text>
+    </g>
+    <text x="50" y="390" fill="#8b949e" font-size="12">Sirve para la pregunta "¿hacen mis scripts lo que creo?": comandos, condiciones, outputs y caché, en un minuto</text>
+
+    <!-- no imita -->
+    <rect x="30" y="428" width="900" height="168" rx="10" fill="#161b22" stroke="#f85149"/>
+    <text x="50" y="454" fill="#f85149" font-size="15" font-weight="600">✗ act no lo imita (lista de no soportado de act)</text>
+    <g font-size="13" fill="#f0f6fc">
+      <text x="50" y="484">permissions: se ignora</text>
+      <text x="50" y="510">concurrency y run-name se ignoran</text>
+      <text x="50" y="536">timeout-minutes y continue-on-error</text>
+      <text x="50" y="562">Problem matchers y anotaciones</text>
+      <text x="370" y="484">$GITHUB_STEP_SUMMARY: solo en el log</text>
+      <text x="370" y="510">Contexto github incompleto</text>
+      <text x="370" y="536">environment: se ignora</text>
+      <text x="370" y="562">URL de OIDC: no existe</text>
+      <text x="680" y="484">GITHUB_TOKEN automático</text>
+      <text x="680" y="510" fill="#e3b341">services: fuera de su</text>
+      <text x="680" y="526" fill="#e3b341">matriz de soporte</text>
+    </g>
+    <text x="50" y="586" fill="#8b949e" font-size="12">Todo esto solo se prueba en el runner real: una rama y un PR en borrador</text>
+
+    <text x="480" y="624" fill="#8b949e" font-size="12" text-anchor="middle">Un verde de act no es un verde de GitHub: es la prueba barata antes de gastar un run</text>
+  </g>
+</svg>

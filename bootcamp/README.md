@@ -27,7 +27,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 | [05](week-05-service_containers_y_postgresql/README.md) | Service containers y PostgreSQL | ✅ |
 | [06](week-06-imagenes_docker_y_ghcr/README.md) | Imágenes Docker y GHCR | ✅ |
 | [07](week-07-disparadores_filtros_y_concurrencia/README.md) | Disparadores, filtros y concurrencia | ✅ |
-| 08 | Probar y depurar workflows | ⬜ |
+| [08](week-08-probar_y_depurar_workflows/README.md) | Probar y depurar workflows | ✅ |
 
 ### Fase 3 — Reutilización (S09-11, 30 h)
 

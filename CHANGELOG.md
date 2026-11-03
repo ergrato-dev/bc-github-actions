@@ -17,6 +17,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
   de workflows, mapa de funcionalidades, setup, trucos y glosario
 - `bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion/`: Semana 01, primer workflow y modelo de ejecución
 - `bootcamp/week-02-expresiones_contextos_y_flujo_de_datos/`: Semana 02, expresiones, contextos y flujo de datos
+- `bootcamp/week-08-probar_y_depurar_workflows/`: Semana 08, probar y depurar workflows
 - `bootcamp/week-07-disparadores_filtros_y_concurrencia/`: Semana 07, disparadores, filtros y concurrencia
 - `bootcamp/week-06-imagenes_docker_y_ghcr/`: Semana 06, imágenes Docker y GHCR
 - `bootcamp/week-05-service_containers_y_postgresql/`: Semana 05, service containers y PostgreSQL

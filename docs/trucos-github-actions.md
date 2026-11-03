@@ -112,6 +112,22 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **`gh workflow disable` / `enable`** apagan un workflow sin borrar el archivo. Útil para parar un
   cron mientras investigas por qué falla cada noche.
 
+## Semana 08 — [Probar y depurar workflows](../bootcamp/week-08-probar_y_depurar_workflows/README.md)
+
+- **`gh run view <id> --log-failed`** imprime solo el log de los steps que fallaron. Con
+  `gh run view <id> --log | grep -n 'error'` buscas en todo el run sin abrir el navegador.
+- **`gh run rerun <id> --failed --debug`** relanza solo los jobs fallidos con los logs de
+  depuración activados para ese intento, sin crear ningún secreto ni variable.
+- **`act -l`** lista jobs, etapas y eventos de todos tus workflows en un segundo, sin crear
+  ningún contenedor: es la forma rápida de ver el grafo de `needs:`.
+- **`zizmor --persona=pedantic`** enseña lo que el modo normal suprime (en `tablero`,
+  `undocumented-permissions` y la imagen de PostgreSQL sin digest). Útil para revisar, no para
+  la puerta del CI.
+- **`echo "::remove-matcher owner=actionlint::"`** desactiva un problem matcher a mitad de job:
+  así las líneas de otra herramienta con el mismo formato no se convierten en anotaciones falsas.
+- **Las anotaciones viven en la API**: `gh api repos/{owner}/{repo}/check-runs/<job-id>/annotations`
+  te las da en JSON, con archivo y línea, para un informe o un script.
+
 ---
 
 | ← Anterior | Siguiente → |

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="t01">
+  <title id="t01">Dónde mirar en un run fallido y en qué orden. Uno: las anotaciones arriba del run, con archivo y línea si las hay; en la terminal, gh run view. Dos: el primer job en rojo, no los omitidos que dependen de él. Tres: el primer step en rojo dentro de ese job. Cuatro: el primer error dentro del log del step, no la última línea, que solo dice el código de salida; en la terminal, gh run view con log-failed. Cinco: el resumen del job si el workflow lo escribe. Si nada basta, el log en bruto y el archivo de logs, y un reintento con depuración</title>
+  <rect width="960" height="640" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Anatomía de un run fallido</text>
+    <text x="480" y="58" fill="#8b949e" font-size="13" text-anchor="middle">Lee de lo general a lo concreto: cada número es una capa con más detalle que la anterior</text>
+
+    <!-- marco del run -->
+    <rect x="30" y="80" width="560" height="500" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="50" y="106" fill="#f85149" font-size="15" font-weight="600">✗ ci-api · fix: validate payload</text>
+    <text x="570" y="106" fill="#8b949e" font-size="12" text-anchor="end">run 1234567890</text>
+
+    <!-- 1 anotaciones -->
+    <rect x="50" y="122" width="520" height="74" rx="6" fill="#0d1117" stroke="#f85149"/>
+    <circle cx="70" cy="142" r="12" fill="#2088ff"/>
+    <text x="70" y="147" fill="#f0f6fc" font-size="13" font-weight="700" text-anchor="middle">1</text>
+    <text x="92" y="147" fill="#f0f6fc" font-size="13" font-weight="600">Anotaciones</text>
+    <text x="70" y="168" fill="#f85149" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">✗ api/src/tablero/main.py#L12  F401 `os` imported but unused</text>
+    <text x="70" y="186" fill="#f85149" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">✗ lint: Process completed with exit code 1.</text>
+
+    <!-- 2 jobs -->
+    <rect x="50" y="210" width="160" height="290" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <circle cx="70" cy="230" r="12" fill="#2088ff"/>
+    <text x="70" y="235" fill="#f0f6fc" font-size="13" font-weight="700" text-anchor="middle">2</text>
+    <text x="92" y="235" fill="#f0f6fc" font-size="13" font-weight="600">Jobs</text>
+    <rect x="62" y="252" width="136" height="30" rx="4" fill="#161b22" stroke="#f85149"/>
+    <text x="74" y="272" fill="#f85149" font-size="12">✗ lint</text>
+    <rect x="62" y="290" width="136" height="30" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="74" y="310" fill="#8b949e" font-size="12">⊘ test (omitido)</text>
+    <text x="62" y="345" fill="#8b949e" font-size="11">El omitido depende de</text>
+    <text x="62" y="360" fill="#8b949e" font-size="11">lint por needs: la causa</text>
+    <text x="62" y="375" fill="#8b949e" font-size="11">no está en él</text>
+
+    <!-- 3 steps y 4 log -->
+    <rect x="224" y="210" width="346" height="290" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <circle cx="244" cy="230" r="12" fill="#2088ff"/>
+    <text x="244" y="235" fill="#f0f6fc" font-size="13" font-weight="700" text-anchor="middle">3</text>
+    <text x="266" y="235" fill="#f0f6fc" font-size="13" font-weight="600">Steps del job</text>
+    <text x="240" y="262" fill="#3fb950" font-size="12">✓ Set up job</text>
+    <text x="240" y="282" fill="#3fb950" font-size="12">✓ actions/checkout</text>
+    <text x="240" y="302" fill="#3fb950" font-size="12">✓ astral-sh/setup-uv</text>
+    <rect x="234" y="310" width="326" height="24" rx="4" fill="#161b22" stroke="#f85149"/>
+    <text x="240" y="327" fill="#f85149" font-size="12">✗ ruff check</text>
+
+    <circle cx="244" cy="356" r="12" fill="#2088ff"/>
+    <text x="244" y="361" fill="#f0f6fc" font-size="13" font-weight="700" text-anchor="middle">4</text>
+    <text x="266" y="361" fill="#f0f6fc" font-size="13" font-weight="600">Log del step</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="240" y="384" fill="#8b949e">Run uv run ruff check .</text>
+      <rect x="236" y="391" width="324" height="20" rx="3" fill="#161b22" stroke="#e3b341"/>
+      <text x="240" y="405" fill="#f0f6fc">src/tablero/main.py:12:8: F401 ...</text>
+      <text x="240" y="428" fill="#8b949e">Found 1 error.</text>
+      <text x="240" y="448" fill="#8b949e">[*] 1 fixable with --fix.</text>
+      <text x="240" y="468" fill="#8b949e">Error: Process completed with exit code 1.</text>
+    </g>
+    <text x="240" y="490" fill="#e3b341" font-size="11">El primer error es la causa; la última línea, solo el síntoma</text>
+
+    <!-- 5 resumen -->
+    <rect x="50" y="514" width="520" height="50" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <circle cx="70" cy="539" r="12" fill="#2088ff"/>
+    <text x="70" y="544" fill="#f0f6fc" font-size="13" font-weight="700" text-anchor="middle">5</text>
+    <text x="92" y="544" fill="#f0f6fc" font-size="13" font-weight="600">Resumen del job</text>
+    <text x="230" y="544" fill="#8b949e" font-size="12">lo que escribió $GITHUB_STEP_SUMMARY</text>
+
+    <!-- columna gh -->
+    <text x="770" y="106" fill="#f0f6fc" font-size="15" font-weight="600" text-anchor="middle">Lo mismo desde la terminal</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <rect x="620" y="122" width="310" height="74" rx="6" fill="#161b22" stroke="#79c0ff"/>
+      <text x="636" y="150" fill="#79c0ff">gh run view &lt;id&gt;</text>
+      <text x="636" y="172" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">jobs, steps fallidos y ANNOTATIONS</text>
+      <text x="636" y="188" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">en JSON: gh api .../check-runs/&lt;job&gt;/annotations</text>
+
+      <rect x="620" y="210" width="310" height="74" rx="6" fill="#161b22" stroke="#79c0ff"/>
+      <text x="636" y="238" fill="#79c0ff">gh run view &lt;id&gt; --json jobs</text>
+      <text x="636" y="260" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">id y conclusión de cada job</text>
+      <text x="636" y="276" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">después: --job &lt;job-id&gt; --log</text>
+
+      <rect x="620" y="330" width="310" height="74" rx="6" fill="#161b22" stroke="#79c0ff"/>
+      <text x="636" y="358" fill="#79c0ff">gh run view &lt;id&gt; --log-failed</text>
+      <text x="636" y="380" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">solo los steps fallidos, con job y step</text>
+      <text x="636" y="396" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">en cada línea: listo para grep</text>
+    </g>
+    <path d="M590 159 L616 159" stroke="#79c0ff" stroke-width="2" marker-end="url(#a01)"/>
+    <path d="M590 247 L616 247" stroke="#79c0ff" stroke-width="2" marker-end="url(#a01)"/>
+    <path d="M590 367 L616 367" stroke="#79c0ff" stroke-width="2" marker-end="url(#a01)"/>
+
+    <!-- si nada basta -->
+    <rect x="620" y="430" width="310" height="134" rx="6" fill="#161b22" stroke="#e3b341"/>
+    <text x="636" y="456" fill="#e3b341" font-size="13" font-weight="600">Si nada de eso basta</text>
+    <text x="636" y="480" fill="#f0f6fc" font-size="12">Log en bruto: View raw logs</text>
+    <text x="636" y="500" fill="#f0f6fc" font-size="12">Archivo: Download log archive</text>
+    <text x="636" y="524" fill="#79c0ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">gh run rerun &lt;id&gt; --failed --debug</text>
+    <text x="636" y="546" fill="#8b949e" font-size="11">mismo commit, mismo YAML, más detalle</text>
+
+    <text x="480" y="612" fill="#8b949e" font-size="12" text-anchor="middle">Un step falla por su código de salida, no por lo que imprime: ::error sin exit 1 deja el step en verde</text>
+  </g>
+</svg>

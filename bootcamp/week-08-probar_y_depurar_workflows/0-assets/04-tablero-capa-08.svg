@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="t08">
+  <title id="t08">Mapa del pipeline de tablero en la capa 08. Arriba, los seis workflows de la capa 07 sin cambios: ci, ci-api, ci-web, smoke, images y nightly, con sus filtros de rutas, concurrency y timeouts. En el centro, el nuevo lint-workflows.yml, que corre en los push a main y en los pull request que cambian .github/workflows o el matcher, y a mano con workflow_dispatch. Tiene dos jobs independientes. El job actionlint descarga actionlint 1.7.12 de su release, comprueba el checksum con sha256sum, registra el problem matcher actionlint-matcher.json y ejecuta actionlint; cada línea archivo, línea, columna y mensaje se convierte en una anotación sobre el diff del PR. El job zizmor instala zizmor 1.31.1 con uv tool install y lo ejecuta sin red con formato github, que emite comandos ::error y ::warning que también acaban como anotaciones. Abajo, en tu máquina, scripts/ci-local.sh llama a act con la imagen catthehacker ubuntu act-24.04 con fecha, en linux/amd64 y con el evento pull_request, y ejecuta cualquier job de los workflows en Docker antes del push. En gris, lo que llega después: reutilizables en la Semana 09, auditorías online de zizmor en la 12 y ci-gate en la 18</title>
+  <rect width="960" height="720" fill="#0d1117"/>
+  <defs>
+    <marker id="a08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a08y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 08</text>
+
+    <!-- workflows existentes -->
+    <rect x="30" y="58" width="900" height="64" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="82" fill="#8b949e" font-size="12" font-weight="600">capas 01-07, sin cambios</text>
+    <g font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#f0f6fc">
+      <text x="46" y="106">ci.yml</text><text x="166" y="106">ci-api.yml</text><text x="306" y="106">ci-web.yml</text>
+      <text x="446" y="106">smoke.yml</text><text x="576" y="106">images.yml</text><text x="716" y="106">nightly.yml</text>
+    </g>
+
+    <!-- eventos -->
+    <g font-size="12">
+      <rect x="30" y="170" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="192" fill="#79c0ff" text-anchor="middle">pull_request</text>
+      <rect x="30" y="214" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="236" fill="#79c0ff" text-anchor="middle">push a main</text>
+      <rect x="30" y="258" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="280" fill="#79c0ff" text-anchor="middle">workflow_dispatch</text>
+    </g>
+    <text x="115" y="314" fill="#e3b341" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">.github/workflows/**</text>
+    <text x="115" y="330" fill="#8b949e" font-size="11" text-anchor="middle">filtro en push y PR</text>
+    <path d="M200 231 L236 231" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a08)"/>
+
+    <!-- lint-workflows -->
+    <rect x="240" y="150" width="690" height="230" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="256" y="176" fill="#2088ff" font-size="15" font-weight="600">lint-workflows.yml</text>
+    <text x="914" y="176" fill="#2088ff" font-size="12" text-anchor="end">nuevo en esta capa</text>
+
+    <rect x="256" y="190" width="320" height="174" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="272" y="212" fill="#f0f6fc" font-size="14" font-weight="600">actionlint</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="272" y="224" width="288" height="28" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="284" y="242" fill="#f0f6fc">curl release v1.7.12</text>
+      <rect x="272" y="258" width="288" height="28" rx="5" fill="#161b22" stroke="#d2a8ff"/>
+      <text x="284" y="276" fill="#d2a8ff">sha256sum -c</text>
+      <rect x="272" y="292" width="288" height="28" rx="5" fill="#161b22" stroke="#e3b341"/>
+      <text x="284" y="310" fill="#e3b341">::add-matcher::</text>
+      <text x="548" y="310" fill="#8b949e" text-anchor="end">matcher.json</text>
+      <rect x="272" y="326" width="288" height="28" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="284" y="344" fill="#f0f6fc">./actionlint -color</text>
+    </g>
+
+    <rect x="594" y="190" width="320" height="174" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="610" y="212" fill="#f0f6fc" font-size="14" font-weight="600">zizmor</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="610" y="224" width="288" height="28" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="622" y="242" fill="#f0f6fc">setup-uv 0.13.6</text>
+      <rect x="610" y="258" width="288" height="28" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="622" y="276" fill="#f0f6fc">uv tool install zizmor==1.31.1</text>
+      <rect x="610" y="292" width="288" height="44" rx="5" fill="#161b22" stroke="#e3b341"/>
+      <text x="622" y="310" fill="#f0f6fc">zizmor --offline</text>
+      <text x="622" y="326" fill="#e3b341">--format=github → ::error</text>
+    </g>
+    <text x="754" y="356" fill="#8b949e" font-size="11" text-anchor="middle">independiente de actionlint</text>
+
+    <!-- anotaciones -->
+    <rect x="240" y="404" width="690" height="64" rx="8" fill="#0d1117" stroke="#e3b341"/>
+    <text x="256" y="428" fill="#e3b341" font-size="13" font-weight="600">Anotaciones en el diff del PR</text>
+    <text x="256" y="452" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">broken.yml:10:24: "github.event.head_commit.message" is potentially untrusted [expression]</text>
+    <path d="M416 364 L416 400" stroke="#e3b341" stroke-width="2" fill="none" marker-end="url(#a08y)"/>
+    <path d="M754 364 L754 400" stroke="#e3b341" stroke-width="2" fill="none" marker-end="url(#a08y)"/>
+
+    <!-- local -->
+    <rect x="30" y="492" width="900" height="96" rx="8" fill="#0d1117" stroke="#2088ff" stroke-dasharray="7 4"/>
+    <text x="46" y="516" fill="#2088ff" font-size="13" font-weight="600">tu máquina, antes del push · nuevo en esta capa</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="46" y="530" width="230" height="40" rx="6" fill="#161b22" stroke="#2088ff"/>
+      <text x="161" y="555" fill="#f0f6fc" text-anchor="middle">scripts/ci-local.sh</text>
+      <rect x="320" y="530" width="140" height="40" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="390" y="555" fill="#f0f6fc" text-anchor="middle">act 0.2.94</text>
+      <rect x="504" y="530" width="410" height="40" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="520" y="548" fill="#f0f6fc">catthehacker/ubuntu:act-24.04-20260815</text>
+      <text x="520" y="563" fill="#8b949e">Docker · linux/amd64 · evento pull_request</text>
+    </g>
+    <path d="M276 550 L316 550" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a08)"/>
+    <path d="M460 550 L500 550" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a08)"/>
+
+    <!-- lo que llega después -->
+    <text x="30" y="616" fill="#8b949e" font-size="14" font-weight="600">Lo que llega después</text>
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="651" font-weight="600">Semana 09</text><text x="46" y="670">reutilizables, lintados por esta puerta</text>
+      <rect x="340" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="651" font-weight="600">Semana 12</text><text x="356" y="670">zizmor con auditorías online</text>
+      <rect x="650" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="651" font-weight="600">Semana 18</text><text x="666" y="670">ci-gate como único check requerido</text>
+    </g>
+    <text x="480" y="710" fill="#8b949e" font-size="12" text-anchor="middle">En azul, lo que esta semana crea. En amarillo, lo que acaba en el PR. En gris discontinuo, lo que añaden las siguientes.</text>
+  </g>
+</svg>

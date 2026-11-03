@@ -1,0 +1,111 @@
+{
+  "week": "08",
+  "title": "Probar y depurar workflows",
+  "checks": [
+    {
+      "id": "workflows-actionlint",
+      "description": "Todos tus workflows pasan actionlint",
+      "cmd": "actionlint",
+      "assert": "exit0",
+      "hint": "2-practicas/02-actionlint-y-problem-matchers.md, paso 1"
+    },
+    {
+      "id": "workflows-zizmor",
+      "description": "zizmor no encuentra hallazgos en tus workflows",
+      "cmd": "zizmor --offline .github/workflows/",
+      "assert": "exit0",
+      "hint": "2-practicas/03-zizmor-primer-contacto.md, paso 3"
+    },
+    {
+      "id": "lint-paths",
+      "description": "lint-workflows.yml corre en los PR que cambian .github/workflows/",
+      "cmd": "yq '.on.pull_request.paths // [] | join(\",\")' .github/workflows/lint-workflows.yml",
+      "assert": "stdout~(^|,)\\.github/workflows/\\*\\*(,|$)",
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 1"
+    },
+    {
+      "id": "actionlint-checksum",
+      "description": "El job actionlint instala actionlint 1.7.12 desde su release y comprueba el checksum",
+      "cmd": "yq '(.jobs.actionlint.env.ACTIONLINT_VERSION // \"\") + \" \" + ([.jobs.actionlint.steps[].run // \"\"] | join(\" \") | test(\"sha256sum -c\") | tostring)' .github/workflows/lint-workflows.yml",
+      "assert": "stdout~^1\\.7\\.12 true$",
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 2"
+    },
+    {
+      "id": "actionlint-matcher-file",
+      "description": ".github/actionlint-matcher.json es el problem matcher de actionlint",
+      "cmd": "jq -r '.problemMatcher[0].owner' .github/actionlint-matcher.json",
+      "assert": "stdout~^actionlint$",
+      "hint": "2-practicas/02-actionlint-y-problem-matchers.md, paso 3"
+    },
+    {
+      "id": "actionlint-matcher-registered",
+      "description": "El job actionlint registra el problem matcher antes de ejecutar actionlint",
+      "cmd": "yq '[.jobs.actionlint.steps[].run // \"\"] | join(\" \")' .github/workflows/lint-workflows.yml",
+      "assert": "stdout~::add-matcher::\\.github/actionlint-matcher\\.json",
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 3"
+    },
+    {
+      "id": "zizmor-pinned",
+      "description": "El job zizmor instala zizmor 1.31.1 con uv tool install",
+      "cmd": "yq '[.jobs.zizmor.steps[].run // \"\"] | join(\" \")' .github/workflows/lint-workflows.yml",
+      "assert": "stdout~uv tool install zizmor==1\\.31\\.1",
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 4"
+    },
+    {
+      "id": "zizmor-annotations",
+      "description": "zizmor emite sus hallazgos como anotaciones (--format=github)",
+      "cmd": "yq '[.jobs.zizmor.steps[].run // \"\"] | join(\" \")' .github/workflows/lint-workflows.yml",
+      "assert": "stdout~zizmor .*--format[= ]github",
+      "hint": "1-teoria/05-zizmor.md, sección 3"
+    },
+    {
+      "id": "jobs-timeout",
+      "description": "Todo job de ci, ci-api, ci-web, smoke, images, nightly y lint-workflows declara timeout-minutes",
+      "cmd": "for f in ci ci-api ci-web smoke images nightly lint-workflows; do yq '.jobs // {} | to_entries | .[] | select(.value | has(\"timeout-minutes\") | not) | .key' .github/workflows/$f.yml | sed \"s/^/$f: /\"; done",
+      "assert": "stdout!~.",
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 5"
+    },
+    {
+      "id": "ci-local-script",
+      "description": "scripts/ci-local.sh es ejecutable, empieza por #!/usr/bin/env bash y usa set -euo pipefail",
+      "cmd": "test -x scripts/ci-local.sh && head -1 scripts/ci-local.sh | grep -qx '#!/usr/bin/env bash' && grep -x 'set -euo pipefail' scripts/ci-local.sh",
+      "assert": "stdout~^set -euo pipefail$",
+      "hint": "2-practicas/04-act-en-local.md, paso 3"
+    },
+    {
+      "id": "ci-local-image",
+      "description": "ci-local.sh fija la imagen del runner de act con un tag con fecha, nunca act-24.04 a secas",
+      "cmd": "grep -oE 'catthehacker/ubuntu:act-24\\.04[^\" ]*' scripts/ci-local.sh",
+      "assert": "stdout~^catthehacker/ubuntu:act-24\\.04-[0-9]{8}$",
+      "hint": "3-proyecto/starter/scripts/ci-local.sh, TODO 6"
+    },
+    {
+      "id": "ci-local-list",
+      "description": "ci-local.sh --list enseña los jobs de tus workflows, lint-workflows incluido",
+      "cmd": "./scripts/ci-local.sh --list",
+      "assert": "stdout~lint-workflows\\.yml",
+      "hint": "3-proyecto/starter/scripts/ci-local.sh, TODO 7"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "Semana 01, 2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "lint-caught-a-pr",
+      "description": "lint-workflows.yml paró al menos un pull request con un workflow roto",
+      "cmd": "gh run list --workflow lint-workflows.yml --event pull_request --status failure --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/02-actionlint-y-problem-matchers.md, paso 5"
+    },
+    {
+      "id": "lint-green-on-main",
+      "description": "lint-workflows.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow lint-workflows.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 3"
+    }
+  ]
+}
