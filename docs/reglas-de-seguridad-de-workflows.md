@@ -5,7 +5,7 @@ un PR**. Estas doce reglas se aplican a todo lo que escribes en el bootcamp desd
 Semana 12 explica a fondo el porqué de cada una. Aquí tienes la versión corta: qué no hacer, qué
 hacer y en qué semana se ve.
 
-Los ejemplos malos llevan el comentario `# antipatron` para que `verificar-enlaces.sh` no los
+Los ejemplos malos llevan el comentario `# antipatron` para que `check-repo.sh` no los
 marque como error. Tú no lo pongas en tu código: en tu código no hay antipatrones.
 
 ---
@@ -19,7 +19,7 @@ el código del atacante con tu token. Un SHA de 40 caracteres es inmutable.
 # ❌ Mal: el tag puede apuntar mañana a otro código
 - uses: actions/checkout@v7   # antipatron
 
-# ✅ Bien: SHA resuelto con scripts/resolver-sha.sh y el tag en comentario para humanos y Dependabot
+# ✅ Bien: SHA resuelto con scripts/resolve-sha.sh y el tag en comentario para humanos y Dependabot
 - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 ```
 
@@ -198,7 +198,7 @@ Aplica a Compose (S05) y a kind (S16).
 
 | Regla | Herramienta |
 |---|---|
-| 1, 3, 10, 12 | `scripts/verificar-enlaces.sh` (comprobaciones 9-11) y `checks.json` de cada semana |
+| 1, 3, 10, 12 | `scripts/check-repo.sh` (comprobaciones 9-11) y `checks.json` de cada semana |
 | 2, 4, 5, 6, 7 | `zizmor` (S08 en adelante) |
 | Sintaxis de todo lo anterior | `actionlint` (S01 en adelante) |
 | 8, 9, 11 | Rúbrica manual de cada semana y `checks.json` de S07, S15 y S16 |

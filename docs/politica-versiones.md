@@ -8,7 +8,7 @@ este bootcamp fija todo por SHA y revisa las versiones con calendario.
 ## Reglas
 
 1. **Toda action por SHA de 40 caracteres con el tag en comentario**, resuelto con
-   `scripts/resolver-sha.sh`. Nunca escrito a mano ni copiado de otro repo.
+   `scripts/resolve-sha.sh`. Nunca escrito a mano ni copiado de otro repo.
 2. **Toda herramienta por versión exacta y checksum.** Nunca `latest`, nunca una rama, nunca
    `curl | bash`.
 3. **Toda imagen con tag completo** (`17.11-alpine`, no `17` ni `latest`). Lo que se despliega,
@@ -39,7 +39,7 @@ este bootcamp fija todo por SHA y revisa las versiones con calendario.
 2. Resuelve el SHA del tag nuevo:
 
    ```bash
-   ./scripts/resolver-sha.sh actions/checkout v7.0.1
+   ./scripts/resolve-sha.sh actions/checkout v7.0.1
    # uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
    ```
 
@@ -57,7 +57,7 @@ este bootcamp fija todo por SHA y revisa las versiones con calendario.
      | xargs sed -i -E 's|actions/checkout@[0-9a-f]{40} # v[0-9.]+|actions/checkout@<sha-nuevo> # <tag-nuevo>|g'
    ```
 
-5. Pasa `bash scripts/verificar-enlaces.sh` y el skill `verificar-workflows`.
+5. Pasa `bash scripts/check-repo.sh` y el skill `verify-workflows`.
 
 6. Haz un commit por pieza: `chore(stack): bump actions/checkout to v7.0.1`.
 

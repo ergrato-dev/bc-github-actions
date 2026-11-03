@@ -1,6 +1,6 @@
 # Autograding
 
-`scripts/verificar-semana.sh` te dice qué te falta antes de entregar. No sabe nada de ninguna
+`scripts/check-week.sh` te dice qué te falta antes de entregar. No sabe nada de ninguna
 semana en concreto: lee `bootcamp/week-NN-*/checks.json` y ejecuta cada comando **dentro de tu
 copia local de `<tu-org>/tablero`**, con `gh` apuntando a ese repo.
 
@@ -26,15 +26,15 @@ EOF
 - `APP_DIR`: dónde lo clonaste.
 
 Las variables de entorno `REPO` y `APP_DIR` tienen prioridad sobre el archivo, por si quieres
-verificar otro clon: `APP_DIR=/tmp/otro ./scripts/verificar-semana.sh 05`.
+verificar otro clon: `APP_DIR=/tmp/otro ./scripts/check-week.sh 05`.
 
 ---
 
 ## Uso
 
 ```bash
-./scripts/verificar-semana.sh --doctor   # comprueba herramientas, gh y tu repo
-./scripts/verificar-semana.sh 05         # comprueba la Semana 05
+./scripts/check-week.sh --doctor   # comprueba herramientas, gh y tu repo
+./scripts/check-week.sh 05         # comprueba la Semana 05
 ```
 
 Salida:
@@ -61,7 +61,7 @@ se arregla**: si una pista no lleva ahí, es un fallo del material y merece un i
    (`.github/workflows/ci-api.yml`).
 2. Exporta `GH_REPO="$REPO"`. `GH_REPO` es una variable nativa de `gh`: todo `gh run`,
    `gh workflow` y `gh api repos/{owner}/{repo}/...` habla con tu repo sin escribir su nombre.
-3. Si el `checks.json` declara `"contexto"`, crea un kubeconfig temporal que solo contiene ese
+3. Si el `checks.json` declara `"context"`, crea un kubeconfig temporal que solo contiene ese
    contexto. Un `kubectl` a secas nunca toca otro clúster.
 
 ---
@@ -72,38 +72,38 @@ Un archivo por semana, en la raíz de la carpeta de la semana.
 
 ```json
 {
-  "semana": "05",
-  "titulo": "Service containers y PostgreSQL",
+  "week": "05",
+  "title": "Service containers y PostgreSQL",
   "checks": [
     {
       "id": "integration-postgres-17",
-      "descripcion": "El job integration de ci-api.yml levanta PostgreSQL 17 como service container con healthcheck",
+      "description": "El job integration de ci-api.yml levanta PostgreSQL 17 como service container con healthcheck",
       "cmd": "yq '.jobs.integration.services.postgres | .image + \" \" + (.options // \"\")' .github/workflows/ci-api.yml",
       "assert": "stdout~^postgres:17\\.[0-9]+-alpine .*--health-cmd",
-      "pista": "2-practicas/02-postgresql-como-service.md, paso 2"
+      "hint": "2-practicas/02-postgresql-como-service.md, paso 2"
     },
     {
       "id": "ci-api-verde-en-main",
-      "descripcion": "ci-api.yml terminó en success sobre el último commit de main",
+      "description": "ci-api.yml terminó en success sobre el último commit de main",
       "cmd": "git fetch -q origin main && gh run list --workflow ci-api.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
       "assert": "stdout~^success$",
-      "pista": "2-practicas/02-postgresql-como-service.md, paso 6"
+      "hint": "2-practicas/02-postgresql-como-service.md, paso 6"
     }
   ]
 }
 ```
 
-Campo opcional de primer nivel: `"contexto": "kind-gha"` en las semanas con clúster (S16-20).
+Campo opcional de primer nivel: `"context": "kind-gha"` en las semanas con clúster (S16-20).
 
 ### Campos
 
 | Campo | Obligatorio | Qué es |
 |---|:--:|---|
 | `id` | sí | Identificador estable en kebab-case. **Nunca se renombra** |
-| `descripcion` | sí | Qué se comprueba, en una línea. **Se copia literal** a `3-proyecto/README.md` |
+| `description` | sí | Qué se comprueba, en una línea. **Se copia literal** a `3-proyecto/README.md` |
 | `cmd` | sí | Comando bash que se ejecuta en la raíz de tu repo. `gh` ya apunta a tu repo: nunca escribas `--repo` |
 | `assert` | sí | Qué tiene que cumplirse. Ver la tabla siguiente |
-| `pista` | sí | Archivo y paso donde se arregla |
+| `hint` | sí | Archivo y paso donde se arregla |
 
 ### Aserciones
 
@@ -141,7 +141,7 @@ Campo opcional de primer nivel: `"contexto": "kind-gha"` en las semanas con clú
 - Sin efectos duraderos: un `cmd` nunca lanza un workflow, crea un release, borra una caché ni
   modifica un setting. Solo lee.
 - Preferir `--json` + `--jq` a parsear columnas: las columnas de `gh` cambian, los campos JSON no.
-- **Cero lógica bash por semana en `verificar-semana.sh`.** Si una comprobación necesita código
+- **Cero lógica bash por semana en `check-week.sh`.** Si una comprobación necesita código
   imperativo, el entregable no es verificable y va a rúbrica manual.
 
 ## Permisos de `gh` por semana
@@ -151,7 +151,7 @@ Campo opcional de primer nivel: `"contexto": "kind-gha"` en las semanas con clú
 | 01-20 | `repo`, `workflow` | Leer runs y subir `.github/workflows/` |
 | 11, 15, 18 | además `admin:org` | Leer políticas de actions, runner groups y rulesets de organización |
 
-`./scripts/verificar-semana.sh --doctor` te dice qué scopes tienes. Para añadir uno:
+`./scripts/check-week.sh --doctor` te dice qué scopes tienes. Para añadir uno:
 `gh auth refresh -s admin:org`.
 
 ---

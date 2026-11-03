@@ -28,7 +28,7 @@ certificación GitHub Actions (GH-200).
 | Coste | 0 €: repos públicos (minutos de runners estándar gratuitos), GHCR público, despliegue a kind local |
 | Proyecto hilo conductor | `tablero`, un monorepo propio (FastAPI + uv, React + pnpm, PostgreSQL 17) cuyo CI/CD crece las 20 semanas |
 | Idioma de la prosa | Español, siempre con tuteo |
-| Idioma del código | Inglés (nombres de workflows, jobs, steps, identificadores) |
+| Idioma del código | Inglés: archivos de código, identificadores, claves, workflows, jobs, commits. Comentarios en español (ver "Nomenclatura y comentarios") |
 
 ### 📋 Prerrequisitos del bootcamp
 
@@ -154,7 +154,7 @@ bc-github-actions/
 ├── assets/                    # Solo recursos visuales globales
 ├── docs/                      # Documentación transversal a las 20 semanas
 ├── lab/                       # kind-config.yaml y runner en contenedor
-├── scripts/                   # Verificación, resolver-sha y laboratorio
+├── scripts/                   # Verificación, resolve-sha y laboratorio
 └── bootcamp/week-NN-tema/     # El contenido
 ```
 
@@ -189,7 +189,7 @@ week-XX-tema_principal/
 └── 5-glosario/README.md
 ```
 
-No existe carpeta `solution/` en ningún sitio: `verificar-enlaces.sh` falla
+No existe carpeta `solution/` en ningún sitio: `check-repo.sh` falla
 si aparece una.
 
 ### 1-teoria/
@@ -250,7 +250,7 @@ Reglas:
 - **Toda salida esperada va comentada debajo del comando.**
 - **Advertencia antes de lo destructivo** (borrar un runner, un paquete de
   GHCR, una caché, un environment, forzar un push), con el respaldo delante.
-- Cierra con `## ✅ Resultado` (casillas + comando de `verificar-semana.sh`) y
+- Cierra con `## ✅ Resultado` (casillas + comando de `check-week.sh`) y
   `## 🧯 Si algo sale mal` (tabla Síntoma | Causa | Solución).
 - ❌ **No uses `# TODO:` en prácticas.** El `TODO` es formato de proyecto.
 
@@ -300,12 +300,12 @@ esencial:
 
 - Se escribe **antes** que el contenido.
 - Entre 6 y 18 comprobaciones.
-- Cada `descripcion` se copia literal al proyecto; cada `pista` apunta a
+- Cada `description` se copia literal al proyecto; cada `hint` apunta a
   archivo + paso.
 - Una comprobación, un hecho.
 - Se ejecuta en el host, dentro de la copia local de `<tu-org>/tablero`
   (`APP_DIR`) y con `GH_REPO` apuntando a ese repo. **Cero lógica por semana
-  en `verificar-semana.sh`.**
+  en `check-week.sh`.**
 - Una comprobación de ejecución remota filtra por el SHA de `origin/main`:
   un verde antiguo no cuenta.
 
@@ -356,7 +356,7 @@ Formato, al final del archivo, tras un separador `---`:
 
 ## 🗣️ Reglas de Lenguaje y Stack
 
-Las que se pueden comprobar con grep las comprueba `scripts/verificar-enlaces.sh`.
+Las que se pueden comprobar con grep las comprueba `scripts/check-repo.sh`.
 
 | Regla | Detalle | Patrón prohibido |
 |---|---|---|
@@ -365,7 +365,37 @@ Las que se pueden comprobar con grep las comprueba `scripts/verificar-enlaces.sh
 | **Node solo con pnpm** | `pnpm install --frozen-lockfile`, `pnpm dlx`, `pnpm/action-setup`. Nunca npm, npx ni `package-lock.json` | `npm (i\|install\|ci\|run)\b\|\bnpx\b\|package-lock\.json` |
 | **PostgreSQL, nunca MySQL** | `postgres:17.<parche>-alpine` | `mysql\|mariadb` |
 | **Docker cuando haga falta** | Compose como plugin: `docker compose` y `compose.yaml` | `docker-compose ` |
-| **Prosa en español, código en inglés** | Nunca mezclar idiomas en la misma frase de prosa | revisión |
+| **Nomenclatura técnica en inglés, documentación en español** | Ver la tabla siguiente. Nunca mezclar idiomas en la misma frase de prosa | revisión |
+
+### Nomenclatura y comentarios
+
+| Va en inglés (nomenclatura técnica) | Va en español (documentación) |
+|---|---|
+| Archivos de código y scripts (`check-week.sh`, `ci-api.yml`, `action.yml`) | Archivos de contenido: carpetas de semana, teoría, prácticas, `docs/`, SVG |
+| Funciones, variables, constantes, clases, módulos | Comentarios de código y mensajes que lee el alumno |
+| Claves de JSON y YAML propias (`checks.json`: `week`, `title`, `description`, `hint`) | Valores que son texto para personas (`description`, `hint`) |
+| Nombres de workflows, jobs, steps `id`, inputs, outputs, secretos, variables de entorno | `name:` de un step cuando se lee en la UI como explicación |
+| Ramas, tags, mensajes de commit | README, CHANGELOG, plantillas de issue y PR |
+
+**Comentarios: solo donde aportan, nunca repetidos.** Un comentario dice
+**qué** hace algo que el código no deja ver, **para qué** existe o **qué
+impacto** tiene cambiarlo o quitarlo. Si el código ya lo dice, no se comenta.
+
+```bash
+# ❌ Repite el código
+export GH_REPO="$REPO"   # exporta GH_REPO
+
+# ✅ Para qué e impacto
+# GH_REPO es nativa de gh: todo "gh run" y "gh api repos/{owner}/{repo}/..."
+# habla con el repo del alumno sin escribir su nombre.
+export GH_REPO="$REPO"
+```
+
+- Una explicación se escribe **una vez**, en el sitio donde se aplica. Si
+  vale para todo el archivo, va en la cabecera; no se repite en cada línea.
+- En los starters, la cabecera dice qué es el archivo y dónde se copia; cada
+  `TODO N` dice qué falta. La teoría explica el porqué: el starter no la
+  copia.
 
 Excepciones explícitas, que el script tolera:
 
@@ -385,7 +415,7 @@ y el CI propio. Versión para el alumno, con ejemplo malo y bueno de cada una:
 
 1. **Toda `uses:` remota fijada por SHA de 40 caracteres con el tag en
    comentario**: `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1`.
-   El SHA se obtiene con `scripts/resolver-sha.sh`; nunca se escribe a mano ni
+   El SHA se obtiene con `scripts/resolve-sha.sh`; nunca se escribe a mano ni
    se copia de otro repo. Exentas: `uses: ./ruta` y `docker://imagen@sha256:…`.
 2. **`permissions:` en la raíz** con `contents: read` (o `{}`), y cada job sube
    solo lo que necesita. Antes de la S12 va anotado "lo verás a fondo en la
@@ -574,7 +604,7 @@ checkout del head y runner propio al alcance de PRs de forks. Menores:
 - **Commit + push al terminar cada semana**, mensaje en inglés con
   Conventional Commits: `feat(week-NN): add <topic> week`. El scope es
   `week-NN`, nunca el slug completo.
-- Al cerrar cada fase, pasar el agente `curriculo-coherencia-reviewer` y
+- Al cerrar cada fase, pasar el agente `curriculum-coherence-reviewer` y
   aplicar sus hallazgos en `docs: apply phase N curriculum coherence review`.
 
 ### Reglas de generación
@@ -586,13 +616,13 @@ checkout del head y runner propio al alcance de PRs de forks. Menores:
    la referencia de sintaxis; todo input de una action, en su `action.yml` en
    el SHA fijado (`gh api repos/<o>/<r>/contents/action.yml?ref=<sha>`); todo
    flag de `gh`, con `--help`. Un input plausible pero inexistente es el fallo
-   más probable en este repositorio (skill `verificar-workflows`).
+   más probable en este repositorio (skill `verify-workflows`).
 5. **Vigencia antes que costumbre.** Antes de escribir sobre una action o
    herramienta, comprueba su versión en `docs/stack-versions.md`; si la fila
    tiene más de tres meses, revísala primero.
 6. **Nunca ejecutar nada destructivo** fuera de la org de pruebas del autor.
 7. **Validación sin `solution/`.** El autor resuelve cada capa en un repo
-   privado de pruebas fuera de este repositorio: `verificar-semana.sh NN` en
+   privado de pruebas fuera de este repositorio: `check-week.sh NN` en
    verde con la capa resuelta, en rojo con el starter.
 
 ---
@@ -620,9 +650,9 @@ checkout del head y runner propio al alcance de PRs de forks. Menores:
 - [ ] Prácticas planas (200-380 líneas), cada paso con Por qué / Comando / Verifica
 - [ ] `3-proyecto/README.md` con requisitos copiados literalmente del `checks.json`
 - [ ] `starter/` con `TODO N` numerados; sus workflows pasan `actionlint`
-- [ ] Toda `uses:` fijada por SHA resuelto con `scripts/resolver-sha.sh`
-- [ ] Todo YAML pasa el skill `verificar-workflows`
-- [ ] Tuteo, uv, pnpm, PostgreSQL: `verificar-enlaces.sh` sin hallazgos de estilo
+- [ ] Toda `uses:` fijada por SHA resuelto con `scripts/resolve-sha.sh`
+- [ ] Todo YAML pasa el skill `verify-workflows`
+- [ ] Tuteo, uv, pnpm, PostgreSQL: `check-repo.sh` sin hallazgos de estilo
 - [ ] `rubrica-evaluacion.md` con 10 preguntas, respuestas y penalizaciones
 - [ ] Trucos en el README, replicados en `docs/trucos-github-actions.md`
 - [ ] Glosario A-Z; recursos con justificación y fecha de comprobación
@@ -630,8 +660,8 @@ checkout del head y runner propio al alcance de PRs de forks. Menores:
 - [ ] Navegación correcta en el README y al pie de cada archivo
 - [ ] Las tablas maestras coinciden (`CLAUDE.md`, `README.md`, `README_EN.md`, `bootcamp/README.md`)
 - [ ] Semana marcada ✅ en `bootcamp/README.md`
-- [ ] `bash scripts/verificar-enlaces.sh` en verde
-- [ ] `bash scripts/verificar-semana.sh NN` en verde con la capa resuelta, en rojo con el starter
+- [ ] `bash scripts/check-repo.sh` en verde
+- [ ] `bash scripts/check-week.sh NN` en verde con la capa resuelta, en rojo con el starter
 
 ---
 

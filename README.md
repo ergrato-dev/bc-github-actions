@@ -139,7 +139,7 @@ git clone https://github.com/ergrato-dev/bc-github-actions.git
 cd bc-github-actions
 
 # Comprueba tu entorno (gh, git, jq, yq, actionlint, uv, pnpm, Docker)
-./scripts/verificar-semana.sh --doctor
+./scripts/check-week.sh --doctor
 
 # Empieza
 cd bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion
@@ -153,7 +153,7 @@ Instalación paso a paso: [`docs/setup-entorno.md`](docs/setup-entorno.md). Cóm
 
 - 🎯 **Proyecto hilo conductor**: el pipeline de `tablero` crece cada semana
 - 🧩 **Práctica deliberada** en un repo real, cada paso con su porqué y su verificación
-- ✅ **Autograding**: `./scripts/verificar-semana.sh NN` comprueba tus archivos y tus ejecuciones en GitHub, y te dice dónde arreglar lo que falta
+- ✅ **Autograding**: `./scripts/check-week.sh NN` comprueba tus archivos y tus ejecuciones en GitHub, y te dice dónde arreglar lo que falta
 - 🔐 **Seguridad por defecto**: actions por SHA, permisos mínimos y datos por `env:` desde el primer día
 
 ### Distribución del tiempo (10 h/semana)

@@ -1,7 +1,7 @@
 ---
-name: verificar-workflows
+name: verify-workflows
 description: Comprueba que los workflows, action.yml, inputs de actions, SHA y comandos gh citados en el material existen, están fijados correctamente y hacen lo que dice el texto. Úsalo SIEMPRE después de escribir teoría, prácticas o starters con YAML o comandos, y antes de dar por cerrada una semana.
-allowed-tools: Bash(actionlint *) Bash(zizmor *) Bash(uvx *) Bash(gh api *) Bash(gh * --help) Bash(yq *) Bash(jq *) Bash(grep *) Bash(find *) Bash(base64 *) Bash(./scripts/resolver-sha.sh *) Read Grep Glob
+allowed-tools: Bash(actionlint *) Bash(zizmor *) Bash(uvx *) Bash(gh api *) Bash(gh * --help) Bash(yq *) Bash(jq *) Bash(grep *) Bash(find *) Bash(base64 *) Bash(./scripts/resolve-sha.sh *) Read Grep Glob
 ---
 
 # Verificar workflows y comandos
@@ -29,7 +29,7 @@ uvx zizmor@<versión de docs/stack-versions.md> --offline <dir>/.github/workflow
 Por cada `uses: owner/repo@<sha> # vX.Y.Z`:
 
 ```bash
-./scripts/resolver-sha.sh owner/repo vX.Y.Z
+./scripts/resolve-sha.sh owner/repo vX.Y.Z
 ```
 
 La salida tiene que coincidir exactamente con la línea del material, y el tag con el de `docs/stack-versions.md`.

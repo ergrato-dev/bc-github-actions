@@ -97,7 +97,7 @@ Publication status per week: [`bootcamp/README.md`](bootcamp/README.md).
 ```bash
 git clone https://github.com/ergrato-dev/bc-github-actions.git
 cd bc-github-actions
-./scripts/verificar-semana.sh --doctor
+./scripts/check-week.sh --doctor
 cd bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion
 ```
 
@@ -105,7 +105,7 @@ cd bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion
 
 - **Time split per week**: theory 2-3 h, practice 4-5 h, project 2-3 h
 - **Evaluation**: knowledge 30%, performance 40%, product 30%; **at least 70% in each**
-- **Autograding**: `./scripts/verificar-semana.sh NN` checks your files and your runs on GitHub
+- **Autograding**: `./scripts/check-week.sh NN` checks your files and your runs on GitHub
 
 ## 📄 License
 

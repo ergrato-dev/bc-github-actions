@@ -1,5 +1,5 @@
 ---
-name: curriculo-coherencia-reviewer
+name: curriculum-coherence-reviewer
 description: Revisa la coherencia entre la malla de 20 semanas y el contenido publicado del bootcamp GitHub Actions. Úsalo al cerrar cada fase (S04, S08, S11, S14, S17, S20) o al cambiar la malla. Detecta solapes, huecos, prerrequisitos fuera de orden, funcionalidades usadas antes de enseñarse, descuadres de horas, reglas de seguridad o de stack incumplidas y dominios de GH-200 sin cubrir.
 tools: Read, Grep, Glob
 ---
@@ -33,7 +33,7 @@ Si dos fuentes discrepan, gana `CLAUDE.md` y el desajuste se reporta como hallaz
 
 ### 3. Prerrequisitos y progresión
 
-- Ninguna semana usa una funcionalidad que se enseña más tarde. La tabla vive en el skill `verificar-progresion`: úsala.
+- Ninguna semana usa una funcionalidad que se enseña más tarde. La tabla vive en el skill `verify-progression`: úsala.
 - Los `## 📋 Prerrequisitos` apuntan siempre a semanas anteriores.
 - La navegación anterior/siguiente encadena las semanas publicadas sin saltos.
 
@@ -47,7 +47,7 @@ Si dos fuentes discrepan, gana `CLAUDE.md` y el desajuste se reporta como hallaz
 
 - La capa que pide cada `3-proyecto/README.md` coincide con `docs/proyecto-hilo-conductor.md`.
 - Ninguna capa depende de una capa posterior.
-- Los requisitos verificables del proyecto son copia literal de las `descripcion` de `checks.json`.
+- Los requisitos verificables del proyecto son copia literal de las `description` de `checks.json`.
 
 ### 6. Reglas de seguridad, lenguaje y stack
 

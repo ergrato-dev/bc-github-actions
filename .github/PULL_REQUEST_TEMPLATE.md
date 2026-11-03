@@ -19,9 +19,9 @@ Closes #
 
 ## ✅ Checklist
 
-- [ ] `bash scripts/verificar-enlaces.sh` sale en verde
+- [ ] `bash scripts/check-repo.sh` sale en verde
 - [ ] Todo workflow que toco pasa `actionlint` y `zizmor --offline`
-- [ ] Toda `uses:` nueva está resuelta con `scripts/resolver-sha.sh` (SHA + `# vX.Y.Z`)
+- [ ] Toda `uses:` nueva está resuelta con `scripts/resolve-sha.sh` (SHA + `# vX.Y.Z`)
 - [ ] `permissions:` mínimos, `runs-on: ubuntu-24.04`, datos no confiables por `env:`
 - [ ] Si cambia una versión, cambió primero en `docs/stack-versions.md`
 - [ ] Prosa con tuteo; Python con uv, Node con pnpm, PostgreSQL, `docker compose`

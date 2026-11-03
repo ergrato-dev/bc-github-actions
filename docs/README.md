@@ -5,7 +5,7 @@ Lo que aplica a las 20 semanas. Lo que aplica a una sola semana vive dentro de s
 | Documento | Para qué |
 |---|---|
 | [setup-entorno.md](setup-entorno.md) | Instalar gh, jq, yq, actionlint, zizmor, uv, pnpm y Docker con checksum |
-| [autograding.md](autograding.md) | Cómo funciona `verificar-semana.sh` contra tu repo y el formato de `checks.json` |
+| [autograding.md](autograding.md) | Cómo funciona `check-week.sh` contra tu repo y el formato de `checks.json` |
 | [proyecto-hilo-conductor.md](proyecto-hilo-conductor.md) | La capa que cada semana añade al pipeline de `tablero` |
 | [mapa-funcionalidades.md](mapa-funcionalidades.md) | Qué funcionalidad de Actions introduce cada semana y su dominio de GH-200 |
 | [reglas-de-seguridad-de-workflows.md](reglas-de-seguridad-de-workflows.md) | Las doce reglas, cada una con su ejemplo malo y bueno |

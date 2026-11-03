@@ -33,7 +33,7 @@ SHA) y los pasos para reproducirlo.
 
 ## Lo que el material garantiza
 
-- **Actions fijadas por SHA** con el tag en comentario, resueltas con `scripts/resolver-sha.sh`.
+- **Actions fijadas por SHA** con el tag en comentario, resueltas con `scripts/resolve-sha.sh`.
   Un tag de action no cuenta como versión: se puede mover. Pasó con `tj-actions/changed-files`
   en marzo de 2025 y con `trivy-action` el 2026-03-19 (GHSA-69fq-xp46-6x23).
 - **`permissions:` mínimos** en todo workflow y datos no confiables solo por `env:`.

@@ -1,5 +1,5 @@
 ---
-name: verificar-progresion
+name: verify-progression
 description: Comprueba que una semana del bootcamp GitHub Actions no usa funcionalidades que se enseñan en una semana posterior (matrices antes de la 04, services antes de la 05, workflow_call antes de la 09, pull_request_target antes de la 12...). Úsalo sobre la teoría, las prácticas y el starter de cualquier semana antes de publicarla.
 allowed-tools: Read Grep Glob
 ---

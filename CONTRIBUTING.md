@@ -30,7 +30,7 @@ cd bc-github-actions
 git remote add upstream https://github.com/ergrato-dev/bc-github-actions.git
 
 # Herramientas: versiones exactas en docs/stack-versions.md
-./scripts/verificar-semana.sh --doctor
+./scripts/check-week.sh --doctor
 ```
 
 Instalación paso a paso en [`docs/setup-entorno.md`](docs/setup-entorno.md).
@@ -41,10 +41,10 @@ Instalación paso a paso en [`docs/setup-entorno.md`](docs/setup-entorno.md).
 
 Las reglas completas están en [`CLAUDE.md`](CLAUDE.md). Lo que más se rompe:
 
-- **Toda `uses:` fijada por SHA con el tag en comentario.** Resuélvelo con `./scripts/resolver-sha.sh <owner>/<repo> <tag>`; nunca escribas ni copies un SHA a mano.
+- **Toda `uses:` fijada por SHA con el tag en comentario.** Resuélvelo con `./scripts/resolve-sha.sh <owner>/<repo> <tag>`; nunca escribas ni copies un SHA a mano.
 - **`permissions:` mínimos** en la raíz de todo workflow, `runs-on: ubuntu-24.04` y los datos no confiables por `env:`.
 - **Tuteo, nunca voseo.** Python con uv, Node con pnpm, PostgreSQL y `docker compose`.
-- **Prosa en español, código en inglés.**
+- **Nomenclatura técnica en inglés, documentación y comentarios en español.** Comentarios solo donde dicen qué, para qué o qué impacto tiene; nunca repetidos (ver `CLAUDE.md`, "Nomenclatura y comentarios").
 - **Diagramas en SVG** con tema oscuro y sin degradados. Nunca arte ASCII.
 
 ### Nomenclatura
@@ -80,9 +80,9 @@ Abre el PR con el título en Conventional Commits y rellena la plantilla.
 
 ## ✅ Checklist antes del PR
 
-- [ ] `bash scripts/verificar-enlaces.sh` sale en verde
+- [ ] `bash scripts/check-repo.sh` sale en verde
 - [ ] Todo workflow que tocas pasa `actionlint` y `zizmor`
-- [ ] Toda `uses:` nueva está resuelta con `scripts/resolver-sha.sh`
+- [ ] Toda `uses:` nueva está resuelta con `scripts/resolve-sha.sh`
 - [ ] Si cambia una versión, cambió primero en `docs/stack-versions.md`
 - [ ] Los commits siguen Conventional Commits
 - [ ] Los diagramas están en el `0-assets/` de su semana y enlazados

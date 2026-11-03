@@ -1,8 +1,8 @@
 # 🗺️ Mapa de funcionalidades
 
 Qué funcionalidad de GitHub Actions se introduce en cada semana. Lo usan el skill
-`verificar-progresion` (para que ninguna semana use algo que se enseña después) y el agente
-`curriculo-coherencia-reviewer`.
+`verify-progression` (para que ninguna semana use algo que se enseña después) y el agente
+`curriculum-coherence-reviewer`.
 
 La columna GH-200 usa los cuatro dominios del examen tal como se publicaron hasta 2025. **Se
 comprueban contra la guía de estudio vigente antes de escribir la Semana 20** y esta tabla se

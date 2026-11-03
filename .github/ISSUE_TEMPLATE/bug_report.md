@@ -34,7 +34,7 @@ Pega aquí la salida relevante
 ## 🌍 Entorno
 
 - **Sistema**: (Ubuntu 24.04, WSL2, macOS...)
-- **Salida de** `./scripts/verificar-semana.sh --doctor`:
+- **Salida de** `./scripts/check-week.sh --doctor`:
 
 ```
 Pega aquí la salida

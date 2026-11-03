@@ -179,7 +179,7 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc   # o
 ## 8. Comprobar
 
 ```bash
-./scripts/verificar-semana.sh --doctor
+./scripts/check-week.sh --doctor
 # Herramientas (versiones en docs/stack-versions.md):
 #   ✅ gh               gh version 2.103.3 (2026-10-26)
 #   ✅ git              git version 2.56.0

@@ -1,16 +1,16 @@
-name: verificar
+name: verify
 
 on:
   push:
     branches: [main]
   pull_request:
 
-# Minimo privilegio: el CI del bootcamp solo lee el repositorio.
+# Mínimo privilegio: el CI del bootcamp solo lee el repositorio.
 permissions:
   contents: read
 
 concurrency:
-  group: verificar-${{ github.ref }}
+  group: verify-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -18,9 +18,9 @@ env:
   ZIZMOR_VERSION: "1.31.1"
 
 jobs:
-  verificar:
+  verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -40,8 +40,16 @@ jobs:
 
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
 
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: app/web/package.json
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "26"
+
       - name: Estructura, enlaces y reglas de estilo
-        run: bash scripts/verificar-enlaces.sh
+        run: bash scripts/check-repo.sh
 
       - name: shellcheck de scripts/
         run: shellcheck -S warning scripts/*.sh
@@ -59,3 +67,8 @@ jobs:
 
       - name: zizmor sobre el CI propio
         run: uvx "zizmor@${ZIZMOR_VERSION}" --offline .github/workflows/
+
+      # La app de referencia tiene que estar sana: el mismo script que en local.
+      # La app no trae workflows a propósito: son el trabajo del alumno.
+      - name: app/ sana (API, web, imágenes, compose y smoke test)
+        run: bash app/scripts/check.sh

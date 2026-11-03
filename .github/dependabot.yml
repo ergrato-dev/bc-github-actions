@@ -1,4 +1,4 @@
-# Mantiene al dia los SHA de las actions del CI propio. Dependabot entiende
+# Mantiene al día los SHA de las actions del CI propio. Dependabot entiende
 # el formato "uses: owner/repo@<sha> # vX.Y.Z" y actualiza SHA y comentario.
 version: 2
 updates:

@@ -15,8 +15,10 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - `docs/`: versiones fijadas, política de versiones, autograding contra el repo del alumno,
   proyecto hilo conductor `tablero`, ADR del laboratorio, modelo de costes, reglas de seguridad
   de workflows, mapa de funcionalidades, setup, trucos y glosario
-- `scripts/`: `verificar-semana.sh` (autograding con `gh` y `GH_REPO`), `verificar-enlaces.sh`
-  (13 comprobaciones), `resolver-sha.sh`, `lab-up.sh` y `lab-down.sh`
+- `scripts/`: `check-week.sh` (autograding con `gh` y `GH_REPO`), `check-repo.sh`
+  (13 comprobaciones), `resolve-sha.sh`, `lab-up.sh` y `lab-down.sh`
+- `app/`: app de referencia `tablero` (API FastAPI con uv, web React con pnpm, PostgreSQL 17,
+  Compose) con `scripts/check.sh` y `scripts/smoke-test.sh`, verificada de punta a punta
 - `lab/kind-config.yaml` con imagen de nodo fijada por digest
 - `.claude/`: revisor de coherencia curricular y skills de estructura, workflows y progresión
-- `.github/`: plantillas, Dependabot para `github-actions` y CI propio `verificar.yml`
+- `.github/`: plantillas, Dependabot para `github-actions` y CI propio `verify.yml`

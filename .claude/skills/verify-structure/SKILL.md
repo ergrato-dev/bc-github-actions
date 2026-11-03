@@ -1,7 +1,7 @@
 ---
-name: verificar-estructura
+name: verify-structure
 description: Comprueba que una semana del bootcamp GitHub Actions está completa, bien enlazada y verificable antes de marcarla ✅. Úsalo al terminar una semana o antes de un commit que cree, mueva o renombre contenido.
-allowed-tools: Bash(bash scripts/verificar-enlaces.sh) Bash(./scripts/verificar-semana.sh *) Bash(jq*) Bash(wc *) Bash(actionlint *) Read Grep Glob
+allowed-tools: Bash(bash scripts/check-repo.sh) Bash(./scripts/check-week.sh *) Bash(jq*) Bash(wc *) Bash(actionlint *) Read Grep Glob
 ---
 
 # Verificar estructura de una semana
@@ -9,8 +9,8 @@ allowed-tools: Bash(bash scripts/verificar-enlaces.sh) Bash(./scripts/verificar-
 ## 1. Lo automático primero
 
 ```bash
-bash scripts/verificar-enlaces.sh
-./scripts/verificar-semana.sh NN
+bash scripts/check-repo.sh
+./scripts/check-week.sh NN
 ```
 
 El primer script revisa:
@@ -30,7 +30,7 @@ El primer script revisa:
 
 Las reglas de contenido solo se aplican a las semanas marcadas ✅ en `bootcamp/README.md`. Para revisar una semana que aún no está publicada, márcala ✅ en local y córrelo.
 
-`verificar-semana.sh NN` se pasa dos veces contra el repo privado de pruebas del autor (con `REPO` y `APP_DIR` apuntando a él):
+`check-week.sh NN` se pasa dos veces contra el repo privado de pruebas del autor (con `REPO` y `APP_DIR` apuntando a él):
 
 - Con la capa **resuelta** subida y su run terminado: todo en verde.
 - Con el `starter/` tal como se entrega: al menos un check en rojo.
@@ -58,12 +58,12 @@ week-NN-slug/
 - Cada paso de práctica tiene **Por qué / Comando / Verifica**, con la salida esperada comentada.
 - Las prácticas cierran con `## ✅ Resultado` y `## 🧯 Si algo sale mal`.
 - No hay `# TODO:` en prácticas. Los `TODO N` del starter están numerados en toda la semana.
-- `3-proyecto/README.md` copia literal las `descripcion` de `checks.json`.
+- `3-proyecto/README.md` copia literal las `description` de `checks.json`.
 - La rúbrica tiene 10 preguntas con `<details>` y la tabla de penalizaciones.
 - Los trucos están replicados en `docs/trucos-github-actions.md`.
 - Los recursos llevan justificación y fecha de comprobación.
 - Cada SVG explica un mecanismo que la prosa no deja ver: ninguno de relleno, ningún mecanismo central sin diagrama.
-- Todo YAML pasa el skill `verificar-workflows`.
+- Todo YAML pasa el skill `verify-workflows`.
 
 ## 5. Informe
 

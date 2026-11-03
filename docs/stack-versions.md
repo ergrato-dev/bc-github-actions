@@ -1,7 +1,7 @@
 # Versiones del stack
 
 Última revisión: 2026-11-02. Regla: versión completa fijada, nunca `latest`. Toda action, además,
-por SHA resuelto con `scripts/resolver-sha.sh`.
+por SHA resuelto con `scripts/resolve-sha.sh`.
 
 Antes de fijar una versión hay que comprobar tres cosas: que el tag existe, que no tiene avisos de
 seguridad sin parchear y que es compatible con el resto del stack. Procedimiento completo en
@@ -13,8 +13,8 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 
 | Action | Tag | SHA | Desde | Verificación |
 |---|---|---|:--:|---|
-| `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | CI propio | `resolver-sha.sh` (2026-11-02). Release del 2026-07-20, el mismo SHA que fija bc-makefile |
-| `astral-sh/setup-uv` | v10.3.3 | `68559e99cc807c1eb7e9238fd43a15bba460eec2` | CI propio | `resolver-sha.sh` (2026-11-02). Release del 2026-10-28 |
+| `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | CI propio | `resolve-sha.sh` (2026-11-02). Release del 2026-07-20, el mismo SHA que fija bc-makefile |
+| `astral-sh/setup-uv` | v10.3.3 | `68559e99cc807c1eb7e9238fd43a15bba460eec2` | CI propio | `resolve-sha.sh` (2026-11-02). Release del 2026-10-28 |
 
 ### Herramientas
 
@@ -22,7 +22,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 |---|---|:--:|---|
 | gh | 2.103.3 o superior | 01 | Release del 2026-10-26 |
 | git | 2.40 o superior | 01 | El de la distro |
-| jq | 1.6 o superior | 01 | El de la distro. `verificar-semana.sh` está probado con 1.6 |
+| jq | 1.6 o superior | 01 | El de la distro. `check-week.sh` está probado con 1.6 |
 | yq (mikefarah) | v4.54.1 | 01 | Release del 2026-09-29. Descarga con digest probada (2026-11-02) |
 | actionlint | 1.7.12 | 01 | Release del 2026-03-30. Descarga con digest probada (2026-11-02) |
 | zizmor | 1.31.1 | 01 | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
@@ -36,12 +36,27 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | Nodo de kind | `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5` | 16 | Imagen por defecto de kind v0.33.0; el mismo digest que fija bc-kubernetes (2026-10-30) |
 | kubectl | v1.37.2 | 16 | Último patch de 1.37 (2026-10-28) |
 
+### Dependencias de `app/` (fijadas en `api/uv.lock` y `web/pnpm-lock.yaml`)
+
+| Pieza | Versión | Nota |
+|---|---|---|
+| FastAPI · Starlette · Pydantic | 0.162.0 · 1.10.0 · 2.14.2 | |
+| uvicorn · psycopg | 0.54.0 · 3.3.6 | psycopg con extra `binary` (hay wheels para CPython 3.15) |
+| ruff · pytest · pytest-cov | 0.17.3 · 9.2.0 · 7.1.0 | |
+| httpx2 | 2.16.0 | `starlette.testclient` marca `httpx` como deprecado y pide `httpx2` (2026-11-02) |
+| React · Vite · Vitest | 19.3.1 · 8.3.5 · 5.0.5 | |
+| TypeScript | 6.0.3 | **No la 7**: typescript-eslint 8.72.1 exige `>=4.8.4 <6.1.0` (`pnpm peers check`, 2026-11-02) |
+| ESLint · typescript-eslint · jsdom | 10.14.0 · 8.72.1 · 30.1.3 | |
+
 ### Imágenes
 
 | Imagen | Tag | Desde | Verificación |
 |---|---|:--:|---|
 | `postgres` | `17.11-alpine` | 05 | Docker Hub, último parche de la 17 (2026-11-02) |
 | `nginxinc/nginx-unprivileged` | `1.31.7-alpine` | 06 | Docker Hub, último `X.Y.Z-alpine` (2026-11-02) |
+| `python` | `3.15.2-slim-trixie` | 06 | Base de la imagen de la API (2026-11-02) |
+| `ghcr.io/astral-sh/uv` | `0.13.6` | 06 | Solo en la etapa de build de la API |
+| `node` | `26.13.0-trixie-slim` | 06 | Solo en la etapa de build de la web; pnpm entra con `ADD --checksum` |
 
 ## Referencia: se fija al escribir su semana
 
@@ -50,8 +65,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Pieza | Vigente (2026-11-02) | Semana | Nota |
 |---|---|:--:|---|
-| `actions/setup-node` | v7.1.0 | 04 | |
-| `pnpm/action-setup` | v6.1.0 | 04 | |
 | `actions/cache` | v6.1.0 | 03 | |
 | `actions/upload-artifact` | v7.0.2 | 04 | |
 | `actions/download-artifact` | v8.0.2 | 04 | |
@@ -72,9 +85,7 @@ nuevo, en la tanda que escribe la semana que la usa.
 | actions/runner | v2.338.2 | 15 | Imagen `ghcr.io/actions/actions-runner` |
 | ARC (`gha-runner-scale-set-controller`, `gha-runner-scale-set`) | 0.15.1 | 16 | Charts OCI en `ghcr.io/actions/actions-runner-controller-charts` |
 | Helm | v4.3.1 | 16 | |
-| ruff | 0.17.3 | 03 | Se fija en `uv.lock` de `app/api` |
-| FastAPI, psycopg, pytest, PyJWT | — | 03 / 13 | Se fijan en `uv.lock` al escribir `app/` |
-| React, Vite, Vitest, ESLint | — | 04 | Se fijan en `pnpm-lock.yaml` al escribir `app/` |
+| PyJWT | — | 13 | Se fija en el `uv.lock` de `tools/oidc-verifier/` |
 
 ### Plataforma: comprobar al escribir la semana
 

@@ -56,10 +56,13 @@ el plan gratuito con repo público, se ajusta esa semana antes de escribirla y s
 
 | Prueba | Resultado |
 |---|---|
-| `scripts/resolver-sha.sh` contra tags ligeros y anotados | ✅ `actions/checkout v7.0.1` resuelve al mismo SHA que fija bc-makefile |
+| `scripts/resolve-sha.sh` contra tags ligeros y anotados | ✅ `actions/checkout v7.0.1` resuelve al mismo SHA que fija bc-makefile |
 | Descarga con el digest de la API de releases (`gh release download` + `sha256sum -c`) | ✅ yq, actionlint, uv y pnpm (2026-11-02) |
 | pnpm autónomo + `pnpm runtime set node 26 -g` sin npm | ✅ Node 26.13.0 en un `HOME` aislado |
 | `zizmor --offline` sobre el CI propio | ✅ sin hallazgos |
+| `app/scripts/check.sh` completo: uv, pnpm, imágenes, `docker compose up --wait` y smoke test | ✅ en WSL2 con Docker 29.9.2 (2026-11-02) |
+| Tests de integración de la API contra `postgres:17.11-alpine` | ✅ 9 tests, cobertura 96% |
+| Imágenes sin root | ✅ API con UID 10001, web con UID 101 |
 | `gh run list --commit <sha>` para filtrar por el SHA de `origin/main` en `checks.json` | ✅ existe en gh 2.103.3 |
 
 ## Consecuencias
@@ -68,7 +71,7 @@ el plan gratuito con repo público, se ajusta esa semana antes de escribirla y s
   pero es un paso más que en otros bootcamps.
 - Todo lo que el alumno publica es visible. El material insiste desde la S01 en que ningún secreto
   real entra al repo, y en la S13 en cómo rotar uno si pasa.
-- `checks.json` necesita leer GitHub además de los archivos: `verificar-semana.sh` exporta
+- `checks.json` necesita leer GitHub además de los archivos: `check-week.sh` exporta
   `GH_REPO` (ver [`autograding.md`](autograding.md)).
 
 ---
