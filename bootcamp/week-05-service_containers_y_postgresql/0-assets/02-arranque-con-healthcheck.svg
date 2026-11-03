@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="t02">
+  <title id="t02">Línea de tiempo del arranque de un service de PostgreSQL, con y sin healthcheck. Con healthcheck, el step Initialize containers descarga la imagen, crea y arranca el contenedor, y después espera mientras el estado es starting, consultándolo con esperas crecientes; cuando pasa a healthy, empieza el primer step y la conexión funciona. Si el estado acaba en unhealthy, el job falla en Initialize containers y los steps no se ejecutan. Sin healthcheck, el runner da el servicio por listo en cuanto el contenedor arranca: el primer step empieza mientras PostgreSQL aún se inicializa y la conexión falla con connection refused</title>
+  <rect width="960" height="520" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cuándo empieza el primer step</text>
+
+    <!-- eje de tiempo -->
+    <path d="M200 440 L920 440" stroke="#8b949e" stroke-width="1.5" marker-end="url(#a02)"/>
+    <text x="920" y="462" fill="#8b949e" font-size="12" text-anchor="end">tiempo</text>
+
+    <!-- Carril 1: con healthcheck -->
+    <text x="30" y="110" fill="#f0f6fc" font-size="15" font-weight="600">Con healthcheck</text>
+    <text x="30" y="130" fill="#8b949e" font-size="12">--health-cmd pg_isready</text>
+
+    <rect x="200" y="78" width="460" height="22" rx="4" fill="#161b22" stroke="#2088ff"/>
+    <text x="430" y="94" fill="#f0f6fc" font-size="12" text-anchor="middle">Initialize containers</text>
+
+    <rect x="200" y="110" width="150" height="30" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="275" y="130" fill="#f0f6fc" font-size="12" text-anchor="middle">pull · create · start</text>
+    <rect x="350" y="110" width="310" height="30" rx="4" fill="#161b22" stroke="#e3b341"/>
+    <text x="505" y="130" fill="#e3b341" font-size="12" text-anchor="middle">starting: el runner espera y vuelve a preguntar</text>
+    <g stroke="#e3b341" stroke-width="2">
+      <path d="M380 146 L380 156"/><path d="M430 146 L430 156"/><path d="M510 146 L510 156"/><path d="M640 146 L640 156"/>
+    </g>
+    <text x="510" y="172" fill="#8b949e" font-size="11" text-anchor="middle">service is starting, waiting N seconds before checking again</text>
+
+    <rect x="660" y="110" width="80" height="30" rx="4" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <text x="700" y="130" fill="#3fb950" font-size="12" font-weight="600" text-anchor="middle">healthy</text>
+    <rect x="750" y="110" width="170" height="30" rx="4" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="835" y="130" fill="#f0f6fc" font-size="12" text-anchor="middle">primer step: migrate</text>
+    <text x="835" y="160" fill="#3fb950" font-size="12" text-anchor="middle">conecta a la primera</text>
+
+    <!-- variante unhealthy -->
+    <rect x="200" y="196" width="720" height="58" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+    <text x="216" y="220" fill="#f85149" font-size="12" font-weight="600">Si acaba en unhealthy</text>
+    <text x="216" y="240" fill="#8b949e" font-size="12">Service container postgres failed. · docker logs · One or more containers failed to start. → tus steps no corren</text>
+
+    <!-- Carril 2: sin healthcheck -->
+    <text x="30" y="310" fill="#f0f6fc" font-size="15" font-weight="600">Sin healthcheck</text>
+    <text x="30" y="330" fill="#8b949e" font-size="12">nada que esperar</text>
+
+    <rect x="200" y="278" width="150" height="22" rx="4" fill="#161b22" stroke="#2088ff"/>
+    <text x="275" y="294" fill="#f0f6fc" font-size="12" text-anchor="middle">Initialize containers</text>
+    <rect x="200" y="310" width="150" height="30" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="275" y="330" fill="#f0f6fc" font-size="12" text-anchor="middle">pull · create · start</text>
+    <rect x="350" y="310" width="170" height="30" rx="4" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="435" y="330" fill="#f0f6fc" font-size="12" text-anchor="middle">primer step: migrate</text>
+
+    <rect x="350" y="356" width="310" height="30" rx="4" fill="#0d1117" stroke="#e3b341" stroke-dasharray="4 3"/>
+    <text x="505" y="376" fill="#e3b341" font-size="12" text-anchor="middle">PostgreSQL aún se inicializa</text>
+    <rect x="660" y="356" width="260" height="30" rx="4" fill="#0d1117" stroke="#3fb950" stroke-dasharray="4 3"/>
+    <text x="790" y="376" fill="#3fb950" font-size="12" text-anchor="middle">ya acepta conexiones (tarde)</text>
+
+    <text x="435" y="412" fill="#f85149" font-size="12" font-weight="600" text-anchor="middle">Connection refused</text>
+
+    <text x="480" y="496" fill="#8b949e" font-size="12" text-anchor="middle">healthy significa que PostgreSQL acepta conexiones; las tablas las crea el step de migraciones.</text>
+  </g>
+</svg>

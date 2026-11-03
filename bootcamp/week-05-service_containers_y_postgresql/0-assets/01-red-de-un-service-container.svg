@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t01">
+  <title id="t01">Dos formas de llegar al mismo service container de PostgreSQL. A la izquierda, el job corre directamente en la máquina virtual del runner: sus steps están fuera de la red puente que crea el runner, así que el servicio tiene que publicar su puerto con ports 5432:5432 y el job se conecta a localhost:5432. A la derecha, el job corre en un contenedor con container: y está en la misma red puente que el servicio: se conecta por el nombre del servicio, postgres:5432, sin publicar ningún puerto. Sin ports, el job del runner recibe connection refused; desde el runner, el nombre postgres no resuelve</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cómo llega un job a su service container</text>
+
+    <!-- Panel A: job en el runner -->
+    <rect x="30" y="60" width="435" height="420" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="50" y="88" fill="#f0f6fc" font-size="15" font-weight="600">Job en el runner</text>
+    <text x="50" y="108" fill="#8b949e" font-size="12">Máquina virtual ubuntu-24.04 · sin container:</text>
+
+    <rect x="60" y="130" width="375" height="76" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="78" y="155" fill="#f0f6fc" font-size="13" font-weight="600">Tus steps (procesos de la VM)</text>
+    <text x="78" y="180" fill="#79c0ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">DATABASE_URL=…@localhost:5432/…</text>
+
+    <rect x="60" y="232" width="375" height="38" rx="19" fill="#0d1117" stroke="#d2a8ff"/>
+    <text x="247" y="256" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">ports: 5432:5432 → localhost:5432</text>
+
+    <rect x="60" y="296" width="375" height="160" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+    <text x="78" y="449" fill="#8b949e" font-size="12">Red puente que crea el runner para el job</text>
+    <rect x="140" y="340" width="215" height="90" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="247" y="368" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">postgres</text>
+    <text x="247" y="390" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">postgres:17.11-alpine</text>
+    <text x="247" y="412" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">escucha en :5432</text>
+
+    <path d="M247 206 L247 228" stroke="#79c0ff" stroke-width="2" marker-end="url(#a01)"/>
+    <path d="M247 270 L247 336" stroke="#79c0ff" stroke-width="2" marker-end="url(#a01)"/>
+
+    <text x="50" y="504" fill="#f85149" font-size="12">Sin ports: Connection refused en localhost:5432</text>
+    <text x="50" y="524" fill="#f85149" font-size="12">Con @postgres:5432: el nombre no resuelve en la VM</text>
+
+    <!-- Panel B: job en contenedor -->
+    <rect x="495" y="60" width="435" height="420" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="515" y="88" fill="#f0f6fc" font-size="15" font-weight="600">Job en un contenedor</text>
+    <text x="515" y="108" fill="#8b949e" font-size="12">Misma VM · el job declara container:</text>
+
+    <rect x="525" y="130" width="375" height="326" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+    <text x="543" y="154" fill="#8b949e" font-size="12">Red puente que crea el runner para el job</text>
+
+    <rect x="545" y="172" width="335" height="76" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="563" y="197" fill="#f0f6fc" font-size="13" font-weight="600">Contenedor del job (tus steps)</text>
+    <text x="563" y="222" fill="#79c0ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">DATABASE_URL=…@postgres:5432/…</text>
+
+    <rect x="605" y="314" width="215" height="90" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="712" y="342" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">postgres</text>
+    <text x="712" y="364" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">postgres:17.11-alpine</text>
+    <text x="712" y="386" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">escucha en :5432</text>
+
+    <path d="M712 248 L712 310" stroke="#79c0ff" stroke-width="2" marker-end="url(#a01)"/>
+    <text x="700" y="284" fill="#79c0ff" font-size="12" text-anchor="end">DNS de la red: nombre del servicio</text>
+
+    <text x="545" y="432" fill="#3fb950" font-size="12">ports no hace falta: la red ya expone el 5432</text>
+
+    <text x="515" y="504" fill="#f85149" font-size="12">Con @localhost:5432: localhost es el propio</text>
+    <text x="515" y="524" fill="#f85149" font-size="12">contenedor del job, y ahí no hay PostgreSQL</text>
+  </g>
+</svg>

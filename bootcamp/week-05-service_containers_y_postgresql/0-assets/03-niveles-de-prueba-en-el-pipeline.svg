@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="t03">
+  <title id="t03">Tres niveles de prueba en el pipeline de tablero. Tests unitarios, en el job test de ci-api.yml: la API con un repositorio en memoria, sin servicios, en milisegundos; detectan lógica, validación y códigos HTTP, y no ven SQL ni restricciones. Tests de integración, en el job integration, que espera a test con needs: la API y las migraciones contra PostgreSQL 17 como service container; detectan SQL, restricciones del esquema y migraciones, y no ven imágenes ni nginx. Smoke test, en smoke.yml: la pila entera con docker compose up --build --wait y scripts/smoke-test.sh a través de nginx; detecta Dockerfile, red entre servicios, proxy y healthchecks, y no dice qué validación concreta falla</title>
+  <rect width="960" height="500" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Qué prueba cada nivel en tablero</text>
+
+    <!-- columna 1: unit -->
+    <rect x="30" y="64" width="270" height="380" rx="10" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="50" y="94" fill="#f0f6fc" font-size="16" font-weight="600">Unitarios</text>
+    <text x="50" y="116" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">ci-api.yml · job test</text>
+    <rect x="50" y="132" width="230" height="58" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="165" y="156" fill="#f0f6fc" font-size="12" text-anchor="middle">API + FakeTasks en memoria</text>
+    <text x="165" y="176" fill="#8b949e" font-size="12" text-anchor="middle">sin servicios · milisegundos</text>
+    <text x="50" y="220" fill="#3fb950" font-size="13" font-weight="600">Detecta</text>
+    <text x="50" y="242" fill="#f0f6fc" font-size="12">lógica de la API</text>
+    <text x="50" y="262" fill="#f0f6fc" font-size="12">validación de Pydantic</text>
+    <text x="50" y="282" fill="#f0f6fc" font-size="12">códigos HTTP</text>
+    <text x="50" y="318" fill="#f85149" font-size="13" font-weight="600">No ve</text>
+    <text x="50" y="340" fill="#8b949e" font-size="12">el SQL de PostgresTasks</text>
+    <text x="50" y="360" fill="#8b949e" font-size="12">restricciones del esquema</text>
+    <text x="50" y="380" fill="#8b949e" font-size="12">migraciones</text>
+
+    <path d="M300 254 L340 254" stroke="#79c0ff" stroke-width="2" marker-end="url(#a03)"/>
+    <text x="320" y="244" fill="#79c0ff" font-size="11" text-anchor="middle">needs</text>
+
+    <!-- columna 2: integración -->
+    <rect x="345" y="64" width="270" height="380" rx="10" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="365" y="94" fill="#f0f6fc" font-size="16" font-weight="600">Integración</text>
+    <text x="365" y="116" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">ci-api.yml · job integration</text>
+    <rect x="365" y="132" width="230" height="58" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="480" y="156" fill="#f0f6fc" font-size="12" text-anchor="middle">API + migrate contra</text>
+    <text x="480" y="176" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">postgres:17.11-alpine</text>
+    <text x="365" y="220" fill="#3fb950" font-size="13" font-weight="600">Detecta</text>
+    <text x="365" y="242" fill="#f0f6fc" font-size="12">SQL mal escrito</text>
+    <text x="365" y="262" fill="#f0f6fc" font-size="12">CHECK, identidad, tipos</text>
+    <text x="365" y="282" fill="#f0f6fc" font-size="12">migraciones no idempotentes</text>
+    <text x="365" y="318" fill="#f85149" font-size="13" font-weight="600">No ve</text>
+    <text x="365" y="340" fill="#8b949e" font-size="12">los Dockerfile</text>
+    <text x="365" y="360" fill="#8b949e" font-size="12">nginx y la red entre servicios</text>
+    <text x="365" y="380" fill="#8b949e" font-size="12">los healthchecks de compose</text>
+    <text x="365" y="420" fill="#e3b341" font-size="12">Saltado sin DATABASE_URL: pytest -rs</text>
+
+    <!-- columna 3: smoke -->
+    <rect x="660" y="64" width="270" height="380" rx="10" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="680" y="94" fill="#f0f6fc" font-size="16" font-weight="600">Smoke</text>
+    <text x="680" y="116" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">smoke.yml · job compose</text>
+    <rect x="680" y="132" width="230" height="58" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="795" y="156" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">compose up --build --wait</text>
+    <text x="795" y="176" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">smoke-test.sh vía nginx</text>
+    <text x="680" y="220" fill="#3fb950" font-size="13" font-weight="600">Detecta</text>
+    <text x="680" y="242" fill="#f0f6fc" font-size="12">imágenes que no construyen</text>
+    <text x="680" y="262" fill="#f0f6fc" font-size="12">proxy /api/ roto</text>
+    <text x="680" y="282" fill="#f0f6fc" font-size="12">servicios que no llegan a healthy</text>
+    <text x="680" y="318" fill="#f85149" font-size="13" font-weight="600">No ve</text>
+    <text x="680" y="340" fill="#8b949e" font-size="12">qué validación concreta falla</text>
+    <text x="680" y="360" fill="#8b949e" font-size="12">casos límite de la lógica</text>
+    <text x="680" y="420" fill="#e3b341" font-size="12">Workflow aparte, en paralelo</text>
+
+    <text x="480" y="480" fill="#8b949e" font-size="12" text-anchor="middle">De izquierda a derecha: más lento, más realista y menos preciso al señalar la causa.</text>
+  </g>
+</svg>

@@ -1,0 +1,34 @@
+# smoke.yml — capa 05 de tablero.
+# Cópialo a .github/workflows/smoke.yml de <tu-org>/tablero y completa los TODO.
+# Levanta la pila entera (PostgreSQL, API y web) con el compose.yaml de la raíz del repo y la
+# prueba de punta a punta a través de nginx.
+# Tal como está pasa actionlint, pero no cumple la capa: check-week.sh 05 sale en rojo.
+name: smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  compose:
+    name: Smoke test con docker compose
+    runs-on: ubuntu-24.04
+    env:
+      # Un nombre de proyecto propio: down borra solo lo que levantó este job.
+      COMPOSE_PROJECT_NAME: tablero-smoke
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # TODO 6: construye las imágenes y levanta la pila, y que el step no termine hasta que los
+      # tres servicios estén sanos.
+      # TODO 7: ejecuta scripts/smoke-test.sh; si falla, que un step aparte muestre el estado y
+      # los logs de todos los servicios.
+      - run: echo "smoke pendiente" && exit 1
+      # TODO 8: apaga la pila y borra volúmenes e imágenes locales, pase lo que pase antes.

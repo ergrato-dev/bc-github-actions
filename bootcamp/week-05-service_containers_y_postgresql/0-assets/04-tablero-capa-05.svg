@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" role="img" aria-labelledby="t05">
+  <title id="t05">Mapa del pipeline de tablero en la capa 05. Los eventos push a main, pull_request y workflow_dispatch disparan cuatro workflows a la vez. ci.yml, de las capas 01 y 02, y ci-web.yml, de la capa 04, siguen sin cambios. ci-api.yml conserva lint con ruff y test con pytest y cobertura, y gana el job integration, que espera a test con needs, levanta PostgreSQL 17.11 alpine como service container con healthcheck pg_isready y el puerto 5432 publicado, se conecta por localhost:5432, aplica las migraciones con tablero.migrate, ejecuta pytest tests/integration con -rs y vuelca docker logs del servicio solo si algo falla. El nuevo smoke.yml tiene un job compose con COMPOSE_PROJECT_NAME propio que ejecuta docker compose up --build --wait, el script smoke-test.sh a través de nginx, ps y logs si algo falla y docker compose down con volúmenes e imágenes locales siempre. En gris, lo que llega después: imágenes en GHCR en la Semana 06 y filtros por carpeta y concurrencia en la 07</title>
+  <rect width="960" height="680" fill="#0d1117"/>
+  <defs>
+    <marker id="a05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 05</text>
+
+    <!-- eventos -->
+    <g font-size="13">
+      <rect x="30" y="230" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="252" fill="#79c0ff" text-anchor="middle">push a main</text>
+      <rect x="30" y="280" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="302" fill="#79c0ff" text-anchor="middle">pull_request</text>
+      <rect x="30" y="330" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="352" fill="#79c0ff" text-anchor="middle">workflow_dispatch</text>
+    </g>
+    <path d="M200 297 C 225 297, 225 87, 246 87" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a05)"/>
+    <path d="M200 297 C 225 297, 225 220, 246 220" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a05)"/>
+    <path d="M200 297 C 225 297, 225 371, 246 371" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a05)"/>
+    <path d="M200 297 C 225 297, 225 470, 246 470" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a05)"/>
+    <text x="115" y="392" fill="#8b949e" font-size="11" text-anchor="middle">los cuatro</text>
+    <text x="115" y="406" fill="#8b949e" font-size="11" text-anchor="middle">a la vez</text>
+
+    <!-- ci.yml -->
+    <rect x="250" y="60" width="680" height="54" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="270" y="93" fill="#f0f6fc" font-size="15" font-weight="600">ci.yml</text>
+    <text x="350" y="93" fill="#8b949e" font-size="12">runner-info · structure · version → summary</text>
+    <text x="910" y="93" fill="#8b949e" font-size="12" text-anchor="end">capas 01-02, sin cambios</text>
+
+    <!-- ci-api.yml -->
+    <rect x="250" y="124" width="680" height="220" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="270" y="152" fill="#2088ff" font-size="15" font-weight="600">ci-api.yml</text>
+    <text x="910" y="152" fill="#8b949e" font-size="12" text-anchor="end">lint y test de la capa 03 · integration nuevo</text>
+
+    <rect x="270" y="168" width="170" height="54" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="355" y="190" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">lint</text>
+    <text x="355" y="210" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">ruff</text>
+    <rect x="270" y="234" width="170" height="54" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="355" y="256" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">test</text>
+    <text x="355" y="276" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">pytest tests/unit</text>
+
+    <path d="M440 261 L476 261" stroke="#79c0ff" stroke-width="2" marker-end="url(#a05)"/>
+    <text x="458" y="251" fill="#79c0ff" font-size="11" text-anchor="middle">needs</text>
+
+    <rect x="480" y="168" width="430" height="160" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="500" y="192" fill="#f0f6fc" font-size="14" font-weight="600">integration</text>
+    <rect x="690" y="178" width="204" height="56" rx="5" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="792" y="198" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">services.postgres</text>
+    <text x="792" y="214" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">postgres:17.11-alpine</text>
+    <text x="792" y="228" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">pg_isready · 5432:5432</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="500" y="216" fill="#79c0ff">@localhost:5432</text>
+      <text x="500" y="256" fill="#f0f6fc">uv run --no-sync python -m tablero.migrate</text>
+      <text x="500" y="278" fill="#f0f6fc">uv run --no-sync pytest tests/integration -rs</text>
+      <text x="500" y="306" fill="#f85149">if: failure() → docker logs "$POSTGRES_CONTAINER"</text>
+    </g>
+
+    <!-- ci-web.yml -->
+    <rect x="250" y="354" width="680" height="54" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="270" y="387" fill="#f0f6fc" font-size="15" font-weight="600">ci-web.yml</text>
+    <text x="370" y="387" fill="#8b949e" font-size="12">lint · test (Node 24 y 26) → build → web-dist → dist-report</text>
+    <text x="910" y="387" fill="#8b949e" font-size="12" text-anchor="end">capa 04, sin cambios</text>
+
+    <!-- smoke.yml -->
+    <rect x="250" y="418" width="680" height="120" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="270" y="446" fill="#2088ff" font-size="15" font-weight="600">smoke.yml</text>
+    <text x="910" y="446" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="end">COMPOSE_PROJECT_NAME: tablero-smoke</text>
+    <text x="270" y="470" fill="#f0f6fc" font-size="14" font-weight="600">compose</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="350" y="458" width="200" height="30" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="450" y="478" fill="#f0f6fc" text-anchor="middle">up --build --wait</text>
+      <path d="M550 473 L572 473" stroke="#79c0ff" stroke-width="2" marker-end="url(#a05)"/>
+      <rect x="576" y="458" width="160" height="30" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="656" y="478" fill="#f0f6fc" text-anchor="middle">smoke-test.sh</text>
+      <path d="M736 473 L758 473" stroke="#79c0ff" stroke-width="2" marker-end="url(#a05)"/>
+      <rect x="762" y="458" width="148" height="30" rx="5" fill="#0d1117" stroke="#3fb950"/>
+      <text x="836" y="478" fill="#3fb950" text-anchor="middle">nginx :8080</text>
+      <text x="350" y="516" fill="#f85149">if: failure() → ps · logs</text>
+      <text x="610" y="516" fill="#e3b341">if: always() → down --volumes --rmi local</text>
+    </g>
+
+    <!-- lo que llega después -->
+    <text x="30" y="578" fill="#8b949e" font-size="14" font-weight="600">Lo que llega después</text>
+    <g font-size="13" fill="#8b949e">
+      <rect x="30" y="592" width="435" height="58" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="50" y="617" font-weight="600">Semana 06</text><text x="50" y="637">imágenes de api y web publicadas en GHCR</text>
+      <rect x="495" y="592" width="435" height="58" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="515" y="617" font-weight="600">Semana 07</text><text x="515" y="637">cada workflow, solo si cambian sus carpetas</text>
+    </g>
+    <text x="480" y="672" fill="#8b949e" font-size="12" text-anchor="middle">En azul, lo que esta semana crea o cambia. En gris discontinuo, lo que añaden las siguientes.</text>
+  </g>
+</svg>

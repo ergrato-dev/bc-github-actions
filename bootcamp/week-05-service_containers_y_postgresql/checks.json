@@ -1,0 +1,132 @@
+{
+  "week": "05",
+  "title": "Service containers y PostgreSQL",
+  "checks": [
+    {
+      "id": "service-lab-dispatched",
+      "description": "service-lab.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow service-lab.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/02-postgresql-como-service.md, paso 5"
+    },
+    {
+      "id": "container-lab-dispatched",
+      "description": "container-lab.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow container-lab.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/03-job-en-contenedor-frente-a-runner.md, paso 5"
+    },
+    {
+      "id": "workflows-actionlint",
+      "description": "ci-api.yml y smoke.yml pasan actionlint",
+      "cmd": "actionlint .github/workflows/ci-api.yml .github/workflows/smoke.yml",
+      "assert": "exit0",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 1"
+    },
+    {
+      "id": "ci-api-jobs",
+      "description": "ci-api.yml tiene los jobs integration, lint y test",
+      "cmd": "yq '.jobs | keys | sort | join(\",\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~^integration,lint,test$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, cabecera"
+    },
+    {
+      "id": "integration-needs-test",
+      "description": "integration solo empieza cuando los tests unitarios han pasado",
+      "cmd": "yq '.jobs.integration.needs | [.] | flatten | join(\",\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~^test$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 1"
+    },
+    {
+      "id": "integration-postgres-image",
+      "description": "integration levanta postgres:17.<parche>-alpine como service container",
+      "cmd": "yq '.jobs.integration.services.postgres.image' .github/workflows/ci-api.yml",
+      "assert": "stdout~^postgres:17\\.[0-9]+-alpine$",
+      "hint": "2-practicas/02-postgresql-como-service.md, paso 1"
+    },
+    {
+      "id": "integration-health-cmd",
+      "description": "El service de PostgreSQL tiene healthcheck con pg_isready",
+      "cmd": "yq '.jobs.integration.services.postgres.options // \"\"' .github/workflows/ci-api.yml",
+      "assert": "stdout~--health-cmd.*pg_isready",
+      "hint": "2-practicas/02-postgresql-como-service.md, paso 2"
+    },
+    {
+      "id": "integration-port",
+      "description": "El puerto 5432 del service se publica en el runner",
+      "cmd": "yq '.jobs.integration.services.postgres.ports // [] | map(tostring) | join(\",\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~(^|,)5432:5432(,|$)",
+      "hint": "1-teoria/03-service-containers.md, sección 2"
+    },
+    {
+      "id": "integration-database-url",
+      "description": "DATABASE_URL de integration apunta a localhost:5432, porque el job corre en el runner",
+      "cmd": "yq '.jobs.integration.env.DATABASE_URL // \"\"' .github/workflows/ci-api.yml",
+      "assert": "stdout~^postgresql://[^@]+@localhost:5432/",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 3"
+    },
+    {
+      "id": "integration-migrates",
+      "description": "integration aplica las migraciones con uv antes de los tests",
+      "cmd": "yq '[.jobs.integration.steps[].run // \"\"] | join(\"\\n\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~uv run --no-sync python -m tablero\\.migrate",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 4"
+    },
+    {
+      "id": "integration-pytest",
+      "description": "integration ejecuta pytest sobre tests/integration",
+      "cmd": "yq '[.jobs.integration.steps[].run // \"\"] | join(\"\\n\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~uv run --no-sync pytest tests/integration",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 4"
+    },
+    {
+      "id": "integration-logs-on-failure",
+      "description": "integration vuelca los logs de PostgreSQL solo si algo falla",
+      "cmd": "yq '[.jobs.integration.steps[] | select((.if // \"\") | test(\"failure\\\\(\\\\)\")) | .run // \"\"] | join(\" \")' .github/workflows/ci-api.yml",
+      "assert": "stdout~docker logs",
+      "hint": "1-teoria/07-depurar-servicios.md, sección 3"
+    },
+    {
+      "id": "smoke-compose-wait",
+      "description": "smoke.yml levanta tablero con docker compose up --build --wait",
+      "cmd": "yq '[.jobs[].steps[].run // \"\"] | join(\"\\n\")' .github/workflows/smoke.yml",
+      "assert": "stdout~docker compose up .*--wait",
+      "hint": "3-proyecto/starter/.github/workflows/smoke.yml, TODO 6"
+    },
+    {
+      "id": "smoke-runs-script",
+      "description": "smoke.yml ejecuta scripts/smoke-test.sh contra la pila levantada",
+      "cmd": "yq '[.jobs[].steps[].run // \"\"] | join(\"\\n\")' .github/workflows/smoke.yml",
+      "assert": "stdout~scripts/smoke-test\\.sh",
+      "hint": "3-proyecto/starter/.github/workflows/smoke.yml, TODO 7"
+    },
+    {
+      "id": "smoke-down-always",
+      "description": "smoke.yml apaga la pila con docker compose down aunque algo falle",
+      "cmd": "yq '[.jobs[].steps[] | select((.if // \"\") | test(\"always\\\\(\\\\)\")) | .run // \"\"] | join(\" \")' .github/workflows/smoke.yml",
+      "assert": "stdout~docker compose down",
+      "hint": "3-proyecto/starter/.github/workflows/smoke.yml, TODO 8"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "Semana 01, 2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "ci-api-green-on-main",
+      "description": "ci-api.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci-api.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    },
+    {
+      "id": "smoke-green-on-main",
+      "description": "smoke.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow smoke.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    }
+  ]
+}

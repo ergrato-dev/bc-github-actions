@@ -23,7 +23,7 @@ corrige si han cambiado.
 | 02 | Expresiones `${{ }}`, contextos, funciones, `if:`, funciones de estado, `env:`, `vars.`, `defaults:`, `$GITHUB_OUTPUT`, `$GITHUB_ENV`, `$GITHUB_STEP_SUMMARY`, `continue-on-error`, `steps.<id>.outcome` / `conclusion`, `needs:`, `outputs:` de job | D1 |
 | 03 | `astral-sh/setup-uv`, `uv sync --locked`, ruff, pytest con cobertura, `actions/cache`, `gh cache list/delete` | D1 |
 | 04 | `pnpm/action-setup`, `actions/setup-node`, `strategy.matrix` (`include`, `exclude`, `fail-fast`, `max-parallel`, `fromJSON`), `upload-artifact` / `download-artifact`, retención | D1, D2 |
-| 05 | `services:`, `container:`, `docker compose` en CI, healthchecks | D1 |
+| 05 | `services:` (`image`, `env`, `ports`, `options`), `container:`, contexto `job.services`, `docker compose` en CI, healthchecks | D1 |
 | 06 | `docker/setup-buildx-action`, `build-push-action`, `metadata-action`, `login-action`, GHCR, `packages: write`, `secrets.GITHUB_TOKEN`, caché `type=gha` | D1, D2 |
 | 07 | Filtros `branches` / `paths` / `tags`, `schedule:`, `workflow_dispatch.inputs`, `workflow_run`, `repository_dispatch`, `concurrency:`, `timeout-minutes`, `actions/github-script` | D1 |
 | 08 | zizmor (primer contacto), act, `ACTIONS_STEP_DEBUG` / `ACTIONS_RUNNER_DEBUG`, `::error` / `::warning` / `::group`, problem matchers | D1, D2 |

@@ -62,6 +62,21 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   pongas toma el valor del repo, 90 días por defecto en uno público, y ocupa almacenamiento todo ese
   tiempo.
 
+## Semana 05 — [Service containers y PostgreSQL](../bootcamp/week-05-service_containers_y_postgresql/README.md)
+
+- **`docker logs "$POSTGRES_CONTAINER"`**, con `POSTGRES_CONTAINER: ${{ job.services.postgres.id }}`
+  en el `env:` del step y `if: failure()`, pone el log de la base justo debajo del step que falló.
+  El runner también lo imprime en *Stop containers*, pero al final del job, lejos del error.
+- **`pytest -rs`** lista los tests saltados con su motivo. Los de integración de `tablero` se
+  saltan si falta `DATABASE_URL`: `pytest tests/integration` sale entonces con código 5 y
+  `1 skipped`, pero un `pytest` sobre todo el proyecto sale en verde sin que nada lo avise.
+- **`docker compose up --wait` ya espera y ya falla**: sale con error si un servicio no llega a
+  `healthy`. Un bucle de `sleep` y `curl` delante del smoke test sobra.
+- **`COMPOSE_PROJECT_NAME`** en el `env:` del job da a la pila un nombre propio. Así `down` borra
+  solo lo que levantó ese job, también en un runner propio compartido (Semana 15).
+- **`healthy` no es `migrado`**: `pg_isready` dice que PostgreSQL acepta conexiones, no que tu
+  esquema exista. Las migraciones son un step aparte, antes de los tests.
+
 ---
 
 | ← Anterior | Siguiente → |
