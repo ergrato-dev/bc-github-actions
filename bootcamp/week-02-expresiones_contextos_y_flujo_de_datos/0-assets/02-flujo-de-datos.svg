@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t02">
+  <title id="t02">Flujo de datos en un run: dentro del job meta, el step ids escribe en los archivos GITHUB_OUTPUT y GITHUB_ENV, que el runner procesa al terminar el step; el step siguiente lee steps.ids.outputs y la variable de entorno. Al acabar el job, sus outputs viajan por GitHub hasta el job report, que corre en otra máquina y los lee con needs.meta.outputs. Los archivos del disco no viajan. Lo escrito en GITHUB_STEP_SUMMARY aparece en la página del run</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cómo viaja un dato dentro de un job y entre jobs</text>
+
+    <!-- job meta -->
+    <rect x="30" y="64" width="420" height="330" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="50" y="92" fill="#2088ff" font-size="15" font-weight="600">job meta</text>
+    <text x="430" y="92" fill="#8b949e" font-size="12" text-anchor="end">máquina 1</text>
+
+    <rect x="50" y="110" width="380" height="74" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="66" y="132" fill="#f0f6fc" font-size="13" font-weight="600">step ids</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#79c0ff">
+      <text x="66" y="154">echo "sha=abc1234" &gt;&gt; "$GITHUB_OUTPUT"</text>
+      <text x="66" y="174">echo "MODE=ci" &gt;&gt; "$GITHUB_ENV"</text>
+    </g>
+
+    <rect x="50" y="204" width="380" height="44" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="5 4"/>
+    <text x="240" y="224" fill="#8b949e" font-size="12" text-anchor="middle">el runner lee los archivos al terminar el step</text>
+    <text x="240" y="240" fill="#8b949e" font-size="12" text-anchor="middle">el step que escribe todavía no ve el cambio</text>
+    <path d="M240 184 L240 202" stroke="#79c0ff" stroke-width="2" marker-end="url(#a-blue)"/>
+    <path d="M240 248 L240 268" stroke="#79c0ff" stroke-width="2" marker-end="url(#a-blue)"/>
+
+    <rect x="50" y="270" width="380" height="74" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="66" y="292" fill="#f0f6fc" font-size="13" font-weight="600">step siguiente</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#79c0ff">
+      <text x="66" y="314">${{ steps.ids.outputs.sha }}</text>
+      <text x="66" y="334">$MODE</text>
+    </g>
+    <text x="240" y="380" fill="#8b949e" font-size="12" text-anchor="middle">outputs: sha: ${{ steps.ids.outputs.sha }}</text>
+
+    <!-- viaje entre jobs -->
+    <path d="M450 330 C 520 330, 520 230, 588 230" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a-blue)"/>
+    <text x="520" y="196" fill="#79c0ff" font-size="12" text-anchor="middle">outputs del job</text>
+    <text x="520" y="212" fill="#79c0ff" font-size="12" text-anchor="middle">viajan por GitHub</text>
+
+    <path d="M450 150 C 520 150, 520 120, 588 120" stroke="#f85149" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#a-red)"/>
+    <text x="520" y="102" fill="#f85149" font-size="12" text-anchor="middle">archivos, GITHUB_ENV</text>
+    <text x="520" y="174" fill="#f85149" font-size="12" text-anchor="middle">no viajan</text>
+
+    <!-- job report -->
+    <rect x="590" y="64" width="340" height="330" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="610" y="92" fill="#2088ff" font-size="15" font-weight="600">job report</text>
+    <text x="910" y="92" fill="#8b949e" font-size="12" text-anchor="end">máquina 2</text>
+    <text x="610" y="124" fill="#8b949e" font-size="12">needs: meta</text>
+    <text x="610" y="144" fill="#f85149" font-size="12">disco vacío: nada de la máquina 1</text>
+
+    <rect x="610" y="200" width="300" height="74" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="626" y="222" fill="#f0f6fc" font-size="13" font-weight="600">step</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#79c0ff">
+      <text x="626" y="244">${{ needs.meta.outputs.sha }}</text>
+      <text x="626" y="264">${{ needs.meta.result }}</text>
+    </g>
+    <text x="760" y="304" fill="#8b949e" font-size="12" text-anchor="middle">solo dependencias directas</text>
+    <text x="760" y="322" fill="#8b949e" font-size="12" text-anchor="middle">máximo 1 MB de outputs por job</text>
+    <text x="760" y="340" fill="#8b949e" font-size="12" text-anchor="middle">un output con un secreto no se envía</text>
+
+    <!-- resumen -->
+    <rect x="30" y="430" width="900" height="80" rx="8" fill="#161b22" stroke="#3fb950"/>
+    <text x="50" y="458" fill="#3fb950" font-size="14" font-weight="600">GITHUB_STEP_SUMMARY</text>
+    <text x="50" y="482" fill="#f0f6fc" font-size="13">Cualquier step de cualquier job escribe Markdown y aparece en la página del run.</text>
+    <text x="50" y="500" fill="#8b949e" font-size="12">Máximo 1 MiB por step y 20 resúmenes por job.</text>
+    <path d="M240 394 L240 428" stroke="#3fb950" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M760 394 L760 428" stroke="#3fb950" stroke-width="2" stroke-dasharray="4 4"/>
+
+    <text x="480" y="540" fill="#8b949e" font-size="12" text-anchor="middle">Azul claro: el dato llega. Rojo discontinuo: no llega.</text>
+  </g>
+</svg>

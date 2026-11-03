@@ -1,0 +1,64 @@
+# ci.yml — capa 02 de tablero.
+# Sustituye a tu .github/workflows/ci.yml: trae resuelta la capa 01 y añade los TODO de esta semana.
+# Tal como está pasa actionlint, pero no cumple la capa: check-week.sh 02 sale en rojo.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+# TODO 1: bash como shell por defecto de todos los run del workflow (defaults).
+
+jobs:
+  runner-info:
+    name: Información del runner
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Sistema operativo
+        run: cat /etc/os-release
+      - name: CPU
+        run: nproc
+      - name: Memoria
+        run: free -h
+
+  structure:
+    name: Estructura del monorepo
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Lockfiles y compose en su sitio
+        run: |
+          for f in api/uv.lock web/pnpm-lock.yaml compose.yaml; do
+            test -f "$f" || { echo "falta $f"; exit 1; }
+          done
+
+  version:
+    name: Versión
+    runs-on: ubuntu-24.04
+    # TODO 3: publica como output "version" el que calcula el step del TODO 2.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # TODO 2: un step con id que lea project.version de api/pyproject.toml (yq viene en el runner)
+      # y escriba version=<versión>+<7 primeros caracteres del SHA> en $GITHUB_OUTPUT.
+      - run: echo "version pendiente"
+
+  summary:
+    name: Resumen
+    # TODO 4: que espere a los otros tres jobs.
+    # TODO 5: que corra aunque alguno falle, pero no si cancelas el run.
+    runs-on: ubuntu-24.04
+    steps:
+      # TODO 6: escribe en $GITHUB_STEP_SUMMARY un título con vars.PROJECT_NAME y la versión, y una
+      # tabla con el resultado de cada job. Los valores llegan al shell por env:, nunca con ${{ }}
+      # dentro de run. Si algún job no terminó en success, este también falla.
+      - run: echo "summary pendiente" && exit 1

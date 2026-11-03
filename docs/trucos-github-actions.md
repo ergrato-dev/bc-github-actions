@@ -18,6 +18,21 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   activado, qué actions se permiten y si se exige SHA (`sha_pinning_required`), tres ajustes que en
   la UI están repartidos por la página de Settings.
 
+## Semana 02 — [Expresiones, contextos y flujo de datos](../bootcamp/week-02-expresiones_contextos_y_flujo_de_datos/README.md)
+
+- **actionlint comprueba los tipos de tus expresiones**: si escribes `steps.compute.outputs.version`
+  y el step se llama `comptue`, o `needs.aa` con un job `a`, te lo dice con línea y columna antes
+  del push. Es el error más común de esta semana y el más caro de encontrar en un run.
+- **`toJSON(needs)` por `env:` y `jq`** te da el resultado de todos los jobs anteriores en un solo
+  valor: `jq -r 'to_entries[] | "\(.key) \(.value.result)"' <<<"$RESULTS"`. Añades un job a
+  `needs:` y el resumen lo incluye sin tocar el script.
+- **yq ya viene en el runner y lee TOML por la extensión**: `yq -oy '.project.version'
+  api/pyproject.toml` saca la versión sin instalar nada ni escribir un parser con `grep` y `sed`.
+- **`gh variable set -f vars.env`** carga de una vez todas las variables de configuración de un
+  archivo dotenv. Con `gh variable list` compruebas qué hay sin abrir Settings.
+- **`${GITHUB_SHA::7}`** es una expansión de bash, no una expresión de GitHub: el SHA corto sale
+  del shell, que es donde tiene que estar un dato que vas a escribir en `$GITHUB_OUTPUT`.
+
 ---
 
 | ← Anterior | Siguiente → |

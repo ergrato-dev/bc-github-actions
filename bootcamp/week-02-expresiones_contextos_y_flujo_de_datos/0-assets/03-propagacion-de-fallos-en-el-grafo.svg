@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="t03">
+  <title id="t03">Propagación de un fallo en un grafo de jobs a, b, c y d, donde d necesita a b y a c. El job c falla. Con el if por defecto, d se salta. Con if: ${{ !cancelled() }}, d corre y puede leer needs.c.result, que vale failure.</title>
+  <defs>
+    <marker id="arrow03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#30363d"/>
+    </marker>
+  </defs>
+  <rect width="960" height="470" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Qué pasa en el grafo cuando falla un job</text>
+
+    <rect x="20" y="60" width="450" height="300" rx="8" fill="#161b22" stroke="#30363d"/>
+    <rect x="490" y="60" width="450" height="300" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="245" y="88" fill="#f0f6fc" font-size="15" font-weight="600" text-anchor="middle">d con el if por defecto</text>
+    <text x="715" y="88" fill="#f0f6fc" font-size="15" font-weight="600" text-anchor="middle">d con if: ${{ !cancelled() }}</text>
+
+    <g stroke="#30363d" stroke-width="2" fill="none" marker-end="url(#arrow03)">
+      <path d="M150,212 L181,170"/>
+      <path d="M150,212 L181,254"/>
+      <path d="M285,150 L316,192"/>
+      <path d="M285,274 L316,232"/>
+      <path d="M620,212 L651,170"/>
+      <path d="M620,212 L651,254"/>
+      <path d="M755,150 L786,192"/>
+      <path d="M755,274 L786,232"/>
+    </g>
+
+    <rect x="50" y="190" width="100" height="44" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <rect x="185" y="128" width="100" height="44" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <rect x="185" y="252" width="100" height="44" rx="6" fill="#0d1117" stroke="#f85149" stroke-width="2"/>
+    <rect x="320" y="190" width="100" height="44" rx="6" fill="#0d1117" stroke="#8b949e" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="100" y="217" fill="#f0f6fc" font-size="14" text-anchor="middle">a</text>
+    <text x="235" y="155" fill="#f0f6fc" font-size="14" text-anchor="middle">b</text>
+    <text x="235" y="279" fill="#f0f6fc" font-size="14" text-anchor="middle">c falla</text>
+    <text x="370" y="217" fill="#8b949e" font-size="14" text-anchor="middle">d skipped</text>
+    <text x="245" y="326" fill="#8b949e" font-size="12" text-anchor="middle">c falla, así que todo lo que lo necesita se salta.</text>
+    <text x="245" y="344" fill="#8b949e" font-size="12" text-anchor="middle">Un skipped no es failure: el aviso se pierde.</text>
+
+    <rect x="520" y="190" width="100" height="44" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <rect x="655" y="128" width="100" height="44" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <rect x="655" y="252" width="100" height="44" rx="6" fill="#0d1117" stroke="#f85149" stroke-width="2"/>
+    <rect x="790" y="190" width="100" height="44" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="570" y="217" fill="#f0f6fc" font-size="14" text-anchor="middle">a</text>
+    <text x="705" y="155" fill="#f0f6fc" font-size="14" text-anchor="middle">b</text>
+    <text x="705" y="279" fill="#f0f6fc" font-size="14" text-anchor="middle">c falla</text>
+    <text x="840" y="217" fill="#f0f6fc" font-size="14" text-anchor="middle">d corre</text>
+    <text x="715" y="326" fill="#8b949e" font-size="12" text-anchor="middle">d corre aunque c falló y puede leer su resultado.</text>
+    <text x="715" y="344" fill="#8b949e" font-size="12" text-anchor="middle">Si cancelas el run, d se salta.</text>
+
+    <rect x="490" y="374" width="450" height="34" rx="6" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="715" y="396" fill="#d2a8ff" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">needs.c.result == 'failure'</text>
+
+    <g font-size="12">
+      <rect x="40" y="430" width="14" height="14" rx="3" fill="none" stroke="#3fb950" stroke-width="2"/>
+      <text x="62" y="442" fill="#8b949e">success</text>
+      <rect x="150" y="430" width="14" height="14" rx="3" fill="none" stroke="#f85149" stroke-width="2"/>
+      <text x="172" y="442" fill="#8b949e">failure</text>
+      <rect x="255" y="430" width="14" height="14" rx="3" fill="none" stroke="#8b949e" stroke-width="2" stroke-dasharray="3 2"/>
+      <text x="277" y="442" fill="#8b949e">skipped</text>
+      <rect x="365" y="430" width="14" height="14" rx="3" fill="none" stroke="#2088ff" stroke-width="2"/>
+      <text x="387" y="442" fill="#8b949e">corre por su if</text>
+      <text x="560" y="442" fill="#8b949e">d necesita a b y a c: needs: [b, c]</text>
+    </g>
+  </g>
+</svg>

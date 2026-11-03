@@ -126,4 +126,4 @@ cuando se usa en la documentación. Glosario de todas las semanas:
 
 | ← Anterior | Siguiente → |
 |:---|---:|
-| [Webgrafía](../4-recursos/webgrafia/README.md) | [Índice del bootcamp](../../README.md) |
+| [Webgrafía](../4-recursos/webgrafia/README.md) | [Semana 02 — Expresiones, contextos y flujo de datos](../../week-02-expresiones_contextos_y_flujo_de_datos/README.md) |

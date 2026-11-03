@@ -1,0 +1,125 @@
+{
+  "week": "02",
+  "title": "Expresiones, contextos y flujo de datos",
+  "checks": [
+    {
+      "id": "project-name-variable",
+      "description": "El repo tiene la variable de configuración PROJECT_NAME con el valor tablero",
+      "cmd": "gh variable get PROJECT_NAME",
+      "assert": "stdout~^tablero$",
+      "hint": "2-practicas/01-explorar-contextos.md, paso 3"
+    },
+    {
+      "id": "explore-dispatched",
+      "description": "explore.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow explore.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/01-explorar-contextos.md, paso 5"
+    },
+    {
+      "id": "conditions-ran",
+      "description": "conditions.yml se ejecutó al menos una vez",
+      "cmd": "gh run list --workflow conditions.yml --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/02-condiciones-y-estado.md, paso 2"
+    },
+    {
+      "id": "data-flow-dispatched",
+      "description": "data-flow.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow data-flow.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/03-outputs-entre-steps-y-jobs.md, paso 4"
+    },
+    {
+      "id": "graph-dispatched",
+      "description": "graph.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow graph.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/04-pipeline-con-grafo.md, paso 5"
+    },
+    {
+      "id": "ci-actionlint",
+      "description": "ci.yml pasa actionlint",
+      "cmd": "actionlint .github/workflows/ci.yml",
+      "assert": "exit0",
+      "hint": "2-practicas/04-pipeline-con-grafo.md, paso 1; actionlint te dice la línea"
+    },
+    {
+      "id": "ci-defaults-shell",
+      "description": "ci.yml fija bash como shell por defecto de todos sus run",
+      "cmd": "yq '.defaults.run.shell' .github/workflows/ci.yml",
+      "assert": "stdout~^bash$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 1"
+    },
+    {
+      "id": "ci-version-output",
+      "description": "El job version de ci.yml publica el output version a partir de un step",
+      "cmd": "yq '.jobs.version.outputs.version' .github/workflows/ci.yml",
+      "assert": "stdout~^\\$\\{\\{ *steps\\.[A-Za-z0-9_-]+\\.outputs\\.version *\\}\\}$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 3"
+    },
+    {
+      "id": "ci-version-github-output",
+      "description": "El job version escribe la versión en $GITHUB_OUTPUT",
+      "cmd": "yq '.jobs.version.steps[].run // \"\"' .github/workflows/ci.yml | grep -c GITHUB_OUTPUT",
+      "assert": "stdout~^[1-9]",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 2"
+    },
+    {
+      "id": "no-set-output",
+      "description": "Ningún workflow usa los comandos retirados ::set-output ni ::save-state",
+      "cmd": "grep -rnE '::(set-output|save-state)' .github/workflows || true",
+      "assert": "stdout!~.",
+      "hint": "1-teoria/05-datos-entre-steps.md, sección 4"
+    },
+    {
+      "id": "ci-summary-needs",
+      "description": "El job summary de ci.yml espera a runner-info, structure y version",
+      "cmd": "yq '.jobs.summary.needs | sort | join(\",\")' .github/workflows/ci.yml",
+      "assert": "stdout~^runner-info,structure,version$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 4"
+    },
+    {
+      "id": "ci-summary-runs-on-failure",
+      "description": "El job summary corre aunque falle un job anterior, salvo si el run se cancela",
+      "cmd": "yq '.jobs.summary.if' .github/workflows/ci.yml",
+      "assert": "stdout~^(\\$\\{\\{ *)?!cancelled\\(\\)( *\\}\\})?$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 5"
+    },
+    {
+      "id": "ci-summary-step-summary",
+      "description": "El job summary escribe en $GITHUB_STEP_SUMMARY",
+      "cmd": "yq '.jobs.summary.steps[].run // \"\"' .github/workflows/ci.yml | grep -c GITHUB_STEP_SUMMARY",
+      "assert": "stdout~^[1-9]",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 6"
+    },
+    {
+      "id": "ci-summary-vars",
+      "description": "El job summary usa la variable de configuración vars.PROJECT_NAME",
+      "cmd": "yq '... comments=\"\" | .jobs.summary' .github/workflows/ci.yml | grep -c 'vars\\.PROJECT_NAME'",
+      "assert": "stdout~^[1-9]",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 6"
+    },
+    {
+      "id": "no-expressions-in-run",
+      "description": "Ningún run de tus workflows interpola datos del evento, de la rama o de inputs con ${{ }}",
+      "cmd": "yq '.jobs[].steps[].run // \"\"' .github/workflows/*.yml | grep -E '\\$\\{\\{ *(github\\.event|github\\.head_ref|inputs\\.)' || true",
+      "assert": "stdout!~.",
+      "hint": "1-teoria/02-expresiones-y-funciones.md, sección 4"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "Semana 01, 2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "ci-green-on-main",
+      "description": "ci.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    }
+  ]
+}

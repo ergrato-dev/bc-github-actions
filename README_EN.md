@@ -68,7 +68,7 @@ Hardware: Linux or WSL2 with Docker, **8 GB RAM** (16 GB recommended from Week 1
 | Week | Topic |
 |:--:|---|
 | [01](bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion/README.md) | First workflow and execution model |
-| 02 | Expressions, contexts and data flow |
+| [02](bootcamp/week-02-expresiones_contextos_y_flujo_de_datos/README.md) | Expressions, contexts and data flow |
 | 03 | Python CI with uv |
 | 04 | Frontend CI with pnpm, matrices and artifacts |
 | 05 | Service containers and PostgreSQL |

@@ -106,7 +106,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 | Semana | Slug | Tema |
 |:--:|---|---|
 | 01 ✅ | `week-01-primer_workflow_y_modelo_de_ejecucion` | Primer workflow y modelo de ejecución |
-| 02 | `week-02-expresiones_contextos_y_flujo_de_datos` | Expresiones, contextos y flujo de datos |
+| 02 ✅ | `week-02-expresiones_contextos_y_flujo_de_datos` | Expresiones, contextos y flujo de datos |
 | 03 | `week-03-ci_de_python_con_uv` | CI de Python con uv |
 | 04 | `week-04-ci_de_frontend_pnpm_matrices_y_artefactos` | CI de frontend con pnpm, matrices y artefactos |
 | 05 | `week-05-service_containers_y_postgresql` | Service containers y PostgreSQL |

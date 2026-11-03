@@ -16,6 +16,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
   proyecto hilo conductor `tablero`, ADR del laboratorio, modelo de costes, reglas de seguridad
   de workflows, mapa de funcionalidades, setup, trucos y glosario
 - `bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion/`: Semana 01, primer workflow y modelo de ejecución
+- `bootcamp/week-02-expresiones_contextos_y_flujo_de_datos/`: Semana 02, expresiones, contextos y flujo de datos
 - Pie de navegación en tabla (← Anterior | Siguiente →) en las semanas y en `docs/`
 - `scripts/`: `check-week.sh` (autograding con `gh` y `GH_REPO`), `check-repo.sh`
   (13 comprobaciones), `resolve-sha.sh`, `lab-up.sh` y `lab-down.sh`

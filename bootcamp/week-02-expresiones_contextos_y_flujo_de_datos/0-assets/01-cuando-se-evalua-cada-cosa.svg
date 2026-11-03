@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" role="img" aria-labelledby="t01">
+  <title id="t01">Cuándo se evalúa cada cosa: GitHub sustituye las expresiones ${{ }} como texto antes de crear el script; el runner recibe el script ya sustituido y bash expande $VAR al ejecutarlo. Un título de pull request interpolado en run se convierte en código; pasado por env sigue siendo un dato.</title>
+  <defs>
+    <marker id="arrow01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#79c0ff"/>
+    </marker>
+  </defs>
+  <rect width="980" height="560" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="490" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cuándo se evalúa cada cosa</text>
+
+    <text x="175" y="78" fill="#2088ff" font-size="14" font-weight="600" text-anchor="middle">1. En GitHub, antes del runner</text>
+    <text x="175" y="96" fill="#8b949e" font-size="12" text-anchor="middle">evalúa ${{ }} y lo sustituye como texto</text>
+    <text x="490" y="78" fill="#2088ff" font-size="14" font-weight="600" text-anchor="middle">2. Script que recibe el runner</text>
+    <text x="490" y="96" fill="#8b949e" font-size="12" text-anchor="middle">ya no queda ninguna expresión</text>
+    <text x="805" y="78" fill="#2088ff" font-size="14" font-weight="600" text-anchor="middle">3. En el runner, bash</text>
+    <text x="805" y="96" fill="#8b949e" font-size="12" text-anchor="middle">expande $VAR al ejecutar</text>
+
+    <text x="30" y="128" fill="#f85149" font-size="13" font-weight="600">Interpolado dentro de run:</text>
+    <rect x="30" y="138" width="290" height="150" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <rect x="345" y="138" width="290" height="150" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <rect x="660" y="138" width="290" height="150" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <line x1="322" y1="213" x2="341" y2="213" stroke="#79c0ff" stroke-width="2" marker-end="url(#arrow01)"/>
+    <line x1="637" y1="213" x2="656" y2="213" stroke="#79c0ff" stroke-width="2" marker-end="url(#arrow01)"/>
+
+    <text x="44" y="232" fill="#8b949e" font-size="12">Título del PR, escrito por cualquiera:</text>
+    <text x="490" y="266" fill="#f85149" font-size="12" text-anchor="middle">el título ya es parte del código</text>
+    <text x="805" y="180" fill="#f85149" font-size="15" font-weight="600" text-anchor="middle">bash ejecuta ls</text>
+    <text x="805" y="210" fill="#f0f6fc" font-size="13" text-anchor="middle">Inyección de comandos:</text>
+    <text x="805" y="230" fill="#f0f6fc" font-size="13" text-anchor="middle">corre lo que escribió</text>
+    <text x="805" y="250" fill="#f0f6fc" font-size="13" text-anchor="middle">quien abrió el PR</text>
+
+    <text x="30" y="332" fill="#3fb950" font-size="13" font-weight="600">Pasado por env:</text>
+    <rect x="30" y="342" width="290" height="150" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <rect x="345" y="342" width="290" height="150" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <rect x="660" y="342" width="290" height="150" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <line x1="322" y1="417" x2="341" y2="417" stroke="#79c0ff" stroke-width="2" marker-end="url(#arrow01)"/>
+    <line x1="637" y1="417" x2="656" y2="417" stroke="#79c0ff" stroke-width="2" marker-end="url(#arrow01)"/>
+
+    <text x="359" y="420" fill="#8b949e" font-size="12">variable de entorno del step</text>
+    <text x="490" y="474" fill="#3fb950" font-size="12" text-anchor="middle">el script no cambia, venga el título que venga</text>
+    <text x="805" y="384" fill="#3fb950" font-size="15" font-weight="600" text-anchor="middle">bash lee $TITLE</text>
+    <text x="805" y="414" fill="#f0f6fc" font-size="13" text-anchor="middle">Imprime el título</text>
+    <text x="805" y="434" fill="#f0f6fc" font-size="13" text-anchor="middle">como texto:</text>
+    <text x="805" y="454" fill="#f0f6fc" font-size="13" text-anchor="middle">no se ejecuta nada</text>
+
+    <text x="490" y="534" fill="#8b949e" font-size="13" text-anchor="middle">${{ }} lo resuelve GitHub antes de que exista el script · $VAR lo resuelve bash al ejecutarlo</text>
+  </g>
+  <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+    <text x="44" y="164" fill="#f0f6fc">run: echo "Revisando</text>
+    <text x="58" y="182" fill="#f0f6fc">${{ github.event</text>
+    <text x="58" y="200" fill="#f0f6fc">.pull_request.title }}"</text>
+    <text x="44" y="256" fill="#f85149">a"; ls $GITHUB_WORKSPACE"</text>
+    <text x="359" y="182" fill="#f0f6fc">echo "Revisando a";</text>
+    <text x="359" y="204" fill="#f85149">ls $GITHUB_WORKSPACE""</text>
+
+    <text x="44" y="368" fill="#f0f6fc">env:</text>
+    <text x="58" y="386" fill="#f0f6fc">TITLE: ${{ github.event</text>
+    <text x="73" y="404" fill="#f0f6fc">.pull_request.title }}</text>
+    <text x="44" y="432" fill="#f0f6fc">run: echo "Revisando $TITLE"</text>
+    <text x="359" y="368" fill="#d2a8ff">TITLE=a"; ls $GITHUB_WORKSPACE"</text>
+    <text x="359" y="448" fill="#f0f6fc">echo "Revisando $TITLE"</text>
+  </g>
+</svg>

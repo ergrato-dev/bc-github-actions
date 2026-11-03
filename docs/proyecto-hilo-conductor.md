@@ -40,7 +40,7 @@ cabecera (casi siempre `.github/workflows/`), completas los `TODO` y subes los c
 | Semana | Capa que se añade al pipeline |
 |:--:|---|
 | 01 | Org y repo `tablero` creados, con token de solo lectura, aprobación de forks y SHA obligatorio; `ci.yml` (push a `main`, `pull_request`, `workflow_dispatch`) con los jobs `runner-info` y `structure` en paralelo, `contents: read` y `actions/checkout` fijado por SHA |
-| 02 | Grafo de jobs con `needs`, versión calculada y pasada como output de job, resumen en `$GITHUB_STEP_SUMMARY` |
+| 02 | Variable `PROJECT_NAME`; `ci.yml` con `defaults.run.shell: bash`, job `version` que publica `<versión de api/pyproject.toml>+<sha corto>` como output y job `summary` (`needs` de los otros tres, `if: !cancelled()`) que escribe el resumen en `$GITHUB_STEP_SUMMARY` y falla si alguno falló |
 | 03 | `ci-api.yml`: `uv sync --locked`, ruff, pytest con cobertura mínima y caché de uv |
 | 04 | `ci-web.yml`: `pnpm install --frozen-lockfile`, lint, tests y build; matriz de versiones; `dist` como artefacto |
 | 05 | Job `integration` contra PostgreSQL 17 como service container; smoke test con `docker compose up --wait` |

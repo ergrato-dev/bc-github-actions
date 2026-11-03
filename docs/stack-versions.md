@@ -23,7 +23,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | gh | 2.103.3 o superior | 01 | Release del 2026-10-26 |
 | git | 2.40 o superior | 01 | El de la distro |
 | jq | 1.6 o superior | 01 | El de la distro. `check-week.sh` está probado con 1.6 |
-| yq (mikefarah) | v4.54.1 | 01 | Release del 2026-09-29. Descarga con digest probada (2026-11-02) |
+| yq (mikefarah) | v4.54.1 | 01 | Release del 2026-09-29. Descarga con digest probada (2026-11-02). La imagen `ubuntu-24.04` del runner trae la misma versión (README de actions/runner-images, 2026-11-02) |
 | actionlint | 1.7.12 | 01 | Release del 2026-03-30. Descarga con digest probada (2026-11-02) |
 | zizmor | 1.31.1 | 01 | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
 | uv | 0.13.6 | 03 | Release del 2026-10-27. El tarball trae `uv` y `uvx` |
