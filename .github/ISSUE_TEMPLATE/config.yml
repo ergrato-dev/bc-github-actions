@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discusiones
+    url: https://github.com/ergrato-dev/bc-github-actions/discussions
+    about: Usa las discusiones para preguntas, ideas o conversaciones generales
+  - name: 📖 Documentación
+    url: https://github.com/ergrato-dev/bc-github-actions/tree/main/docs
+    about: Revisa la documentación antes de abrir un issue
+  - name: 🔒 Reportar vulnerabilidad
+    url: https://github.com/ergrato-dev/bc-github-actions/security/policy
+    about: Para vulnerabilidades o secretos expuestos, NO abras un issue público

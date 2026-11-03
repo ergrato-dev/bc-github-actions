@@ -1,0 +1,43 @@
+# --- Sistema y editores ---
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# --- Python (uv) ---
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Node (pnpm) ---
+node_modules/
+dist/
+.pnpm-store/
+coverage/
+
+# --- Entorno y secretos: nunca al repo ---
+.env
+.env.*
+!.env.example
+.secrets
+.actrc
+*.pem
+*.jwt
+*.key
+
+# --- Runner propio y laboratorio ---
+runner/_work/
+_diag/
+kubeconfig*
+
+# --- Este bootcamp no tiene soluciones ---
+**/solution/

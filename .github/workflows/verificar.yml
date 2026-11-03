@@ -1,0 +1,61 @@
+name: verificar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Minimo privilegio: el CI del bootcamp solo lee el repositorio.
+permissions:
+  contents: read
+
+concurrency:
+  group: verificar-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ACTIONLINT_VERSION: "1.7.12"
+  ZIZMOR_VERSION: "1.31.1"
+
+jobs:
+  verificar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Binario de la release con checksum: nunca curl | bash.
+      - name: Instalar actionlint
+        run: |
+          base="https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}"
+          tarball="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          cd "$RUNNER_TEMP"
+          curl -fsSLO "$base/$tarball"
+          curl -fsSLO "$base/actionlint_${ACTIONLINT_VERSION}_checksums.txt"
+          grep " ${tarball}\$" "actionlint_${ACTIONLINT_VERSION}_checksums.txt" | sha256sum -c
+          tar -xzf "$tarball" actionlint
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: Estructura, enlaces y reglas de estilo
+        run: bash scripts/verificar-enlaces.sh
+
+      - name: shellcheck de scripts/
+        run: shellcheck -S warning scripts/*.sh
+
+      - name: checks.json validos
+        run: |
+          for f in bootcamp/week-*/checks.json; do
+            [ -e "$f" ] || continue
+            jq -e '.semana and .titulo and (.checks | length >= 6 and length <= 18)' "$f" >/dev/null \
+              || { echo "::error file=$f::checks.json incompleto"; exit 1; }
+          done
+
+      - name: actionlint sobre el CI propio
+        run: actionlint -color .github/workflows/*.yml
+
+      - name: zizmor sobre el CI propio
+        run: uvx "zizmor@${ZIZMOR_VERSION}" --offline .github/workflows/

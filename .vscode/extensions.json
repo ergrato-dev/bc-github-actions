@@ -1,0 +1,28 @@
+{
+  "recommendations": [
+    // GitHub Actions y YAML
+    "github.vscode-github-actions",
+    "redhat.vscode-yaml",
+
+    // Python (uv) y frontend
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "dbaeumer.vscode-eslint",
+
+    // Contenedores
+    "ms-azuretools.vscode-docker",
+
+    // Markdown
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+
+    // Git
+    "eamodio.gitlens",
+
+    // Tema y utilidades
+    "johnpapa.vscode-peacock",
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-spanish"
+  ]
+}

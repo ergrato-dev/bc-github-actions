@@ -1,0 +1,103 @@
+# Versiones del stack
+
+Última revisión: 2026-11-02. Regla: versión completa fijada, nunca `latest`. Toda action, además,
+por SHA resuelto con `scripts/resolver-sha.sh`.
+
+Antes de fijar una versión hay que comprobar tres cosas: que el tag existe, que no tiene avisos de
+seguridad sin parchear y que es compatible con el resto del stack. Procedimiento completo en
+[`politica-versiones.md`](politica-versiones.md).
+
+## Fijadas: lo que usa el repositorio hoy
+
+### Actions
+
+| Action | Tag | SHA | Desde | Verificación |
+|---|---|---|:--:|---|
+| `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | CI propio | `resolver-sha.sh` (2026-11-02). Release del 2026-07-20, el mismo SHA que fija bc-makefile |
+| `astral-sh/setup-uv` | v10.3.3 | `68559e99cc807c1eb7e9238fd43a15bba460eec2` | CI propio | `resolver-sha.sh` (2026-11-02). Release del 2026-10-28 |
+
+### Herramientas
+
+| Pieza | Versión | Desde | Verificación |
+|---|---|:--:|---|
+| gh | 2.103.3 o superior | 01 | Release del 2026-10-26 |
+| git | 2.40 o superior | 01 | El de la distro |
+| jq | 1.6 o superior | 01 | El de la distro. `verificar-semana.sh` está probado con 1.6 |
+| yq (mikefarah) | v4.54.1 | 01 | Release del 2026-09-29. Descarga con digest probada (2026-11-02) |
+| actionlint | 1.7.12 | 01 | Release del 2026-03-30. Descarga con digest probada (2026-11-02) |
+| zizmor | 1.31.1 | 01 | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
+| uv | 0.13.6 | 03 | Release del 2026-10-27. El tarball trae `uv` y `uvx` |
+| pnpm | 12.16.1 | 04 | Release del 2026-10-27. Ejecutable autónomo `pnpm-linux-x64.tar.gz`, descarga con digest probada. `pnpm env` está deprecado en favor de `pnpm runtime` |
+| Node | 26 LTS (26.13.0) | 04 | `nodejs.org/dist/index.json`: 26.13.0, línea LTS "Lithium" (2026-11-02). Instalado con `pnpm runtime set node 26 -g`, probado |
+| Python | 3.15 (3.15.2) | 03 | endoflife.date (2026-11-02). Lo instala uv según `.python-version` |
+| Docker Engine | 29.9.2 como referencia | 05 | moby v29.9.2 (2026-10-20) |
+| Docker Compose | v5.6.1 como referencia | 05 | `docker compose version` en el equipo del autor (2026-11-02). Plugin, nunca `docker-compose` <!-- antipatron --> |
+| kind | v0.33.0 | 16 | Release del 2026-08-26 |
+| Nodo de kind | `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5` | 16 | Imagen por defecto de kind v0.33.0; el mismo digest que fija bc-kubernetes (2026-10-30) |
+| kubectl | v1.37.2 | 16 | Último patch de 1.37 (2026-10-28) |
+
+### Imágenes
+
+| Imagen | Tag | Desde | Verificación |
+|---|---|:--:|---|
+| `postgres` | `17.11-alpine` | 05 | Docker Hub, último parche de la 17 (2026-11-02) |
+| `nginxinc/nginx-unprivileged` | `1.31.7-alpine` | 06 | Docker Hub, último `X.Y.Z-alpine` (2026-11-02) |
+
+## Referencia: se fija al escribir su semana
+
+Versiones vigentes hoy. Cada fila pasa a la tabla de arriba, con su SHA resuelto y verificado de
+nuevo, en la tanda que escribe la semana que la usa.
+
+| Pieza | Vigente (2026-11-02) | Semana | Nota |
+|---|---|:--:|---|
+| `actions/setup-node` | v7.1.0 | 04 | |
+| `pnpm/action-setup` | v6.1.0 | 04 | |
+| `actions/cache` | v6.1.0 | 03 | |
+| `actions/upload-artifact` | v7.0.2 | 04 | |
+| `actions/download-artifact` | v8.0.2 | 04 | |
+| `docker/setup-buildx-action` | v4.4.1 | 06 | |
+| `docker/build-push-action` | v7.4.0 | 06 | |
+| `docker/metadata-action` | v6.2.0 | 06 | |
+| `docker/login-action` | v4.7.0 | 06 | |
+| `actions/github-script` | v9.0.0 | 07 | |
+| act | v0.2.94 | 08 | `act_Linux_x86_64.tar.gz`. Comprobar qué imagen usa para `ubuntu-24.04` |
+| `googleapis/release-please-action` | v5.0.0 | 14 | |
+| `actions/attest-build-provenance` | v4.2.2 | 14 | Comprobar si ya es un alias de `actions/attest` |
+| `actions/attest` | v4.2.2 | 14 | |
+| `anchore/sbom-action` | v0.24.3 | 14 | |
+| syft | v1.56.0 | 14 | |
+| `actions/dependency-review-action` | v5.0.0 | 14 | |
+| Trivy | v0.76.1 | 14 | **Nunca v0.69.4** (GHSA-69fq-xp46-6x23, compromiso del 2026-03-19). Revisar los avisos de 2026-06 (GHSA-mcj4-mphf-j9ff y otros). Binario con checksum, nunca `trivy-action` por tag |
+| `github/codeql-action` | bundle v2.27.4 | 12 | Las actions se fijan por el tag `vN.x.y` de la action, no por el del bundle |
+| actions/runner | v2.338.2 | 15 | Imagen `ghcr.io/actions/actions-runner` |
+| ARC (`gha-runner-scale-set-controller`, `gha-runner-scale-set`) | 0.15.1 | 16 | Charts OCI en `ghcr.io/actions/actions-runner-controller-charts` |
+| Helm | v4.3.1 | 16 | |
+| ruff | 0.17.3 | 03 | Se fija en `uv.lock` de `app/api` |
+| FastAPI, psycopg, pytest, PyJWT | — | 03 / 13 | Se fijan en `uv.lock` al escribir `app/` |
+| React, Vite, Vitest, ESLint | — | 04 | Se fijan en `pnpm-lock.yaml` al escribir `app/` |
+
+### Plataforma: comprobar al escribir la semana
+
+| Qué | Semana | Por qué |
+|---|:--:|---|
+| Runtime vigente de las actions JavaScript (`node24`?) | 10 | `using:` en `action.yml` |
+| Estado de `ubuntu-24.04` frente a una imagen más nueva en los runners alojados | 01 | Si sale una nueva, se decide aquí y se cambia en todo el repo |
+| Límites de caché por repo y política de expulsión | 03, 19 | |
+| Retención por defecto de artefactos y logs | 04, 19 | |
+| Límites de anidamiento y de llamadas de workflows reutilizables | 09 | |
+| Merge queue, rulesets que exigen workflows y revisores de environment en una org gratuita con repo público | 11, 13, 18 | Lo decide el spike, ver `decision-laboratorio.md` |
+| Dominios vigentes del examen GH-200 | 20 | `mapa-funcionalidades.md` |
+
+## Retirado: no se usa
+
+| Pieza | Motivo |
+|---|---|
+| `::set-output`, `::save-state` | Deshabilitados: se sustituyen por `$GITHUB_OUTPUT` y `$GITHUB_STATE` |
+| `actions/upload-artifact@v3` y `download-artifact@v3` | Retirados |
+| `docker-compose` v1 | Retirado: se usa el plugin `docker compose` <!-- antipatron --> |
+| `corepack enable` para pnpm | corepack ya no viene incluido desde Node 25 |
+| Trivy v0.69.4 y `aquasecurity/trivy-action` por tag | Compromiso del 2026-03-19 (GHSA-69fq-xp46-6x23) |
+
+---
+
+[← Volver al índice de documentación](README.md)

@@ -1,0 +1,51 @@
+{
+  "peacock.color": "#2088ff",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.tabSize": 2,
+    "editor.autoIndent": "full"
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.{yml,yaml}",
+    "https://json.schemastore.org/github-action.json": "**/action.{yml,yaml}"
+  },
+  "[markdown]": {
+    "editor.wordWrap": "on"
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/dist": true
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#53a3ff",
+    "activityBar.activeBorder": "#15202b",
+    "activityBar.background": "#53a3ff",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#ffdfee",
+    "activityBarBadge.foreground": "#15202b",
+    "activityBarTop.activeBackground": "#53a3ff",
+    "activityBarTop.activeBorder": "#15202b",
+    "activityBarTop.background": "#53a3ff",
+    "activityBarTop.foreground": "#15202b",
+    "activityBarTop.inactiveForeground": "#15202b99",
+    "commandCenter.border": "#e7e7e799",
+    "commandCenter.foreground": "#e7e7e7",
+    "sash.hoverBorder": "#53a3ff",
+    "statusBar.background": "#2088ff",
+    "statusBar.debuggingBackground": "#2088ff",
+    "statusBar.debuggingForeground": "#e7e7e7",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBar.inactiveBackground": "#2088ff",
+    "statusBarItem.hoverBackground": "#53a3ff",
+    "statusBarItem.remoteBackground": "#ffbfdd",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#2088ff",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#2088ff99",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  }
+}
