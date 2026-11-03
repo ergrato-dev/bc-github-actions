@@ -30,7 +30,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | jq | 1.6 o superior | 01 | El de la distro. `check-week.sh` está probado con 1.6 |
 | yq (mikefarah) | v4.54.1 | 01 | Release del 2026-09-29. Descarga con digest probada (2026-11-02). La imagen `ubuntu-24.04` del runner trae la misma versión (README de actions/runner-images, 2026-11-02) |
 | actionlint | 1.7.12 | 01 | Release del 2026-03-30. Descarga con digest probada (2026-11-02) |
-| zizmor | 1.31.1 | 01 | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
+| zizmor | 1.31.1 | 08 (se instala en 01) | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
 | uv | 0.13.6 | 03 | Release del 2026-10-27. El tarball trae `uv` y `uvx` |
 | pnpm | 12.16.1 | 04 | Release del 2026-10-27. Ejecutable autónomo `pnpm-linux-x64.tar.gz`, descarga con digest probada. `pnpm env` está deprecado en favor de `pnpm runtime` |
 | Node | 26 LTS (26.13.0); la web admite `>=24` (24.22.2, LTS Krypton) y el CI prueba las dos | 04 | `nodejs.org/dist/index.json`: 26.13.0, línea LTS "Lithium" (2026-11-02). Instalado con `pnpm runtime set node 26 -g`, probado |

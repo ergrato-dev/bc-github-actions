@@ -37,7 +37,7 @@ del mismo código. La Semana 05 cierra el lado de la API con PostgreSQL.
 - lint, test y build instalan con pnpm install --frozen-lockfile
 - Todo actions/setup-node de ci-web.yml cachea el store de pnpm
 - build solo empieza cuando lint y test han terminado bien
-- El artefacto de build caduca en 30 días o menos
+- El artefacto de build caduca en 7 días o menos
 - dist-report descarga el artefacto en lugar de volver a construir
 - Ningún workflow usa un gestor de paquetes de Node que no sea pnpm
 - Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario

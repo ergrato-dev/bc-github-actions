@@ -212,8 +212,6 @@ como otra clave.
 ```bash
 actionlint .github/workflows/web-lab.yml; echo "exit $?"
 # exit 0
-uvx zizmor@1.31.1 --offline .github/workflows/web-lab.yml 2>&1 | tail -1
-# No findings to report. Good job! ...
 yq '.jobs.lab.steps[].run // "" | select(. != "")' .github/workflows/web-lab.yml | grep -c '^pnpm '
 # 4
 ```

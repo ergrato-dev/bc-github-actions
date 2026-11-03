@@ -95,9 +95,9 @@
     },
     {
       "id": "dist-retention",
-      "description": "El artefacto de build caduca en 30 días o menos",
+      "description": "El artefacto de build caduca en 7 días o menos",
       "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"^actions/upload-artifact@\")) | .with.\"retention-days\"] | join(\",\")' .github/workflows/ci-web.yml",
-      "assert": "stdout~^([1-9]|[12][0-9]|30)$",
+      "assert": "stdout~^[1-7]$",
       "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, TODO 4"
     },
     {

@@ -30,7 +30,7 @@ El bootcamp empieza en cero. Un `workflow_call` en la Semana 03 o un `environmen
 | 16 | kind, kubectl, Helm, ARC | `kubectl\|helm \|scale-set\|kind create` |
 | 17 | despliegue a Kubernetes, deployments de GitHub, rollback | `kubectl rollout\|/deployments` |
 | 18 | `merge_group`, rulesets, CODEOWNERS | `merge_group\|rulesets\|CODEOWNERS` |
-| 19 | `gh cache`, métricas por API, retención | `gh cache\|actions/runs.*timing\|retention-days` |
+| 19 | métricas por API, retención de repo u organización | `actions/runs.*timing\|actions/permissions/artifact-and-log-retention` |
 
 Excepciones legítimas que **no** cuentan como hallazgo:
 

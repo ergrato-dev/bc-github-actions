@@ -401,19 +401,21 @@ llevar la combinación, por ejemplo `coverage-node-${{ matrix.node }}`. Semana 0
 
 </details>
 
-**A11.** ¿Qué referencia de `uses:` impide que el código de la action cambie sin que cambie tu
-workflow?
+**A11.** En la Semana 01 activaste un ajuste de Actions en tu repo. ¿Qué pasa desde entonces con
+un job que use `actions/checkout@v7`?
 
-- A) `actions/checkout@v7`
-- B) `actions/checkout@v7.0.1`
-- C) `actions/checkout@main`
-- D) `actions/checkout@<SHA de 40 caracteres> # v7.0.1`
+- A) Corre igual, pero actionlint lo marca como aviso
+- B) Falla: con `sha_pinning_required` GitHub exige que toda action vaya fijada por SHA completo
+- C) Corre con la última versión de la rama `main` de la action
+- D) Queda en espera hasta que un administrador lo apruebe
 
 <details>
 <summary>Solución</summary>
 
-**D.** Un tag es un puntero que su dueño puede mover; una rama se mueve en cada commit. Solo el SHA
-completo identifica un commit concreto. El comentario conserva el tag legible. Semana 01, teoría 07.
+**B.** `sha_pinning_required` convierte la regla de fijar por SHA en una regla de la plataforma: un
+job que use una action por tag o rama no llega a ejecutarse. Un tag es un puntero que su dueño
+puede mover; solo el SHA completo identifica un commit. La espera de aprobación (D) es otro ajuste,
+el de PRs de contribuidores externos. Semana 01, práctica 04, paso 4, y práctica 01.
 
 </details>
 

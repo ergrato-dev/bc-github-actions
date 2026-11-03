@@ -146,8 +146,6 @@ una caché (teoría 06). El id del artefacto llega por `needs` y pasa al shell p
 
 ```bash
 actionlint .github/workflows/artifact-lab.yml
-uvx zizmor@1.31.1 --offline .github/workflows/artifact-lab.yml 2>&1 | tail -1
-# No findings to report. Good job! ...
 git add .github/workflows/artifact-lab.yml
 git commit -m "ci(lab): add artifact-lab workflow"
 git push

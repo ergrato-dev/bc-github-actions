@@ -54,8 +54,8 @@ week-04-ci_de_frontend_pnpm_matrices_y_artefactos/
 | 01 | [El frontend de tablero](1-teoria/01-el-web-de-tablero.md) | Qué hay en `web/`, qué hace cada script y qué tiene que correr el CI | 20 min |
 | 02 | [pnpm en CI](1-teoria/02-pnpm-en-ci.md) | Store, `--frozen-lockfile`, `packageManager` y las dos actions de preparación | 35 min |
 | 03 | [Tests y build del frontend](1-teoria/03-tests-y-build-del-frontend.md) | eslint, vitest, `tsc` y vite: qué falla en cada uno | 25 min |
-| 04 | [Matrices](1-teoria/04-matrices.md) | Expansión, `include`, `exclude`, `fail-fast`, `max-parallel` y `fromJSON` | 35 min |
-| 05 | [Artefactos](1-teoria/05-artefactos.md) | Subir, descargar, caducidad, inmutabilidad y `gh run download` | 30 min |
+| 04 | [Matrices](1-teoria/04-matrices.md) | Expansión, `include`, `exclude`, `fail-fast`, `max-parallel` y `fromJSON` | 30 min |
+| 05 | [Artefactos](1-teoria/05-artefactos.md) | Subir, descargar, caducidad, inmutabilidad y `gh run download` | 25 min |
 | 06 | [Artefacto frente a caché](1-teoria/06-artefacto-frente-a-cache.md) | Qué garantiza cada uno y cuál usar en cada caso | 15 min |
 
 ### Prácticas
@@ -92,8 +92,8 @@ resume su tamaño.
 ## 🎓 Cierre de la Fase 1
 
 Con esta semana termina la Fase 1 (Fundamentos). La [rúbrica](rubrica-evaluacion.md) incluye un
-minisimulacro cronometrado de 60 minutos sobre las semanas 01-04: preguntas tipo GH-200 del
-dominio *Author and maintain workflows* y una tarea práctica sobre tu propio `tablero`.
+minisimulacro cronometrado de 60 minutos sobre las semanas 01-04: preguntas tipo GH-200 de los
+dominios que cubre la fase (D1, D2 y D4) y una tarea práctica sobre tu propio `tablero`.
 
 ## 🎩 Trucos y atajos
 
