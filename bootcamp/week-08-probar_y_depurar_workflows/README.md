@@ -59,10 +59,10 @@ week-08-probar_y_depurar_workflows/
 | 01 | [Leer un run que falla](1-teoria/01-leer-un-run-que-falla.md) | Anotaciones, log por step, log en bruto, `gh run view --log-failed` y reintentar solo lo fallido | 25 min |
 | 02 | [Comandos de workflow](1-teoria/02-comandos-de-workflow.md) | `::error`, `::warning`, `::notice` con archivo y línea, `::group`, `::add-mask`, `::stop-commands` y sus límites | 30 min |
 | 03 | [Logs de depuración](1-teoria/03-logs-de-depuracion.md) | `ACTIONS_STEP_DEBUG` y `ACTIONS_RUNNER_DEBUG` como secreto o variable, `gh run rerun --debug` y `runner.debug` | 25 min |
-| 04 | [Problem matchers y actionlint en CI](1-teoria/04-problem-matchers-y-actionlint-en-ci.md) | Cómo un matcher convierte texto en anotaciones; actionlint instalado con checksum y su matcher | 30 min |
+| 04 | [Problem matchers y actionlint en CI](1-teoria/04-problem-matchers-y-actionlint-en-ci.md) | Cómo un matcher convierte texto en anotaciones; actionlint instalado con checksum y su matcher | 25 min |
 | 05 | [zizmor](1-teoria/05-zizmor.md) | Auditorías, severidad y confianza, personas, `--offline`, `--format=github` e ignorar un hallazgo con motivo | 30 min |
 | 06 | [act](1-teoria/06-act.md) | Cómo simula act un runner, imágenes, eventos, secretos y variables, y qué no imita | 30 min |
-| 07 | [Estrategia de pruebas de workflows](1-teoria/07-estrategia-de-pruebas-de-workflows.md) | Qué prueba cada capa (linter, act, rama, dispatch) y cómo depurar sin ensuciar `main` | 20 min |
+| 07 | [Estrategia de pruebas de workflows](1-teoria/07-estrategia-de-pruebas-de-workflows.md) | Qué prueba cada capa (linter, act, rama, dispatch) y cómo depurar sin ensuciar `main` | 15 min |
 
 ### Prácticas
 

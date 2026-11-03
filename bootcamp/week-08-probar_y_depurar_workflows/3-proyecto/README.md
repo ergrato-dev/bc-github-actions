@@ -26,8 +26,7 @@ Los seis workflows de la capa 07 se quedan como están. Esta capa añade tres ar
 | `scripts/ci-local.sh --list` | Lista los jobs de todos los workflows sin ejecutar nada |
 
 La Semana 09 seguirá pasando por esta puerta: cada reutilizable nuevo se lintea igual. La 12
-activa las auditorías de zizmor que consultan la API y deja el pipeline sin hallazgos también en
-modo pedantic.
+activa las auditorías de zizmor que consultan la API y deja el pipeline sin hallazgos con ellas.
 
 ## ✅ Requisitos verificables
 

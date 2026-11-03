@@ -110,7 +110,7 @@ zizmor --offline --persona=pedantic .github/workflows/
 ```
 
 `unpinned-images` señala la imagen de PostgreSQL de los service containers, fijada por tag
-completo pero no por digest. En la Semana 14 el despliegue pasa a digest; hasta entonces, el modo
+completo pero no por digest. En la Semana 14 las imágenes pasan a digest; hasta entonces, el modo
 regular no lo considera un fallo.
 
 Un hallazgo real, provocado con el `echo` de la sección 1:
@@ -236,8 +236,9 @@ siguen teniendo sentido.
   bloquear pero un revisor sí va a ver.
 - **El enlace `audit documentation`** de cada hallazgo explica el ataque y el arreglo con
   ejemplos: es la mejor documentación de seguridad de Actions que vas a encontrar.
-- **zizmor también audita `action.yml`**: cuando escribas tus actions en la Semana 10 entran
-  solas en la misma puerta.
+- **zizmor también audita `action.yml`**: cuando escribas tus actions en la Semana 10 tendrás que
+  añadir su carpeta a los `paths` de `lint-workflows.yml` y al comando de zizmor; hoy la puerta
+  solo mira `.github/workflows/`.
 
 Verificado con zizmor 1.31.1 y ubuntu-24.04, noviembre 2026.
 

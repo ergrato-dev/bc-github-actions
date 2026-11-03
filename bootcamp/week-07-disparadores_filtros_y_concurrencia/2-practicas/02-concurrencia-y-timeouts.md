@@ -199,6 +199,15 @@ actionlint; echo "exit $?"
 # exit 0
 for f in ci ci-api ci-web smoke images; do yq '.jobs // {} | to_entries | .[] | select(.value | has("timeout-minutes") | not) | .key' .github/workflows/$f.yml | sed "s/^/$f: /"; done
 # (sin salida)
+```
+
+Los labs de semanas anteriores (`hello.yml`, `service-lab.yml`, `build-lab.yml`...) siguen en tu
+repo y la regla vale para ellos también: ponles `timeout-minutes: 5` a cada job, o bórralos si ya
+no los usas. Esta orden lista los jobs sin techo de **todos** tus workflows:
+
+```bash
+for f in .github/workflows/*.yml; do yq '.jobs // {} | to_entries | .[] | select(.value | has("timeout-minutes") | not) | .key' "$f" | sed "s|^|$f: |"; done
+# (sin salida)
 git add .github/workflows/
 git commit -m "ci: cap every job with a calibrated timeout"
 git push

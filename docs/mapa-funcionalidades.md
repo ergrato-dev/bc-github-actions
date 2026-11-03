@@ -26,13 +26,13 @@ corrige si han cambiado.
 | 05 | `services:` (`image`, `env`, `ports`, `options`), `container:`, contexto `job.services`, `docker compose` en CI, healthchecks | D1 |
 | 06 | `docker/setup-buildx-action`, `build-push-action`, `metadata-action`, `login-action`, GHCR, `packages: write`, `secrets.GITHUB_TOKEN`, caché `type=gha` | D1, D2 |
 | 07 | Filtros `branches` / `paths` / `tags`, `schedule:`, `workflow_dispatch.inputs`, `workflow_run`, `repository_dispatch`, `concurrency:`, `timeout-minutes`, `actions/github-script` | D1 |
-| 08 | zizmor (primer contacto), act, `ACTIONS_STEP_DEBUG` / `ACTIONS_RUNNER_DEBUG`, `::error` / `::warning` / `::group`, problem matchers | D1, D2 |
+| 08 | zizmor (primer contacto), act, `ACTIONS_STEP_DEBUG` / `ACTIONS_RUNNER_DEBUG`, `::error` / `::warning` / `::notice` / `::debug` / `::group`, `::add-mask`, `::stop-commands`, problem matchers (`::add-matcher` / `::remove-matcher`), `runner.debug`, `gh run rerun --failed --debug`, `gh run view --log-failed` | D1, D2 |
 | 09 | `on: workflow_call` (inputs, secrets, outputs), llamada con `uses:` a nivel de job, `secrets: inherit` (y por qué no), límites de anidamiento | D1, D2 |
 | 10 | `action.yml`, `runs.using: composite / node / docker`, `pre` / `post`, `$GITHUB_STATE`, `@actions/core` con pnpm, empaquetado de `dist/` | D3 |
 | 11 | Publicar y versionar actions, releases inmutables, repo central de CI, workflow templates (`.github/workflow-templates`), políticas de actions de la org, rulesets que exigen workflows | D3, D4 |
 | 12 | Permisos del `GITHUB_TOKEN` por job, inyección de scripts, `pull_request_target`, `workflow_run` seguro, cache poisoning, Dependabot para actions, zizmor a fondo, CodeQL para workflows | D2, D4 |
-| 13 | Secretos de repo, environment y org, enmascarado (`::add-mask::`), `environment:`, reglas de protección, `permissions: id-token: write`, token OIDC y sus claims, personalización de `sub` | D2, D4 |
-| 14 | release-please, imágenes por versión, SBOM, `actions/attest`, `gh attestation verify`, Trivy, `dependency-review-action` | D2, D4 |
+| 13 | Secretos de repo, environment y org, enmascarado a fondo (`::add-mask::` llega en la 08), `environment:`, reglas de protección, `permissions: id-token: write`, token OIDC y sus claims, personalización de `sub` | D2, D4 |
+| 14 | release-please, imágenes por versión, imágenes base y de services fijadas por digest, SBOM, `actions/attest`, `gh attestation verify`, Trivy, `dependency-review-action` | D2, D4 |
 | 15 | `runs-on: [self-hosted, …]`, etiquetas, runner JIT, runner en contenedor, runner groups | D4 |
 | 16 | kind, kubectl, Helm (lo justo), ARC: controller, scale sets, modos de contenedor, autenticación con GitHub App | D4 |
 | 17 | Despliegue por digest, environments en el despliegue, deployments de GitHub, rollout y rollback, promoción staging → production | D1, D2 |

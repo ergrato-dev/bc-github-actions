@@ -86,8 +86,8 @@ publican los dos eventos de confianza del workflow y solo el PR queda fuera.
 
 Fíjate en la última fila: un dispatch sobre una rama `feature/x` publicaría `feature-x`. Solo
 quien tiene permiso de escritura en el repo puede lanzar un dispatch, así que no es una puerta para
-extraños, pero sí una forma de publicar algo que no pasó por `main`. La Semana 13 añade un
-environment con reglas de rama para cerrarla.
+extraños, pero sí una forma de publicar algo que no pasó por `main`. Los environments con
+reglas de rama, que permiten cerrarla, los verás en la Semana 13.
 
 ### Una matriz, una imagen por entrada
 
@@ -190,8 +190,8 @@ sección 1 pedía.
 
 ## 5. Trucos
 
-- **`gh pr checks --required`** enseña solo los checks obligatorios del PR. Cuando conviertas
-  `Imagen tablero-api` en check requerido (Semana 18), es la vista que importa.
+- **`gh pr checks --required`** enseña solo los checks obligatorios del PR. En la Semana 18 el
+  único check requerido será `ci-gate`, y `Imagen tablero-api` contará a través de él.
 - **`gh run view <id> --json jobs --jq '.jobs[].steps[] | select(.conclusion=="skipped") | .name'`**
   lista los steps saltados de un run: la forma rápida de confirmar que un `if:` hizo lo que
   esperabas.

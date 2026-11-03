@@ -110,7 +110,8 @@ levanta la pila con Compose y la prueba a través de nginx.
 
 ## 📌 Entregables
 
-- `service-lab.yml` y `container-lab.yml` en `.github/workflows/`, cada uno en verde lanzado a mano
+- `service-lab.yml`, `container-lab.yml` y `compose-lab.yml` en `.github/workflows/`, cada uno en verde
+  lanzado a mano
 - `ci-api.yml` con el job `integration` y `smoke.yml` nuevo, los dos en verde sobre el último
   commit de `main` (ver [proyecto](3-proyecto/README.md))
 - La rúbrica respondida

@@ -71,7 +71,7 @@ Lo que `check-week.sh` no ve y la [rúbrica](../rubrica-evaluacion.md) sí punt�
 |---|---|---|---|
 | Un solo paquete, sin monorepo | `paths-ignore: ['**.md', 'docs/**']` en lugar de `paths` | La misma | Solo si hay tests lentos que no corren en cada PR |
 | Monorepo con muchos servicios | Un workflow por servicio con su `paths`, o un job que detecta cambios con `git diff` y decide la matriz | La misma, por workflow | Lanza solo los servicios con cambios en las últimas 24 h |
-| Despliegue en cada push a `main` | Igual que aquí | `cancel-in-progress: false` también en el despliegue, y `queue: max` si quieres que no se pierda ninguno | — |
+| Despliegue en cada push a `main` | Igual que aquí | `cancel-in-progress: false` también en el despliegue, y, cuando actionlint la acepte, `queue: max` para no perder ninguno | — |
 | Librería con versiones mantenidas | `branches: [main, 'release/**']` | Grupo por rama: cada rama de release mantiene su propia cola | Una matriz de ramas con `ref:` en el dispatch |
 
 ## 🚦 Cómo entregarlo

@@ -49,21 +49,21 @@
       "description": "El job zizmor instala zizmor 1.31.1 con uv tool install",
       "cmd": "yq '[.jobs.zizmor.steps[].run // \"\"] | join(\" \")' .github/workflows/lint-workflows.yml",
       "assert": "stdout~uv tool install zizmor==1\\.31\\.1",
-      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 4"
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 5"
     },
     {
       "id": "zizmor-annotations",
       "description": "zizmor emite sus hallazgos como anotaciones (--format=github)",
       "cmd": "yq '[.jobs.zizmor.steps[].run // \"\"] | join(\" \")' .github/workflows/lint-workflows.yml",
       "assert": "stdout~zizmor .*--format[= ]github",
-      "hint": "1-teoria/05-zizmor.md, sección 3"
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 5"
     },
     {
       "id": "jobs-timeout",
       "description": "Todo job de ci, ci-api, ci-web, smoke, images, nightly y lint-workflows declara timeout-minutes",
       "cmd": "for f in ci ci-api ci-web smoke images nightly lint-workflows; do yq '.jobs // {} | to_entries | .[] | select(.value | has(\"timeout-minutes\") | not) | .key' .github/workflows/$f.yml | sed \"s/^/$f: /\"; done",
       "assert": "stdout!~.",
-      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 5"
+      "hint": "3-proyecto/starter/.github/workflows/lint-workflows.yml, TODO 4"
     },
     {
       "id": "ci-local-script",
