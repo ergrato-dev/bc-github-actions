@@ -15,7 +15,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| 01 | Primer workflow y modelo de ejecución | ⬜ |
+| [01](week-01-primer_workflow_y_modelo_de_ejecucion/README.md) | Primer workflow y modelo de ejecución | ✅ |
 | 02 | Expresiones, contextos y flujo de datos | ⬜ |
 | 03 | CI de Python con uv | ⬜ |
 | 04 | CI de frontend con pnpm, matrices y artefactos | ⬜ |

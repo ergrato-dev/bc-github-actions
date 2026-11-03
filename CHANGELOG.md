@@ -15,6 +15,8 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - `docs/`: versiones fijadas, política de versiones, autograding contra el repo del alumno,
   proyecto hilo conductor `tablero`, ADR del laboratorio, modelo de costes, reglas de seguridad
   de workflows, mapa de funcionalidades, setup, trucos y glosario
+- `bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion/`: Semana 01, primer workflow y modelo de ejecución
+- Pie de navegación en tabla (← Anterior | Siguiente →) en las semanas y en `docs/`
 - `scripts/`: `check-week.sh` (autograding con `gh` y `GH_REPO`), `check-repo.sh`
   (13 comprobaciones), `resolve-sha.sh`, `lab-up.sh` y `lab-down.sh`
 - `app/`: app de referencia `tablero` (API FastAPI con uv, web React con pnpm, PostgreSQL 17,

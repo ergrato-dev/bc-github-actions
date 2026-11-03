@@ -1,0 +1,125 @@
+{
+  "week": "01",
+  "title": "Primer workflow y modelo de ejecución",
+  "checks": [
+    {
+      "id": "repo-is-public",
+      "description": "El repo tablero es público",
+      "cmd": "gh api repos/{owner}/{repo} --jq .visibility",
+      "assert": "stdout~^public$",
+      "hint": "2-practicas/01-organizacion-y-repo-tablero.md, paso 2"
+    },
+    {
+      "id": "repo-owned-by-org",
+      "description": "El repo tablero pertenece a una organización, no a tu usuario",
+      "cmd": "gh api repos/{owner}/{repo} --jq .owner.type",
+      "assert": "stdout~^Organization$",
+      "hint": "2-practicas/01-organizacion-y-repo-tablero.md, pasos 1 y 2"
+    },
+    {
+      "id": "app-at-root",
+      "description": "El código de tablero está en la raíz del repo: api/uv.lock, web/pnpm-lock.yaml y compose.yaml",
+      "cmd": "test -f api/uv.lock && test -f web/pnpm-lock.yaml && test -f compose.yaml",
+      "assert": "exit0",
+      "hint": "2-practicas/01-organizacion-y-repo-tablero.md, paso 3"
+    },
+    {
+      "id": "default-token-read",
+      "description": "El GITHUB_TOKEN del repo es de solo lectura por defecto",
+      "cmd": "gh api repos/{owner}/{repo}/actions/permissions/workflow --jq .default_workflow_permissions",
+      "assert": "stdout~^read$",
+      "hint": "2-practicas/01-organizacion-y-repo-tablero.md, paso 5"
+    },
+    {
+      "id": "fork-approval-all",
+      "description": "Los workflows de un pull request de cualquier colaborador externo esperan tu aprobación",
+      "cmd": "gh api repos/{owner}/{repo}/actions/permissions/fork-pr-contributor-approval --jq .approval_policy",
+      "assert": "stdout~^all_external_contributors$",
+      "hint": "2-practicas/01-organizacion-y-repo-tablero.md, paso 5"
+    },
+    {
+      "id": "hello-dispatched",
+      "description": "hello.yml terminó en success al menos una vez lanzado a mano (workflow_dispatch)",
+      "cmd": "gh run list --workflow hello.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/03-gh-cli-para-actions.md, paso 2"
+    },
+    {
+      "id": "sha-pinning-required",
+      "description": "El repo rechaza cualquier action que no esté fijada por SHA completo",
+      "cmd": "gh api repos/{owner}/{repo}/actions/permissions --jq .sha_pinning_required",
+      "assert": "stdout~^true$",
+      "hint": "2-practicas/04-actionlint-y-sha.md, paso 4"
+    },
+    {
+      "id": "ci-actionlint",
+      "description": "ci.yml pasa actionlint",
+      "cmd": "actionlint .github/workflows/ci.yml",
+      "assert": "exit0",
+      "hint": "3-proyecto/README.md, Requisitos verificables; práctica 04, paso 1"
+    },
+    {
+      "id": "ci-events",
+      "description": "ci.yml se dispara con push, pull_request y workflow_dispatch",
+      "cmd": "yq '.on | keys | sort | join(\",\")' .github/workflows/ci.yml",
+      "assert": "stdout~^pull_request,push,workflow_dispatch$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 1"
+    },
+    {
+      "id": "ci-push-main-only",
+      "description": "El push de ci.yml solo corre en la rama main",
+      "cmd": "yq '.on.push.branches | join(\",\")' .github/workflows/ci.yml",
+      "assert": "stdout~^main$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 1"
+    },
+    {
+      "id": "ci-permissions-read",
+      "description": "ci.yml declara en la raíz permissions con solo contents: read",
+      "cmd": "yq -o=json -I=0 '.permissions' .github/workflows/ci.yml",
+      "assert": "stdout~^\\{\"contents\":\"read\"\\}$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 2"
+    },
+    {
+      "id": "ci-jobs",
+      "description": "ci.yml tiene exactamente dos jobs: runner-info y structure",
+      "cmd": "yq '.jobs | keys | sort | join(\",\")' .github/workflows/ci.yml",
+      "assert": "stdout~^runner-info,structure$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 3"
+    },
+    {
+      "id": "ci-runs-on",
+      "description": "Todos los jobs de ci.yml corren en ubuntu-24.04",
+      "cmd": "yq '[.jobs[].\"runs-on\"] | unique | join(\",\")' .github/workflows/ci.yml",
+      "assert": "stdout~^ubuntu-24\\.04$",
+      "hint": "1-teoria/04-runners-alojados.md, sección 3"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "checkout-no-credentials",
+      "description": "Todo actions/checkout de ci.yml lleva persist-credentials: false",
+      "cmd": "yq '[.jobs[].steps[] | select((.uses // \"\") | test(\"^actions/checkout@\")) | .with.\"persist-credentials\"] | unique | join(\",\")' .github/workflows/ci.yml",
+      "assert": "stdout~^false$",
+      "hint": "3-proyecto/starter/.github/workflows/ci.yml, TODO 4"
+    },
+    {
+      "id": "ci-green-on-main",
+      "description": "ci.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    },
+    {
+      "id": "ci-ran-on-pr",
+      "description": "ci.yml terminó en success al menos una vez en un pull request",
+      "cmd": "gh run list --workflow ci.yml --event pull_request --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 3"
+    }
+  ]
+}

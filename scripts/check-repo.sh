@@ -3,7 +3,8 @@
 # check-repo.sh — integridad del repositorio y reglas de CLAUDE.md:
 #   1. Nombres de carpeta week-NN-slug.
 #   2. Enlaces relativos de markdown que resuelven.
-#   3. Navegación en el README y al pie de cada archivo de semana publicada.
+#   3. Tabla de navegación ← Anterior | Siguiente → al pie de docs/ y de cada
+#      archivo de semana publicada.
 #   4. Ningún SVG sin enlazar.
 #   5. checks.json válido.
 #   6. Scripts .sh con "#!/usr/bin/env bash", "set -euo pipefail" y bit de ejecución.
@@ -11,7 +12,7 @@
 #   8. Ninguna carpeta solution/.
 #   9. Imágenes con tag (ni sin tag ni :latest).
 #  10. Toda "uses:" remota fijada por SHA de 40 caracteres con "# vX" detrás.
-#  11. Ningún "ubuntu-latest".
+#  11. Ningún "runs-on: ubuntu-latest" (citarlo en prosa para explicarlo sí vale).
 #  12. Lenguaje y stack: tuteo, uv, pnpm, PostgreSQL, docker compose.
 #  13. Los workflows de los starters pasan actionlint.
 #
@@ -67,7 +68,7 @@ done < <(find bootcamp -mindepth 1 -maxdepth 1 -type d -iname "week-*")
 echo "== 2. Enlaces relativos en markdown =="
 # CLAUDE.md queda fuera: sus rutas de plantilla (../0-assets/NN-nombre.svg) no resuelven a propósito.
 while IFS= read -r file; do
-  content=$(awk '/^```/{c=!c; next} !c' "$file")
+  content=$(awk '/^[[:space:]]*```/{c=!c; next} !c' "$file")
   while IFS= read -r link; do
     target="${link%%#*}"
     [ -z "$target" ] && continue
@@ -78,17 +79,26 @@ while IFS= read -r file; do
   done < <(printf '%s\n' "$content" | grep -oE '\]\([^)]+\)' | sed -E 's/^\]\(//;s/\)$//')
 done < <(find_files -iname '*.md' | grep -v '^./CLAUDE.md$')
 
-echo "== 3. Navegacion en las semanas publicadas =="
+echo "== 3. Navegacion =="
+# La tabla tiene que ser lo último del archivo: cabecera, alineación y una fila con dos enlaces.
+nav_ok() {
+  tail -n 3 "$1" | tr -d '\r' | {
+    read -r header; read -r align; read -r row
+    [[ "$header" == "| ← Anterior | Siguiente → |" && "$align" == "|:---|---:|" \
+       && "$row" =~ ^\|\ \[.+\]\(.+\)\ \|\ \[.+\]\(.+\)\ \|$ ]]
+  }
+}
 while IFS= read -r readme; do
   is_published "$readme" || continue
-  grep -q "Navegación" "$readme" || { echo "SIN NAVEGACION: $readme"; fail=1; }
+  grep -q "## 🔗 Navegación" "$readme" || { echo "SIN SECCION DE NAVEGACION: $readme"; fail=1; }
 done < <(find bootcamp -mindepth 2 -maxdepth 2 -iname "README.md")
 while IFS= read -r file; do
-  is_published "$file" || continue
-  grep -qE '←.*→|←.+$|→$' "$file" || { echo "SIN PIE DE NAVEGACION (falta <- o ->): $file"; fail=1; }
-done < <(find bootcamp -path "*/1-teoria/*.md" -o -path "*/2-practicas/*.md" \
+  case "$file" in bootcamp/*) is_published "$file" || continue ;; esac
+  nav_ok "$file" || { echo "SIN TABLA DE NAVEGACION AL PIE: $file"; fail=1; }
+done < <(find bootcamp -mindepth 2 \( -path "*/1-teoria/*.md" -o -path "*/2-practicas/*.md" \
             -o -path "*/3-proyecto/README.md" -o -name "rubrica-evaluacion.md" \
-            -o -path "*/4-recursos/*/README.md" -o -path "*/5-glosario/README.md")
+            -o -path "*/4-recursos/*/README.md" -o -path "*/5-glosario/README.md" \
+            -o -path "*/week-*/README.md" \) ; find docs -name "*.md")
 
 echo "== 4. SVG sin enlazar =="
 while IFS= read -r svg; do
@@ -151,12 +161,12 @@ while IFS= read -r file; do
            | grep -v antipatron)
 done < <(find_files -name '*.yaml' -o -name '*.yml' -o -name '*.md')
 
-echo "== 11. ubuntu-latest =="
+echo "== 11. runs-on: ubuntu-latest =="
 while IFS= read -r file; do
   in_scope "$file" || continue
   while IFS= read -r line; do
     echo "UBUNTU-LATEST (usa ubuntu-24.04): $file:$line"; fail=1
-  done < <(grep -nE 'ubuntu-latest' "$file" | grep -v antipatron)
+  done < <(grep -nE 'runs-on:[[:space:]]*["'\'']?ubuntu-latest' "$file" | grep -v antipatron)
 done < <(find_files -name '*.yaml' -o -name '*.yml' -o -name '*.md')
 
 echo "== 12. Lenguaje y stack =="

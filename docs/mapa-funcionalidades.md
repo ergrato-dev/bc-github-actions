@@ -19,7 +19,7 @@ corrige si han cambiado.
 
 | Sem | Se introduce | GH-200 |
 |:--:|---|:--:|
-| 01 | `on: push / pull_request / workflow_dispatch`, `jobs`, `steps`, `run`, `uses`, `runs-on`, logs, `gh run list/view/watch/rerun`, actionlint, pinning por SHA (leerlo y resolverlo) | D1, D2 |
+| 01 | `on: push / pull_request / workflow_dispatch`, `branches` en push, `jobs`, `steps`, `run`, `uses`, `name`, `runs-on`, `permissions` en la raíz (solo `contents: read`), `persist-credentials`, logs, `gh run list/view/watch/rerun`, `gh workflow run`, actionlint, pinning por SHA y `sha_pinning_required`, ajustes de Actions del repo (token por defecto, aprobación de forks) | D1, D2, D4 |
 | 02 | Expresiones `${{ }}`, contextos, funciones, `if:`, funciones de estado, `env:`, `vars.`, `defaults:`, `$GITHUB_OUTPUT`, `$GITHUB_ENV`, `$GITHUB_STEP_SUMMARY`, `needs:`, `outputs:` de job | D1 |
 | 03 | `astral-sh/setup-uv`, `uv sync --locked`, ruff, pytest con cobertura, `actions/cache` | D1 |
 | 04 | `pnpm/action-setup`, `actions/setup-node`, `strategy.matrix` (`include`, `exclude`, `fail-fast`, `max-parallel`, `fromJSON`), `upload-artifact` / `download-artifact`, retención | D1, D2 |
@@ -42,4 +42,6 @@ corrige si han cambiado.
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Proyecto hilo conductor: tablero](proyecto-hilo-conductor.md) | [Reglas de seguridad de workflows](reglas-de-seguridad-de-workflows.md) |

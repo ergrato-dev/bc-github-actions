@@ -156,4 +156,6 @@ Campo opcional de primer nivel: `"context": "kind-gha"` en las semanas con clús
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Preparar el entorno](setup-entorno.md) | [Proyecto hilo conductor: tablero](proyecto-hilo-conductor.md) |

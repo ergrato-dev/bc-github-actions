@@ -72,4 +72,6 @@ _Última revisión: noviembre de 2026._
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Versiones del stack](stack-versions.md) | [ADR: Organización gratuita, repo público y coste cero](decision-laboratorio.md) |

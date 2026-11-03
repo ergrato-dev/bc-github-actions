@@ -76,4 +76,6 @@ el plan gratuito con repo público, se ajusta esa semana antes de escribirla y s
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Política de versiones](politica-versiones.md) | [Modelo de costes](modelo-de-costes.md) |

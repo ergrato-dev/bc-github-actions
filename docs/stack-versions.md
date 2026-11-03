@@ -13,7 +13,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 
 | Action | Tag | SHA | Desde | Verificación |
 |---|---|---|:--:|---|
-| `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | CI propio | `resolve-sha.sh` (2026-11-02). Release del 2026-07-20, el mismo SHA que fija bc-makefile |
+| `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | 01 | `resolve-sha.sh` (2026-11-02). Release del 2026-07-20, el mismo SHA que fija bc-makefile |
 | `astral-sh/setup-uv` | v10.3.3 | `68559e99cc807c1eb7e9238fd43a15bba460eec2` | CI propio | `resolve-sha.sh` (2026-11-02). Release del 2026-10-28 |
 
 ### Herramientas
@@ -111,4 +111,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Reglas de seguridad de workflows](reglas-de-seguridad-de-workflows.md) | [Política de versiones](politica-versiones.md) |

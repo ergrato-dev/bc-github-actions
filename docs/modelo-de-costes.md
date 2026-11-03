@@ -47,4 +47,6 @@ en una empresa ese tiempo sí se paga.
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [ADR: Organización gratuita, repo público y coste cero](decision-laboratorio.md) | [Trucos de GitHub Actions](trucos-github-actions.md) |

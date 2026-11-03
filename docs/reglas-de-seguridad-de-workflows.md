@@ -79,7 +79,8 @@ Se ve en la **S02** (cuándo se evalúa cada cosa) y a fondo en la **S12**.
 
 ## 5. `persist-credentials: false` en checkout
 
-Por defecto `actions/checkout` deja el token guardado en `.git/config` para el resto del job.
+Por defecto `actions/checkout` deja el token configurado en git para el resto del job (desde la
+v6, en un archivo bajo `$RUNNER_TEMP` en lugar de `.git/config`).
 Cualquier step posterior, incluida una action de terceros, puede leerlo.
 
 ```yaml
@@ -205,4 +206,6 @@ Aplica a Compose (S05) y a kind (S16).
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Mapa de funcionalidades](mapa-funcionalidades.md) | [Versiones del stack](stack-versions.md) |

@@ -105,7 +105,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 
 | Semana | Slug | Tema |
 |:--:|---|---|
-| 01 | `week-01-primer_workflow_y_modelo_de_ejecucion` | Primer workflow y modelo de ejecución |
+| 01 ✅ | `week-01-primer_workflow_y_modelo_de_ejecucion` | Primer workflow y modelo de ejecución |
 | 02 | `week-02-expresiones_contextos_y_flujo_de_datos` | Expresiones, contextos y flujo de datos |
 | 03 | `week-03-ci_de_python_con_uv` | CI de Python con uv |
 | 04 | `week-04-ci_de_frontend_pnpm_matrices_y_artefactos` | CI de frontend con pnpm, matrices y artefactos |
@@ -328,8 +328,9 @@ semana.
 
 ## 🔗 Navegación al pie de cada archivo
 
-**Todo archivo de contenido de una semana termina con una línea de
-navegación `← anterior` / `siguiente →`.** Orden de lectura:
+**Todo archivo de documentación termina con una tabla de navegación
+`← Anterior` / `Siguiente →`.** Vale para el contenido de las semanas y para
+`docs/`. Orden de lectura dentro de una semana:
 
 ```
 README.md (de la semana)
@@ -349,8 +350,18 @@ Formato, al final del archivo, tras un separador `---`:
 ```markdown
 ---
 
-[← Título del archivo anterior](ruta-relativa) · [Título del archivo siguiente →](ruta-relativa)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Título del archivo anterior](ruta-relativa) | [Título del archivo siguiente](ruta-relativa) |
 ```
+
+- Las flechas van solo en la cabecera; los enlaces llevan el título del
+  archivo de destino, tal cual.
+- El primer archivo enlaza al índice como anterior; el último, al siguiente
+  bloque (la semana siguiente, o el índice si todavía no existe).
+- En `docs/`, el orden es el de la tabla de `docs/README.md`.
+- El README de la semana lleva además su sección `## 🔗 Navegación`, con la
+  misma tabla.
 
 ---
 

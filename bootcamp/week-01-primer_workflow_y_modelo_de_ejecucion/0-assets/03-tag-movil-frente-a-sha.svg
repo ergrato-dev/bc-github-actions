@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" role="img" aria-labelledby="t03">
+  <title id="t03">Un tag que se mueve frente a un SHA que no cambia: el tag v1 apuntaba a un commit bueno y quien tiene escritura en el repo de la action lo mueve a un commit malicioso, así que un workflow con @v1 ejecuta el código nuevo; un workflow con @SHA sigue ejecutando el mismo commit bueno</title>
+  <rect width="960" height="440" fill="#0d1117"/>
+  <defs>
+    <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Qué ejecuta tu workflow cuando alguien mueve un tag</text>
+
+    <!-- repo de la action -->
+    <rect x="300" y="64" width="360" height="200" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="480" y="88" fill="#8b949e" font-size="13" text-anchor="middle">repo de la action: alguien/action</text>
+    <rect x="330" y="110" width="140" height="56" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <text x="400" y="134" fill="#3fb950" font-size="14" font-weight="600" text-anchor="middle">commit bueno</text>
+    <text x="400" y="154" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">3d3c42e5…</text>
+    <rect x="490" y="110" width="140" height="56" rx="6" fill="#0d1117" stroke="#f85149" stroke-width="2"/>
+    <text x="560" y="134" fill="#f85149" font-size="14" font-weight="600" text-anchor="middle">commit malicioso</text>
+    <text x="560" y="154" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">0e58ed86…</text>
+
+    <!-- tag v1 -->
+    <rect x="440" y="206" width="80" height="34" rx="17" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="480" y="228" fill="#e3b341" font-size="14" font-weight="600" text-anchor="middle">tag v1</text>
+    <path d="M462 206 L410 170" stroke="#8b949e" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+    <text x="420" y="204" fill="#8b949e" font-size="12" text-anchor="end">antes</text>
+    <path d="M498 206 L548 172" stroke="#f85149" stroke-width="2.5" fill="none" marker-end="url(#a-red)"/>
+    <text x="600" y="196" fill="#f85149" font-size="12" text-anchor="middle">después: git push -f</text>
+
+    <!-- workflow por SHA -->
+    <rect x="40" y="300" width="400" height="110" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="60" y="328" fill="#f0f6fc" font-size="15" font-weight="600">Tu workflow fijado por SHA</text>
+    <text x="60" y="354" fill="#f0f6fc" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace">uses: alguien/action@3d3c42e5… # v1</text>
+    <text x="60" y="384" fill="#3fb950" font-size="13">Sigue ejecutando el mismo commit bueno</text>
+    <text x="60" y="400" fill="#8b949e" font-size="12">cambiar el código cambia el SHA: no se puede mover</text>
+    <path d="M240 300 C 260 250, 330 210, 372 170" stroke="#3fb950" stroke-width="2.5" fill="none" marker-end="url(#a-green)"/>
+    <!-- workflow por tag -->
+    <rect x="520" y="300" width="400" height="110" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="540" y="328" fill="#f0f6fc" font-size="15" font-weight="600">Tu workflow fijado por tag</text>
+    <text x="540" y="354" fill="#f0f6fc" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace">uses: alguien/action@v1</text>
+    <text x="540" y="384" fill="#f85149" font-size="13">Sin cambiar una línea, ejecuta el commit malicioso</text>
+    <text x="540" y="400" fill="#8b949e" font-size="12">con tu GITHUB_TOKEN y tus secretos</text>
+    <path d="M700 300 C 640 270, 560 250, 516 236" stroke="#f85149" stroke-width="2.5" fill="none" marker-end="url(#a-red)"/>
+
+  </g>
+</svg>

@@ -1,0 +1,29 @@
+# ci.yml — capa 01 de tablero.
+# Cópialo a .github/workflows/ci.yml de <tu-org>/tablero y completa los TODO.
+# Tal como está pasa actionlint, pero no cumple la capa: check-week.sh 01 sale en rojo.
+name: ci
+
+on:
+  # TODO 1: que también corra en cada push a main (solo main) y en cada pull_request.
+  workflow_dispatch:
+
+# TODO 2: permisos del GITHUB_TOKEN en la raíz: solo leer el contenido del repo
+# (lo verás a fondo en la Semana 12).
+
+jobs:
+  runner-info:
+    name: Información del runner
+    runs-on: ubuntu-24.04
+    steps:
+      # TODO 3: un step con name: por dato: sistema operativo (/etc/os-release), número de CPU
+      # (nproc) y memoria (free -h). Quita el step de abajo cuando lo tengas.
+      - run: echo "runner-info pendiente" && exit 1
+
+  structure:
+    name: Estructura del monorepo
+    runs-on: ubuntu-24.04
+    steps:
+      # TODO 4: descarga el código con actions/checkout fijado por SHA (scripts/resolve-sha.sh)
+      # y sin dejar el token configurado en git para los steps siguientes.
+      # TODO 5: falla si falta api/uv.lock, web/pnpm-lock.yaml o compose.yaml.
+      - run: ls -la

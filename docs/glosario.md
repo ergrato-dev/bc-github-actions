@@ -14,4 +14,6 @@ Fuente de referencia para los términos oficiales: la
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Trucos de GitHub Actions](trucos-github-actions.md) | [Documentación transversal](README.md) |

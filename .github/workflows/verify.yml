@@ -54,7 +54,7 @@ jobs:
       - name: shellcheck de scripts/
         run: shellcheck -S warning scripts/*.sh
 
-      - name: checks.json validos
+      - name: checks.json válidos
         run: |
           for f in bootcamp/week-*/checks.json; do
             [ -e "$f" ] || continue

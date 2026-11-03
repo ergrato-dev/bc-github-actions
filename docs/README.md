@@ -18,4 +18,6 @@ Lo que aplica a las 20 semanas. Lo que aplica a una sola semana vive dentro de s
 
 ---
 
-[← Volver al README principal](../README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [README del bootcamp](../README.md) | [Preparar el entorno](setup-entorno.md) |

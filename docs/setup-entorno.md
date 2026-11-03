@@ -195,4 +195,6 @@ En ARM64 (Apple Silicon con Linux, Raspberry Pi), cambia `amd64`/`x86_64`/`x64` 
 
 ---
 
-[← Volver al índice de documentación](README.md)
+| ← Anterior | Siguiente → |
+|:---|---:|
+| [Documentación transversal](README.md) | [Autograding](autograding.md) |

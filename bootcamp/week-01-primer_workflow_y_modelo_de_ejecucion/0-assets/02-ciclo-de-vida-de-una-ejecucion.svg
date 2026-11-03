@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 610" role="img" aria-labelledby="t02">
+  <title id="t02">Ciclo de vida de una ejecución: un git push genera un evento; GitHub lee los workflows de .github/workflows/ en ese commit y crea un run; sus dos jobs esperan en cola y arrancan a la vez, cada uno en su máquina virtual nueva con ubuntu-24.04, donde los steps corren en orden; cada job termina con una conclusión, su máquina se destruye y los dos no comparten disco; la conclusión del run sale de la de sus jobs</title>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/>
+    </marker>
+  </defs>
+  <rect width="980" height="610" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="490" y="30" fill="#f0f6fc" font-size="20" font-weight="600">De un push a una conclusión</text>
+
+    <!-- Fila superior: del push al run -->
+    <rect x="20" y="50" width="205" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="122" y="78" fill="#f0f6fc" font-size="15" font-weight="600">git push</text>
+    <text x="122" y="98" fill="#8b949e" font-size="12">un commit llega a main</text>
+
+    <rect x="265" y="50" width="205" height="64" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1.5"/>
+    <text x="367" y="78" fill="#79c0ff" font-size="15" font-weight="600">Evento push</text>
+    <text x="367" y="98" fill="#8b949e" font-size="12">commit, rama y actor</text>
+
+    <rect x="510" y="50" width="205" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="612" y="78" fill="#f0f6fc" font-size="13" font-weight="600">Lee .github/workflows/</text>
+    <text x="612" y="98" fill="#8b949e" font-size="12">del commit del evento</text>
+
+    <rect x="755" y="50" width="205" height="64" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="857" y="78" fill="#2088ff" font-size="15" font-weight="600">Run #12</text>
+    <text x="857" y="98" fill="#8b949e" font-size="12">uno por workflow que casa</text>
+
+    <line x1="225" y1="82" x2="261" y2="82" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <line x1="470" y1="82" x2="506" y2="82" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <line x1="715" y1="82" x2="751" y2="82" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+
+    <!-- Reparto a los dos jobs -->
+    <polyline points="857,114 857,146 280,146 280,166" fill="none" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <line x1="700" y1="146" x2="700" y2="166" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <text x="490" y="140" fill="#8b949e" font-size="12">sin dependencias: arrancan a la vez</text>
+
+    <!-- Job test -->
+    <rect x="120" y="170" width="320" height="36" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="1.5"/>
+    <text x="280" y="193" fill="#e3b341" font-size="13">job test · en cola</text>
+    <rect x="120" y="222" width="320" height="174" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="280" y="246" fill="#2088ff" font-size="14" font-weight="600">VM nueva · ubuntu-24.04</text>
+    <rect x="140" y="260" width="280" height="32" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <text x="280" y="281" fill="#f0f6fc" font-size="13">1 · Set up job</text>
+    <rect x="140" y="300" width="280" height="32" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <text x="280" y="321" fill="#f0f6fc" font-size="13">2 · uses: actions/checkout</text>
+    <rect x="140" y="340" width="280" height="32" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <text x="280" y="361" fill="#f0f6fc" font-size="13">3 · run: tests</text>
+    <text x="280" y="388" fill="#8b949e" font-size="11">los steps comparten disco, en orden</text>
+    <rect x="120" y="412" width="320" height="36" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="280" y="435" fill="#3fb950" font-size="13">conclusión del job: success</text>
+    <rect x="120" y="462" width="320" height="32" rx="6" fill="none" stroke="#f85149" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <text x="280" y="483" fill="#f85149" font-size="13">VM destruida con todo su disco</text>
+
+    <!-- Job lint -->
+    <rect x="540" y="170" width="320" height="36" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="1.5"/>
+    <text x="700" y="193" fill="#e3b341" font-size="13">job lint · en cola</text>
+    <rect x="540" y="222" width="320" height="174" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="700" y="246" fill="#2088ff" font-size="14" font-weight="600">VM nueva · ubuntu-24.04</text>
+    <rect x="560" y="260" width="280" height="32" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <text x="700" y="281" fill="#f0f6fc" font-size="13">1 · Set up job</text>
+    <rect x="560" y="300" width="280" height="32" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <text x="700" y="321" fill="#f0f6fc" font-size="13">2 · uses: actions/checkout</text>
+    <rect x="560" y="340" width="280" height="32" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <text x="700" y="361" fill="#f0f6fc" font-size="13">3 · run: lint</text>
+    <text x="700" y="388" fill="#8b949e" font-size="11">los steps comparten disco, en orden</text>
+    <rect x="540" y="412" width="320" height="36" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="700" y="435" fill="#3fb950" font-size="13">conclusión del job: success</text>
+    <rect x="540" y="462" width="320" height="32" rx="6" fill="none" stroke="#f85149" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <text x="700" y="483" fill="#f85149" font-size="13">VM destruida con todo su disco</text>
+
+    <!-- Entre las dos VM -->
+    <line x1="490" y1="232" x2="490" y2="386" stroke="#f85149" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <rect x="452" y="290" width="76" height="40" fill="#0d1117"/>
+    <text x="490" y="306" fill="#f85149" font-size="12">no comparten</text>
+    <text x="490" y="322" fill="#f85149" font-size="12">disco</text>
+
+    <!-- Conclusión del run -->
+    <polyline points="280,494 280,530 470,530" fill="none" stroke="#79c0ff" stroke-width="2"/>
+    <polyline points="700,494 700,530 510,530" fill="none" stroke="#79c0ff" stroke-width="2"/>
+    <line x1="490" y1="530" x2="490" y2="548" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <line x1="470" y1="530" x2="510" y2="530" stroke="#79c0ff" stroke-width="2"/>
+    <rect x="330" y="552" width="320" height="40" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="490" y="577" fill="#3fb950" font-size="14" font-weight="600">conclusión del run: success</text>
+  </g>
+</svg>
