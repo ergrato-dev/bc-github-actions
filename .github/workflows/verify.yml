@@ -58,7 +58,7 @@ jobs:
         run: |
           for f in bootcamp/week-*/checks.json; do
             [ -e "$f" ] || continue
-            jq -e '.semana and .titulo and (.checks | length >= 6 and length <= 18)' "$f" >/dev/null \
+            jq -e '.week and .title and (.checks | length >= 6 and length <= 18) and all(.checks[]; .id and .description and .cmd and .assert and .hint)' "$f" >/dev/null \
               || { echo "::error file=$f::checks.json incompleto"; exit 1; }
           done
 
