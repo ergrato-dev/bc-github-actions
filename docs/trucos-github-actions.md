@@ -47,6 +47,21 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **`uv tree --depth 1`** muestra las dependencias directas con su versión resuelta y su grupo
   (`dev` o no). Es la forma rápida de ver qué cambió en un pull request que toca `uv.lock`.
 
+## Semana 04 — [CI de frontend con pnpm, matrices y artefactos](../bootcamp/week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md)
+
+- **`gh run download <id> -n web-dist`** baja un artefacto concreto de un run a tu máquina, ya
+  descomprimido. Es la forma más rápida de comprobar qué construyó el CI exactamente.
+- **El orden importa: `pnpm/action-setup` antes que `actions/setup-node`.** Con `cache: pnpm`,
+  setup-node le pregunta a pnpm dónde está su store; si pnpm aún no existe, el step falla.
+- **`name: Tests (Node ${{ matrix.node }})`** pone la versión en el nombre de cada job de la
+  matriz. Sin eso, la UI y los checks requeridos muestran `test (24)` y `test (26)`, y cambiar la
+  matriz rompe los nombres que las reglas de rama esperan (Semana 18).
+- **`pnpm why <paquete>`** te dice qué dependencia trajo un paquete transitivo; es la pregunta que
+  te harás cuando un PR de Dependabot toque `pnpm-lock.yaml`.
+- **La caducidad de un artefacto se elige al subirlo** (`retention-days`), no después: lo que no
+  pongas toma el valor del repo, 90 días por defecto en uno público, y ocupa almacenamiento todo ese
+  tiempo.
+
 ---
 
 | ← Anterior | Siguiente → |

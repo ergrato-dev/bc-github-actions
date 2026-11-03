@@ -120,4 +120,4 @@ cuando se usa en la documentación. Glosario de todas las semanas:
 
 | ← Anterior | Siguiente → |
 |:---|---:|
-| [Webgrafía](../4-recursos/webgrafia/README.md) | [Índice del bootcamp](../../README.md) |
+| [Webgrafía](../4-recursos/webgrafia/README.md) | [Semana 04 — CI de frontend con pnpm, matrices y artefactos](../../week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md) |

@@ -16,8 +16,10 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | 01 | `resolve-sha.sh` (2026-11-02). Release del 2026-07-20, el mismo SHA que fija bc-makefile |
 | `astral-sh/setup-uv` | v10.3.3 | `68559e99cc807c1eb7e9238fd43a15bba460eec2` | 03 | `resolve-sha.sh` (2026-11-02). Release del 2026-10-28. Inputs `version`, `enable-cache`, `cache-dependency-glob` comprobados en su `action.yml` |
 | `actions/cache` | v6.1.0 | `55cc8345863c7cc4c66a329aec7e433d2d1c52a9` | 03 | `resolve-sha.sh` (2026-11-02). Release del 2026-06-26, runtime node24 |
-| `pnpm/action-setup` | v6.1.0 | `ea17c68df8912ef543352723c149a84f56e3d413` | CI propio | `resolve-sha.sh` (2026-11-02). Input `package_json_file` comprobado en su `action.yml` |
-| `actions/setup-node` | v7.1.0 | `949feb2413d6458794dcd2491c4babbbce0c15c1` | CI propio | `resolve-sha.sh` (2026-11-02). Input `node-version` comprobado en su `action.yml` |
+| `pnpm/action-setup` | v6.1.0 | `ea17c68df8912ef543352723c149a84f56e3d413` | 04 | `resolve-sha.sh` (2026-11-02). Input `package_json_file` comprobado en su `action.yml` |
+| `actions/setup-node` | v7.1.0 | `949feb2413d6458794dcd2491c4babbbce0c15c1` | 04 | `resolve-sha.sh` (2026-11-02). Input `node-version` comprobado en su `action.yml` |
+| `actions/upload-artifact` | v7.0.2 | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` | 04 | `resolve-sha.sh` (2026-11-02). Runtime node24 |
+| `actions/download-artifact` | v8.0.2 | `9000827ccba6bdab643e8b6fd33ac0654aef8333` | 04 | `resolve-sha.sh` (2026-11-02). Runtime node24 |
 
 ### Herramientas
 
@@ -31,7 +33,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | zizmor | 1.31.1 | 01 | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
 | uv | 0.13.6 | 03 | Release del 2026-10-27. El tarball trae `uv` y `uvx` |
 | pnpm | 12.16.1 | 04 | Release del 2026-10-27. Ejecutable autónomo `pnpm-linux-x64.tar.gz`, descarga con digest probada. `pnpm env` está deprecado en favor de `pnpm runtime` |
-| Node | 26 LTS (26.13.0) | 04 | `nodejs.org/dist/index.json`: 26.13.0, línea LTS "Lithium" (2026-11-02). Instalado con `pnpm runtime set node 26 -g`, probado |
+| Node | 26 LTS (26.13.0); la web admite `>=24` (24.22.2, LTS Krypton) y el CI prueba las dos | 04 | `nodejs.org/dist/index.json`: 26.13.0, línea LTS "Lithium" (2026-11-02). Instalado con `pnpm runtime set node 26 -g`, probado |
 | Python | 3.15 (3.15.2) | 03 | endoflife.date (2026-11-02). Lo instala uv según `.python-version` |
 | Docker Engine | 29.9.2 como referencia | 05 | moby v29.9.2 (2026-10-20) |
 | Docker Compose | v5.6.1 como referencia | 05 | `docker compose version` en el equipo del autor (2026-11-02). Plugin, nunca `docker-compose` <!-- antipatron --> |
@@ -68,8 +70,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Pieza | Vigente (2026-11-02) | Semana | Nota |
 |---|---|:--:|---|
-| `actions/upload-artifact` | v7.0.2 | 04 | |
-| `actions/download-artifact` | v8.0.2 | 04 | |
 | `docker/setup-buildx-action` | v4.4.1 | 06 | |
 | `docker/build-push-action` | v7.4.0 | 06 | |
 | `docker/metadata-action` | v6.2.0 | 06 | |

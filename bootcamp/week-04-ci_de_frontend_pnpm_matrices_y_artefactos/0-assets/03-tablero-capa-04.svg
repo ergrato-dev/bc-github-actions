@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" role="img" aria-labelledby="t04">
+  <title id="t04">Mapa del pipeline de tablero en la capa 04. Los eventos push a main, pull_request y workflow_dispatch disparan tres workflows a la vez. ci.yml, de las capas 01 y 02, y ci-api.yml, de la capa 03 con ruff y pytest, siguen sin cambios. El nuevo ci-web.yml, con permissions contents read y todos sus run en web/, tiene lint con Node 26 y test en una matriz con Node 24 y Node 26 sin fail-fast, en paralelo. build espera a los dos con needs, ejecuta tsc y vite y sube web/dist como el artefacto web-dist durante 7 días. dist-report descarga web-dist sin checkout ni instalar nada y escribe el tamaño de cada archivo en el resumen. Todos los jobs que instalan preparan pnpm con pnpm/action-setup antes de actions/setup-node con cache pnpm, y ejecutan pnpm install --frozen-lockfile. En gris, lo que llega después: integración con PostgreSQL en la Semana 05 e imágenes en GHCR en la 06</title>
+  <rect width="960" height="660" fill="#0d1117"/>
+  <defs>
+    <marker id="a04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 04</text>
+
+    <!-- eventos -->
+    <g font-size="13">
+      <rect x="30" y="200" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="222" fill="#79c0ff" text-anchor="middle">push a main</text>
+      <rect x="30" y="250" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="272" fill="#79c0ff" text-anchor="middle">pull_request</text>
+      <rect x="30" y="300" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="322" fill="#79c0ff" text-anchor="middle">workflow_dispatch</text>
+    </g>
+    <path d="M200 267 C 225 267, 225 88, 246 88" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M200 267 C 225 267, 225 152, 246 152" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M200 267 C 225 267, 225 330, 246 330" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="222" y="380" fill="#8b949e" font-size="11" text-anchor="middle">los tres</text>
+    <text x="222" y="394" fill="#8b949e" font-size="11" text-anchor="middle">a la vez</text>
+
+    <!-- ci.yml -->
+    <rect x="250" y="60" width="680" height="54" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="270" y="93" fill="#f0f6fc" font-size="15" font-weight="600">ci.yml</text>
+    <text x="350" y="93" fill="#8b949e" font-size="12">runner-info · structure · version → summary</text>
+    <text x="910" y="93" fill="#8b949e" font-size="12" text-anchor="end">capas 01-02, sin cambios</text>
+
+    <!-- ci-api.yml -->
+    <rect x="250" y="124" width="680" height="54" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="270" y="157" fill="#f0f6fc" font-size="15" font-weight="600">ci-api.yml</text>
+    <text x="370" y="157" fill="#8b949e" font-size="12">lint (ruff) · test (pytest, cobertura ≥ 60 %) · uv sync --locked</text>
+    <text x="910" y="157" fill="#8b949e" font-size="12" text-anchor="end">capa 03, sin cambios</text>
+
+    <!-- ci-web.yml -->
+    <rect x="250" y="190" width="680" height="330" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="270" y="218" fill="#2088ff" font-size="15" font-weight="600">ci-web.yml</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#d2a8ff" text-anchor="end">
+      <text x="910" y="214">permissions: contents: read</text>
+      <text x="910" y="232">defaults.run.working-directory: web</text>
+    </g>
+
+    <rect x="270" y="250" width="190" height="64" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="365" y="274" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">lint</text>
+    <text x="365" y="298" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">eslint · Node 26</text>
+
+    <rect x="270" y="326" width="190" height="104" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="365" y="348" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">test</text>
+    <rect x="284" y="358" width="78" height="26" rx="4" fill="#161b22" stroke="#2088ff"/>
+    <text x="323" y="376" fill="#f0f6fc" font-size="12" text-anchor="middle">Node 24</text>
+    <rect x="368" y="358" width="78" height="26" rx="4" fill="#161b22" stroke="#2088ff"/>
+    <text x="407" y="376" fill="#f0f6fc" font-size="12" text-anchor="middle">Node 26</text>
+    <text x="365" y="402" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">vitest run</text>
+    <text x="365" y="420" fill="#d2a8ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">fail-fast: false</text>
+
+    <path d="M460 282 C 490 282, 490 330, 516 330" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M460 378 C 490 378, 490 352, 516 352" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="490" y="308" fill="#79c0ff" font-size="11" text-anchor="middle">needs</text>
+
+    <rect x="520" y="300" width="170" height="84" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="605" y="324" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">build</text>
+    <text x="605" y="346" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">tsc --noEmit</text>
+    <text x="605" y="366" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">vite build</text>
+
+    <path d="M690 330 C 715 330, 715 282, 736 282" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="716" y="350" fill="#79c0ff" font-size="11" text-anchor="middle">sube</text>
+
+    <rect x="740" y="250" width="170" height="64" rx="6" fill="#0d1117" stroke="#3fb950"/>
+    <text x="825" y="274" fill="#3fb950" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">web-dist</text>
+    <text x="825" y="296" fill="#f0f6fc" font-size="12" text-anchor="middle">artefacto · 7 días</text>
+
+    <rect x="740" y="356" width="170" height="74" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="825" y="380" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">dist-report</text>
+    <text x="825" y="400" fill="#8b949e" font-size="11" text-anchor="middle">sin checkout ni pnpm</text>
+    <text x="825" y="418" fill="#8b949e" font-size="11" text-anchor="middle">tamaños en el resumen</text>
+    <path d="M825 314 L825 352" stroke="#79c0ff" stroke-width="2" marker-end="url(#a04)"/>
+    <text x="835" y="338" fill="#79c0ff" font-size="11">descarga</text>
+
+    <rect x="270" y="446" width="640" height="56" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="590" y="468" fill="#f0f6fc" font-size="12" text-anchor="middle">Preparación en lint, test y build: checkout por SHA · pnpm/action-setup antes que actions/setup-node</text>
+    <text x="590" y="488" fill="#3fb950" font-size="12" text-anchor="middle">cache: pnpm atada a web/pnpm-lock.yaml · pnpm install --frozen-lockfile</text>
+
+    <!-- lo que llega después -->
+    <text x="30" y="556" fill="#8b949e" font-size="14" font-weight="600">Lo que llega después</text>
+    <g font-size="13" fill="#8b949e">
+      <rect x="30" y="570" width="435" height="58" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="50" y="595" font-weight="600">Semana 05</text><text x="50" y="615">integración de la API: PostgreSQL 17 como service</text>
+      <rect x="495" y="570" width="435" height="58" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="515" y="595" font-weight="600">Semana 06</text><text x="515" y="615">imágenes en GHCR; sustituye a dist-report</text>
+    </g>
+    <text x="480" y="650" fill="#8b949e" font-size="12" text-anchor="middle">En azul, lo que existe al terminar esta semana. En gris discontinuo, lo que añaden las siguientes.</text>
+  </g>
+</svg>

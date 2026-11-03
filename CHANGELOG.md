@@ -17,6 +17,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
   de workflows, mapa de funcionalidades, setup, trucos y glosario
 - `bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion/`: Semana 01, primer workflow y modelo de ejecución
 - `bootcamp/week-02-expresiones_contextos_y_flujo_de_datos/`: Semana 02, expresiones, contextos y flujo de datos
+- `bootcamp/week-04-ci_de_frontend_pnpm_matrices_y_artefactos/`: Semana 04, CI de frontend con pnpm, matrices y artefactos
 - `bootcamp/week-03-ci_de_python_con_uv/`: Semana 03, CI de Python con uv
 - Pie de navegación en tabla (← Anterior | Siguiente →) en las semanas y en `docs/`
 - `scripts/`: `check-week.sh` (autograding con `gh` y `GH_REPO`), `check-repo.sh`

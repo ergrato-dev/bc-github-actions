@@ -18,7 +18,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 | [01](week-01-primer_workflow_y_modelo_de_ejecucion/README.md) | Primer workflow y modelo de ejecución | ✅ |
 | [02](week-02-expresiones_contextos_y_flujo_de_datos/README.md) | Expresiones, contextos y flujo de datos | ✅ |
 | [03](week-03-ci_de_python_con_uv/README.md) | CI de Python con uv | ✅ |
-| 04 | CI de frontend con pnpm, matrices y artefactos | ⬜ |
+| [04](week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md) | CI de frontend con pnpm, matrices y artefactos | ✅ |
 
 ### Fase 2 — Pipelines de Integración (S05-08, 40 h)
 

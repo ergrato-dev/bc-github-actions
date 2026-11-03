@@ -1,0 +1,132 @@
+{
+  "week": "04",
+  "title": "CI de frontend con pnpm, matrices y artefactos",
+  "checks": [
+    {
+      "id": "web-package-manager",
+      "description": "web/package.json fija la versión exacta de pnpm en packageManager",
+      "cmd": "jq -r .packageManager web/package.json",
+      "assert": "stdout~^pnpm@[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "hint": "2-practicas/01-pnpm-en-local.md, paso 1"
+    },
+    {
+      "id": "web-lab-dispatched",
+      "description": "web-lab.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow web-lab.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/02-pnpm-en-un-workflow.md, paso 5"
+    },
+    {
+      "id": "matrix-lab-dispatched",
+      "description": "matrix-lab.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow matrix-lab.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/03-matrices.md, paso 5"
+    },
+    {
+      "id": "web-dist-artifact",
+      "description": "El repo tiene al menos un artefacto web-dist subido por ci-web.yml",
+      "cmd": "gh api 'repos/{owner}/{repo}/actions/artifacts?name=web-dist' --jq .total_count",
+      "assert": "stdout~^[1-9]",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    },
+    {
+      "id": "ci-web-actionlint",
+      "description": "ci-web.yml pasa actionlint",
+      "cmd": "actionlint .github/workflows/ci-web.yml",
+      "assert": "exit0",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 1"
+    },
+    {
+      "id": "ci-web-events",
+      "description": "ci-web.yml se dispara con push, pull_request y workflow_dispatch",
+      "cmd": "yq '.on | keys | sort | join(\",\")' .github/workflows/ci-web.yml",
+      "assert": "stdout~^pull_request,push,workflow_dispatch$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, cabecera"
+    },
+    {
+      "id": "ci-web-working-directory",
+      "description": "Todos los run de ci-web.yml se ejecutan en web/ por defecto",
+      "cmd": "yq '.defaults.run.\"working-directory\"' .github/workflows/ci-web.yml",
+      "assert": "stdout~^web$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, cabecera"
+    },
+    {
+      "id": "ci-web-jobs",
+      "description": "ci-web.yml tiene los jobs lint, test, build y dist-report",
+      "cmd": "yq '.jobs | keys | sort | join(\",\")' .github/workflows/ci-web.yml",
+      "assert": "stdout~^build,dist-report,lint,test$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, TODO 3"
+    },
+    {
+      "id": "test-matrix-node",
+      "description": "El job test corre en una matriz con Node 24 y Node 26",
+      "cmd": "yq '.jobs.test.strategy.matrix.node | map(tostring) | sort | join(\",\")' .github/workflows/ci-web.yml",
+      "assert": "stdout~^24,26$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, TODO 2"
+    },
+    {
+      "id": "test-matrix-no-fail-fast",
+      "description": "Un fallo en una versión de Node no cancela la otra",
+      "cmd": "yq '.jobs.test.strategy.\"fail-fast\"' .github/workflows/ci-web.yml",
+      "assert": "stdout~^false$",
+      "hint": "1-teoria/04-matrices.md, sección 2"
+    },
+    {
+      "id": "pnpm-frozen-lockfile",
+      "description": "lint, test y build instalan con pnpm install --frozen-lockfile",
+      "cmd": "yq '.jobs[].steps[].run // \"\"' .github/workflows/ci-web.yml | grep -c 'pnpm install --frozen-lockfile'",
+      "assert": "stdout~^([3-9]|[1-9][0-9]+)$",
+      "hint": "1-teoria/02-pnpm-en-ci.md, sección 2"
+    },
+    {
+      "id": "setup-node-pnpm-cache",
+      "description": "Todo actions/setup-node de ci-web.yml cachea el store de pnpm",
+      "cmd": "yq '[.jobs[].steps[] | select((.uses // \"\") | test(\"^actions/setup-node@\")) | .with.\"cache\" // \"\"] | unique | join(\",\")' .github/workflows/ci-web.yml",
+      "assert": "stdout~^pnpm$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, TODO 1"
+    },
+    {
+      "id": "build-needs",
+      "description": "build solo empieza cuando lint y test han terminado bien",
+      "cmd": "yq '.jobs.build.needs | sort | join(\",\")' .github/workflows/ci-web.yml",
+      "assert": "stdout~^lint,test$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, TODO 3"
+    },
+    {
+      "id": "dist-retention",
+      "description": "El artefacto de build caduca en 30 días o menos",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"^actions/upload-artifact@\")) | .with.\"retention-days\"] | join(\",\")' .github/workflows/ci-web.yml",
+      "assert": "stdout~^([1-9]|[12][0-9]|30)$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, TODO 4"
+    },
+    {
+      "id": "dist-report-downloads",
+      "description": "dist-report descarga el artefacto en lugar de volver a construir",
+      "cmd": "yq '[.jobs.\"dist-report\".steps[].uses // \"\" | select(test(\"^actions/download-artifact@\"))] | length' .github/workflows/ci-web.yml",
+      "assert": "stdout~^1$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-web.yml, TODO 5"
+    },
+    {
+      "id": "no-npm-in-workflows",
+      "description": "Ningún workflow usa un gestor de paquetes de Node que no sea pnpm",
+      "cmd": "grep -nE '\\bnp[m] +(i|install|ci|run)\\b|\\bnp[x]\\b' .github/workflows/*.yml || true",
+      "assert": "stdout!~.",
+      "hint": "1-teoria/02-pnpm-en-ci.md, sección 4"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "Semana 01, 2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "ci-web-green-on-main",
+      "description": "ci-web.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci-web.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    }
+  ]
+}
