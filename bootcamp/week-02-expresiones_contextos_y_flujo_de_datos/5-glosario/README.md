@@ -141,4 +141,4 @@ cuando se usa en la documentación. Glosario de todas las semanas:
 
 | ← Anterior | Siguiente → |
 |:---|---:|
-| [Webgrafía](../4-recursos/webgrafia/README.md) | [Índice del bootcamp](../../README.md) |
+| [Webgrafía](../4-recursos/webgrafia/README.md) | [Semana 03 — CI de Python con uv](../../week-03-ci_de_python_con_uv/README.md) |

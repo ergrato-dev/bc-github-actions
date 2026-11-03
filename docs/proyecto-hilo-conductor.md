@@ -41,7 +41,7 @@ cabecera (casi siempre `.github/workflows/`), completas los `TODO` y subes los c
 |:--:|---|
 | 01 | Org y repo `tablero` creados, con token de solo lectura, aprobación de forks y SHA obligatorio; `ci.yml` (push a `main`, `pull_request`, `workflow_dispatch`) con los jobs `runner-info` y `structure` en paralelo, `contents: read` y `actions/checkout` fijado por SHA |
 | 02 | Variable `PROJECT_NAME`; `ci.yml` con `defaults.run.shell: bash`, job `version` que publica `<versión de api/pyproject.toml>+<sha corto>` como output y job `summary` (`needs` de los otros tres, `if: !cancelled()`) que escribe el resumen en `$GITHUB_STEP_SUMMARY` y falla si alguno falló |
-| 03 | `ci-api.yml`: `uv sync --locked`, ruff, pytest con cobertura mínima y caché de uv |
+| 03 | `ci-api.yml` (push a `main`, `pull_request`, `workflow_dispatch`; `working-directory: api`) con los jobs `lint` (ruff check y format) y `test` (pytest de `tests/unit`, cobertura mínima del 60 %) en paralelo; `setup-uv` con versión fijada y caché atada a `api/uv.lock`; `uv sync --locked` siempre |
 | 04 | `ci-web.yml`: `pnpm install --frozen-lockfile`, lint, tests y build; matriz de versiones; `dist` como artefacto |
 | 05 | Job `integration` contra PostgreSQL 17 como service container; smoke test con `docker compose up --wait` |
 | 06 | `images.yml`: imágenes `tablero-api` y `tablero-web` construidas en cada PR y publicadas en GHCR desde `main`, con caché de capas y digest |

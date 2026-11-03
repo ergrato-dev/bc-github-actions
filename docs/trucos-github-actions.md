@@ -33,6 +33,20 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **`${GITHUB_SHA::7}`** es una expansión de bash, no una expresión de GitHub: el SHA corto sale
   del shell, que es donde tiene que estar un dato que vas a escribir en `$GITHUB_OUTPUT`.
 
+## Semana 03 — [CI de Python con uv](../bootcamp/week-03-ci_de_python_con_uv/README.md)
+
+- **`uv lock --check` antes del push** da en un segundo el mismo error que `uv sync --locked` te
+  daría en el CI tras arrancar un runner. Es el fallo más frecuente de esta semana.
+- **`gh cache list --sort size_in_bytes`** te dice qué cachés ocupan tu cupo de 10 GB, y
+  `gh cache list --key setup-uv-` filtra las de uv. En la UI tienes que ir a Actions → Caches y
+  ordenar a mano.
+- **`ruff check --output-format=github`** convierte cada hallazgo en una anotación en la pestaña
+  *Files changed* del pull request, en la línea exacta. Sin ese flag, el error solo está en el log.
+- **El output `cache-hit` de setup-uv** (`steps.<id>.outputs.cache-hit`) te dice en un step
+  siguiente si la caché acertó, sin leer el log de restauración.
+- **`uv tree --depth 1`** muestra las dependencias directas con su versión resuelta y su grupo
+  (`dev` o no). Es la forma rápida de ver qué cambió en un pull request que toca `uv.lock`.
+
 ---
 
 | ← Anterior | Siguiente → |

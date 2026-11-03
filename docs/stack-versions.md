@@ -14,7 +14,10 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | Action | Tag | SHA | Desde | Verificación |
 |---|---|---|:--:|---|
 | `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | 01 | `resolve-sha.sh` (2026-11-02). Release del 2026-07-20, el mismo SHA que fija bc-makefile |
-| `astral-sh/setup-uv` | v10.3.3 | `68559e99cc807c1eb7e9238fd43a15bba460eec2` | CI propio | `resolve-sha.sh` (2026-11-02). Release del 2026-10-28 |
+| `astral-sh/setup-uv` | v10.3.3 | `68559e99cc807c1eb7e9238fd43a15bba460eec2` | 03 | `resolve-sha.sh` (2026-11-02). Release del 2026-10-28. Inputs `version`, `enable-cache`, `cache-dependency-glob` comprobados en su `action.yml` |
+| `actions/cache` | v6.1.0 | `55cc8345863c7cc4c66a329aec7e433d2d1c52a9` | 03 | `resolve-sha.sh` (2026-11-02). Release del 2026-06-26, runtime node24 |
+| `pnpm/action-setup` | v6.1.0 | `ea17c68df8912ef543352723c149a84f56e3d413` | CI propio | `resolve-sha.sh` (2026-11-02). Input `package_json_file` comprobado en su `action.yml` |
+| `actions/setup-node` | v7.1.0 | `949feb2413d6458794dcd2491c4babbbce0c15c1` | CI propio | `resolve-sha.sh` (2026-11-02). Input `node-version` comprobado en su `action.yml` |
 
 ### Herramientas
 
@@ -65,7 +68,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Pieza | Vigente (2026-11-02) | Semana | Nota |
 |---|---|:--:|---|
-| `actions/cache` | v6.1.0 | 03 | |
 | `actions/upload-artifact` | v7.0.2 | 04 | |
 | `actions/download-artifact` | v8.0.2 | 04 | |
 | `docker/setup-buildx-action` | v4.4.1 | 06 | |

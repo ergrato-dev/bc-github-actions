@@ -1,0 +1,125 @@
+{
+  "week": "03",
+  "title": "CI de Python con uv",
+  "checks": [
+    {
+      "id": "uv-lock-in-sync",
+      "description": "api/uv.lock está al día con api/pyproject.toml",
+      "cmd": "cd api && uv lock --check",
+      "assert": "exit0",
+      "hint": "2-practicas/01-uv-en-local.md, paso 4"
+    },
+    {
+      "id": "python-lab-dispatched",
+      "description": "python-lab.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow python-lab.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/02-uv-en-un-workflow.md, paso 5"
+    },
+    {
+      "id": "python-lab-failed-once",
+      "description": "python-lab.yml falló al menos una vez por un error sembrado a propósito",
+      "cmd": "gh run list --workflow python-lab.yml --status failure --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/04-romper-y-arreglar.md, paso 1"
+    },
+    {
+      "id": "uv-cache-saved",
+      "description": "El repo guarda al menos una caché de Actions",
+      "cmd": "gh cache list --json key --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/03-cache-y-tiempos.md, paso 4"
+    },
+    {
+      "id": "ci-api-actionlint",
+      "description": "ci-api.yml pasa actionlint",
+      "cmd": "actionlint .github/workflows/ci-api.yml",
+      "assert": "exit0",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 1"
+    },
+    {
+      "id": "ci-api-events",
+      "description": "ci-api.yml se dispara con push, pull_request y workflow_dispatch",
+      "cmd": "yq '.on | keys | sort | join(\",\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~^pull_request,push,workflow_dispatch$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, cabecera"
+    },
+    {
+      "id": "ci-api-working-directory",
+      "description": "Todos los run de ci-api.yml se ejecutan en api/",
+      "cmd": "yq '.defaults.run.\"working-directory\"' .github/workflows/ci-api.yml",
+      "assert": "stdout~^api$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 1"
+    },
+    {
+      "id": "ci-api-jobs",
+      "description": "ci-api.yml tiene exactamente dos jobs: lint y test",
+      "cmd": "yq '.jobs | keys | sort | join(\",\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~^lint,test$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 3"
+    },
+    {
+      "id": "setup-uv-version",
+      "description": "Todo astral-sh/setup-uv de ci-api.yml fija la versión exacta de uv",
+      "cmd": "yq '[.jobs[].steps[] | select((.uses // \"\") | test(\"^astral-sh/setup-uv@\")) | .with.version // \"\"] | unique | join(\",\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 2"
+    },
+    {
+      "id": "setup-uv-cache",
+      "description": "Todo astral-sh/setup-uv de ci-api.yml activa la caché",
+      "cmd": "yq '[.jobs[].steps[] | select((.uses // \"\") | test(\"^astral-sh/setup-uv@\")) | .with.\"enable-cache\" // \"\"] | unique | join(\",\")' .github/workflows/ci-api.yml",
+      "assert": "stdout~^true$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 2"
+    },
+    {
+      "id": "uv-sync-locked",
+      "description": "Los dos jobs instalan con uv sync --locked",
+      "cmd": "yq '.jobs[].steps[].run // \"\"' .github/workflows/ci-api.yml | grep -c 'uv sync --locked'",
+      "assert": "stdout~^([2-9]|[1-9][0-9]+)$",
+      "hint": "1-teoria/02-uv-en-ci.md, sección 2"
+    },
+    {
+      "id": "lint-ruff",
+      "description": "El job lint ejecuta ruff check y ruff format --check",
+      "cmd": "yq '.jobs.lint.steps[].run // \"\"' .github/workflows/ci-api.yml | grep -cE 'ruff (check|format --check)'",
+      "assert": "stdout~^([2-9]|[1-9][0-9]+)$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 3"
+    },
+    {
+      "id": "test-coverage-threshold",
+      "description": "El job test exige al menos un 60 % de cobertura con --cov-fail-under",
+      "cmd": "yq '.jobs.test.steps[].run // \"\"' .github/workflows/ci-api.yml | grep -oE -- '--cov-fail-under[= ][0-9]+'",
+      "assert": "stdout~--cov-fail-under[= ](6[0-9]|[7-9][0-9]|100)$",
+      "hint": "3-proyecto/starter/.github/workflows/ci-api.yml, TODO 4"
+    },
+    {
+      "id": "no-pip-in-workflows",
+      "description": "Ningún workflow instala Python ni dependencias con pip o venv",
+      "cmd": "grep -nE 'pip[0-9]* +install|requirements[.]txt|python[0-9.]* +-m +venv' .github/workflows/*.yml || true",
+      "assert": "stdout!~.",
+      "hint": "1-teoria/07-antipatrones-de-python-en-ci.md"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "Semana 01, 2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "ci-api-green-on-main",
+      "description": "ci-api.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci-api.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    },
+    {
+      "id": "ci-api-ran-on-pr",
+      "description": "ci-api.yml terminó en success al menos una vez en un pull request",
+      "cmd": "gh run list --workflow ci-api.yml --event pull_request --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 3"
+    }
+  ]
+}

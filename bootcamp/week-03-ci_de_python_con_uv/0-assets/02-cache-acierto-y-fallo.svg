@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t02">
+  <title id="t02">Tres runs de la caché de uv. Run 1, sin caché: no hay entrada con la clave uv-Linux-hash del lockfile, uv descarga todo desde PyPI y al terminar el job en success se guarda la entrada uv-Linux-a1b2. Run 2, mismo uv.lock: la clave coincide exactamente, se restaura la caché, cache-hit vale true y no se guarda nada. Run 3, tras cambiar uv.lock: la clave nueva uv-Linux-c3d4 no existe, la restore-key uv-Linux- coincide por prefijo con la entrada anterior, se restaura en parcial con cache-hit false, uv solo descarga lo que cambió y al terminar se guarda la entrada nueva</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">La caché de uv en tres runs</text>
+    <text x="480" y="56" fill="#8b949e" font-size="13" text-anchor="middle">clave = uv-${{ runner.os }}-${{ hashFiles('api/uv.lock') }} · restore-key = uv-${{ runner.os }}-</text>
+
+    <!-- columnas: buscar, uv sync, guardar -->
+    <g font-size="12" fill="#8b949e" text-anchor="middle">
+      <text x="300" y="92">1. Buscar la clave</text>
+      <text x="560" y="92">2. uv sync --locked</text>
+      <text x="800" y="92">3. Al terminar en success</text>
+    </g>
+
+    <!-- run 1 -->
+    <rect x="20" y="104" width="920" height="130" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="40" y="132" fill="#f0f6fc" font-size="15" font-weight="600">Run 1</text>
+    <text x="40" y="152" fill="#8b949e" font-size="12">primera vez</text>
+    <text x="40" y="170" fill="#8b949e" font-size="12">uv.lock = a1b2</text>
+    <rect x="190" y="122" width="220" height="92" rx="6" fill="#0d1117" stroke="#f85149"/>
+    <text x="300" y="148" fill="#f85149" font-size="14" font-weight="600" text-anchor="middle">fallo (miss)</text>
+    <text x="300" y="170" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">uv-Linux-a1b2: no existe</text>
+    <text x="300" y="190" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">uv-Linux-*: no hay nada</text>
+    <path d="M410 168 L448 168" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <rect x="450" y="122" width="220" height="92" rx="6" fill="#0d1117" stroke="#e3b341"/>
+    <text x="560" y="148" fill="#e3b341" font-size="14" font-weight="600" text-anchor="middle">descarga todo</text>
+    <text x="560" y="170" fill="#f0f6fc" font-size="12" text-anchor="middle">31 paquetes desde PyPI</text>
+    <text x="560" y="190" fill="#8b949e" font-size="12" text-anchor="middle">lo más lento de los tres</text>
+    <path d="M670 168 L708 168" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <rect x="710" y="122" width="210" height="92" rx="6" fill="#0d1117" stroke="#3fb950"/>
+    <text x="815" y="148" fill="#3fb950" font-size="14" font-weight="600" text-anchor="middle">guarda</text>
+    <text x="815" y="170" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">uv-Linux-a1b2</text>
+    <text x="815" y="190" fill="#8b949e" font-size="12" text-anchor="middle">entrada nueva, inmutable</text>
+
+    <!-- run 2 -->
+    <rect x="20" y="248" width="920" height="130" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="40" y="276" fill="#f0f6fc" font-size="15" font-weight="600">Run 2</text>
+    <text x="40" y="296" fill="#8b949e" font-size="12">mismo lockfile</text>
+    <text x="40" y="314" fill="#8b949e" font-size="12">uv.lock = a1b2</text>
+    <rect x="190" y="266" width="220" height="92" rx="6" fill="#0d1117" stroke="#3fb950"/>
+    <text x="300" y="292" fill="#3fb950" font-size="14" font-weight="600" text-anchor="middle">acierto exacto</text>
+    <text x="300" y="314" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">uv-Linux-a1b2: existe</text>
+    <text x="300" y="334" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">cache-hit = true</text>
+    <path d="M410 312 L448 312" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <rect x="450" y="266" width="220" height="92" rx="6" fill="#0d1117" stroke="#3fb950"/>
+    <text x="560" y="292" fill="#3fb950" font-size="14" font-weight="600" text-anchor="middle">no descarga nada</text>
+    <text x="560" y="314" fill="#f0f6fc" font-size="12" text-anchor="middle">.venv se crea desde la caché</text>
+    <text x="560" y="334" fill="#8b949e" font-size="12" text-anchor="middle">el mismo resultado, antes</text>
+    <path d="M670 312 L708 312" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <rect x="710" y="266" width="210" height="92" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="815" y="292" fill="#8b949e" font-size="14" font-weight="600" text-anchor="middle">no guarda</text>
+    <text x="815" y="314" fill="#8b949e" font-size="12" text-anchor="middle">la clave ya existe</text>
+
+    <!-- run 3 -->
+    <rect x="20" y="392" width="920" height="130" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="40" y="420" fill="#f0f6fc" font-size="15" font-weight="600">Run 3</text>
+    <text x="40" y="440" fill="#8b949e" font-size="12">cambias una</text>
+    <text x="40" y="458" fill="#8b949e" font-size="12">dependencia</text>
+    <text x="40" y="476" fill="#8b949e" font-size="12">uv.lock = c3d4</text>
+    <rect x="190" y="410" width="220" height="92" rx="6" fill="#0d1117" stroke="#e3b341"/>
+    <text x="300" y="436" fill="#e3b341" font-size="14" font-weight="600" text-anchor="middle">acierto parcial</text>
+    <text x="300" y="456" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">uv-Linux-c3d4: no existe</text>
+    <text x="300" y="474" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">uv-Linux- → uv-Linux-a1b2</text>
+    <text x="300" y="492" fill="#d2a8ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">cache-hit = false</text>
+    <path d="M410 456 L448 456" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <rect x="450" y="410" width="220" height="92" rx="6" fill="#0d1117" stroke="#e3b341"/>
+    <text x="560" y="436" fill="#e3b341" font-size="14" font-weight="600" text-anchor="middle">descarga solo lo nuevo</text>
+    <text x="560" y="458" fill="#f0f6fc" font-size="12" text-anchor="middle">30 paquetes de la caché</text>
+    <text x="560" y="478" fill="#f0f6fc" font-size="12" text-anchor="middle">1 desde PyPI</text>
+    <path d="M670 456 L708 456" stroke="#79c0ff" stroke-width="2" marker-end="url(#a02)"/>
+    <rect x="710" y="410" width="210" height="92" rx="6" fill="#0d1117" stroke="#3fb950"/>
+    <text x="815" y="436" fill="#3fb950" font-size="14" font-weight="600" text-anchor="middle">guarda</text>
+    <text x="815" y="458" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">uv-Linux-c3d4</text>
+    <text x="815" y="478" fill="#8b949e" font-size="12" text-anchor="middle">a1b2 se queda hasta 7 días</text>
+    <text x="815" y="494" fill="#8b949e" font-size="12" text-anchor="middle">sin uso</text>
+
+    <text x="480" y="546" fill="#8b949e" font-size="12" text-anchor="middle">Lo que se instala lo decide uv.lock; la caché solo decide de dónde sale. Sin caché, el resultado es el mismo y más lento.</text>
+  </g>
+</svg>

@@ -1,0 +1,36 @@
+# ci-api.yml — capa 03 de tablero.
+# Cópialo a .github/workflows/ci-api.yml de <tu-org>/tablero y completa los TODO.
+# Los eventos, los permisos y el job lint a medias ya vienen; ci.yml no se toca.
+# Tal como está pasa actionlint, pero no cumple la capa: check-week.sh 03 sale en rojo.
+name: ci-api
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+    # TODO 1: que todos los run se ejecuten dentro de api/.
+
+jobs:
+  lint:
+    name: Lint y formato (ruff)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # TODO 2: astral-sh/setup-uv fijado por SHA, con la versión exacta de uv de
+      # docs/stack-versions.md, la caché activada y su clave atada a api/uv.lock.
+      # TODO 3: instala con el lockfile sin tocarlo y ejecuta ruff check y ruff format --check.
+      - run: echo "lint pendiente" && exit 1
+
+  # TODO 4: job test igual de preparado que lint, que ejecute los tests de tests/unit con
+  # cobertura del paquete tablero y falle por debajo del 60 %.

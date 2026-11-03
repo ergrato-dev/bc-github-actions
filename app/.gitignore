@@ -3,3 +3,6 @@ api/.venv/
 web/node_modules/
 web/dist/
 web/coverage/
+api/.coverage
+api/.pytest_cache/
+api/.ruff_cache/
