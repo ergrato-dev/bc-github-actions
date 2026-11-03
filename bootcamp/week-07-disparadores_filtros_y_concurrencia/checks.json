@@ -1,0 +1,118 @@
+{
+  "week": "07",
+  "title": "Disparadores, filtros y concurrencia",
+  "checks": [
+    {
+      "id": "workflows-actionlint",
+      "description": "Todos tus workflows pasan actionlint",
+      "cmd": "actionlint",
+      "assert": "exit0",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 1"
+    },
+    {
+      "id": "ci-api-paths",
+      "description": "ci-api.yml solo corre en push y en PR si cambia api/ o el propio workflow",
+      "cmd": "yq '[.on.push.paths // [] | sort | join(\",\"), .on.pull_request.paths // [] | sort | join(\",\")] | join(\" | \")' .github/workflows/ci-api.yml",
+      "assert": "stdout~^\\.github/workflows/ci-api\\.yml,api/\\*\\* \\| \\.github/workflows/ci-api\\.yml,api/\\*\\*$",
+      "hint": "2-practicas/01-filtros-de-ramas-y-rutas.md, paso 2"
+    },
+    {
+      "id": "ci-web-paths",
+      "description": "ci-web.yml solo corre en push y en PR si cambia web/ o el propio workflow",
+      "cmd": "yq '[.on.push.paths // [] | sort | join(\",\"), .on.pull_request.paths // [] | sort | join(\",\")] | join(\" | \")' .github/workflows/ci-web.yml",
+      "assert": "stdout~^\\.github/workflows/ci-web\\.yml,web/\\*\\* \\| \\.github/workflows/ci-web\\.yml,web/\\*\\*$",
+      "hint": "2-practicas/01-filtros-de-ramas-y-rutas.md, paso 4"
+    },
+    {
+      "id": "smoke-paths",
+      "description": "smoke.yml corre si cambia api/, web/, compose.yaml, scripts/smoke-test.sh o el propio workflow",
+      "cmd": "yq '.on.pull_request.paths // [] | sort | join(\",\")' .github/workflows/smoke.yml",
+      "assert": "stdout~^\\.github/workflows/smoke\\.yml,api/\\*\\*,compose\\.yaml,scripts/smoke-test\\.sh,web/\\*\\*$",
+      "hint": "2-practicas/01-filtros-de-ramas-y-rutas.md, paso 5"
+    },
+    {
+      "id": "images-paths",
+      "description": "images.yml corre si cambia api/, web/ o el propio workflow",
+      "cmd": "yq '.on.pull_request.paths // [] | sort | join(\",\")' .github/workflows/images.yml",
+      "assert": "stdout~^\\.github/workflows/images\\.yml,api/\\*\\*,web/\\*\\*$",
+      "hint": "2-practicas/01-filtros-de-ramas-y-rutas.md, paso 5"
+    },
+    {
+      "id": "ci-concurrency-group",
+      "description": "ci, ci-api, ci-web, smoke e images declaran concurrency con un grupo por workflow y ref",
+      "cmd": "for f in ci ci-api ci-web smoke images; do yq '.concurrency.group // \"sin grupo\"' .github/workflows/$f.yml | grep -vE 'github\\.workflow.*github\\.ref' | sed \"s/^/$f: /\"; done",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/02-concurrencia-y-timeouts.md, paso 2"
+    },
+    {
+      "id": "ci-cancel-only-pr",
+      "description": "cancel-in-progress cancela runs obsoletos solo en los pull requests, nunca en main",
+      "cmd": "for f in ci ci-api ci-web smoke images; do yq '.concurrency.cancel-in-progress // \"ausente\"' .github/workflows/$f.yml | grep -vE \"event_name *== *'pull_request'\" | sed \"s/^/$f: /\"; done",
+      "assert": "stdout!~.",
+      "hint": "1-teoria/06-concurrencia.md, sección 3"
+    },
+    {
+      "id": "jobs-timeout",
+      "description": "Todo job de ci, ci-api, ci-web, smoke, images y nightly declara timeout-minutes",
+      "cmd": "for f in ci ci-api ci-web smoke images nightly; do yq '.jobs // {} | to_entries | .[] | select(.value | has(\"timeout-minutes\") | not) | .key' .github/workflows/$f.yml | sed \"s/^/$f: /\"; done",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/02-concurrencia-y-timeouts.md, paso 4"
+    },
+    {
+      "id": "nightly-cron",
+      "description": "nightly.yml se programa con un cron de cinco campos",
+      "cmd": "yq '.on.schedule[0].cron // \"\"' .github/workflows/nightly.yml",
+      "assert": "stdout~^[^ ]+( [^ ]+){4}$",
+      "hint": "3-proyecto/starter/.github/workflows/nightly.yml, TODO 1"
+    },
+    {
+      "id": "nightly-target-input",
+      "description": "nightly.yml se lanza a mano con un input target de tipo choice: all, ci-api, ci-web o smoke",
+      "cmd": "yq '.on.workflow_dispatch.inputs.target | (.type // \"\") + \" \" + (.options // [] | join(\",\"))' .github/workflows/nightly.yml",
+      "assert": "stdout~^choice all,ci-api,ci-web,smoke$",
+      "hint": "3-proyecto/starter/.github/workflows/nightly.yml, TODO 2"
+    },
+    {
+      "id": "nightly-actions-write",
+      "description": "Solo el job dispatch de nightly.yml pide actions: write; la raíz se queda en contents: read",
+      "cmd": "yq '(.permissions.contents // \"\") + \",\" + (.permissions.actions // \"none\") + \",\" + (.jobs.dispatch.permissions.actions // \"\")' .github/workflows/nightly.yml",
+      "assert": "stdout~^read,none,write$",
+      "hint": "3-proyecto/starter/.github/workflows/nightly.yml, TODO 4"
+    },
+    {
+      "id": "nightly-script-env",
+      "description": "github-script recibe el target por env: con valor por defecto all, sin ${{ }} dentro de script:",
+      "cmd": "yq '[.jobs.dispatch.steps[] | select((.uses // \"\") | test(\"actions/github-script\"))] | .[0] | ((.env // {} | .[] ) + \" | \" + ((.with.script // \"\") | test(\"\\$\\{\\{\") | tostring))' .github/workflows/nightly.yml",
+      "assert": "stdout~inputs\\.target *\\|\\| *'all'.* \\| false$",
+      "hint": "1-teoria/08-github-script.md, sección 4"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "Semana 01, 2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "repository-dispatch-received",
+      "description": "Un workflow tuyo terminó en success disparado por repository_dispatch",
+      "cmd": "gh run list --event repository_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/04-encadenar-workflows.md, paso 2"
+    },
+    {
+      "id": "nightly-green-on-main",
+      "description": "nightly.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow nightly.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 3"
+    },
+    {
+      "id": "ci-web-dispatched-on-main",
+      "description": "ci-web.yml terminó en success sobre el último commit de main en un run lanzado por workflow_dispatch",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci-web.yml --event workflow_dispatch --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 3"
+    }
+  ]
+}

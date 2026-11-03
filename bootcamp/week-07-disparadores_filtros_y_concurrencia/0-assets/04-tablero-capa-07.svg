@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="t07">
+  <title id="t07">Mapa del pipeline de tablero en la capa 07. Los eventos push a main y pull_request ya no despiertan a todos los workflows: cada uno pasa antes por su filtro de rutas. ci.yml no tiene filtro y corre siempre. ci-api.yml corre si cambia api/ o su propio archivo, ci-web.yml si cambia web/ o su archivo, smoke.yml si cambia api/, web/, compose.yaml, scripts/smoke-test.sh o su archivo, e images.yml si cambia api/, web/ o su archivo. Los cinco declaran concurrency con el grupo workflow más ref, cancelan el run anterior solo en los pull request y ponen timeout-minutes en cada job. El nuevo nightly.yml se dispara con un cron diario a las 03:17 UTC o a mano con workflow_dispatch y el input target, que vale all, ci-api, ci-web o smoke. Su job dispatch, con permiso actions write solo en el job, usa github-script para crear un workflow_dispatch de ci-api, ci-web y smoke sobre main; esos eventos no tienen filtro de rutas y los tres corren aunque el último commit no tocara su carpeta. En gris, lo que llega después: lint de workflows en la Semana 08, reutilizables en la 09 y el check puerta ci-gate en la 18</title>
+  <rect width="960" height="720" fill="#0d1117"/>
+  <defs>
+    <marker id="a07" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a07b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 07</text>
+
+    <!-- eventos -->
+    <g font-size="13">
+      <rect x="30" y="140" width="150" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="105" y="162" fill="#79c0ff" text-anchor="middle">push a main</text>
+      <rect x="30" y="190" width="150" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="105" y="212" fill="#79c0ff" text-anchor="middle">pull_request</text>
+    </g>
+    <path d="M180 182 L226 182" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a07)"/>
+
+    <!-- columna de filtros -->
+    <text x="300" y="70" fill="#e3b341" font-size="13" font-weight="600" text-anchor="middle">filtro de rutas</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="230" y="82" width="140" height="36" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="300" y="104" fill="#8b949e" text-anchor="middle">sin filtro</text>
+      <rect x="230" y="128" width="140" height="36" rx="6" fill="#0d1117" stroke="#e3b341"/>
+      <text x="300" y="150" fill="#e3b341" text-anchor="middle">api/**</text>
+      <rect x="230" y="174" width="140" height="36" rx="6" fill="#0d1117" stroke="#e3b341"/>
+      <text x="300" y="196" fill="#e3b341" text-anchor="middle">web/**</text>
+      <rect x="230" y="220" width="140" height="44" rx="6" fill="#0d1117" stroke="#e3b341"/>
+      <text x="300" y="238" fill="#e3b341" text-anchor="middle">api/** web/**</text>
+      <text x="300" y="255" fill="#e3b341" text-anchor="middle">compose.yaml …</text>
+      <rect x="230" y="274" width="140" height="36" rx="6" fill="#0d1117" stroke="#e3b341"/>
+      <text x="300" y="296" fill="#e3b341" text-anchor="middle">api/** web/**</text>
+    </g>
+    <text x="300" y="328" fill="#8b949e" font-size="11" text-anchor="middle">+ el propio YAML en cada uno</text>
+
+    <!-- workflows -->
+    <g font-size="12">
+      <rect x="400" y="82" width="530" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="416" y="105" fill="#f0f6fc" font-size="14" font-weight="600">ci.yml</text>
+      <text x="520" y="105" fill="#8b949e">siempre: el único check que existe en todo PR</text>
+      <rect x="400" y="128" width="530" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="416" y="151" fill="#f0f6fc" font-size="14" font-weight="600">ci-api.yml</text>
+      <text x="520" y="151" fill="#8b949e">lint · test → integration con PostgreSQL 17</text>
+      <rect x="400" y="174" width="530" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="416" y="197" fill="#f0f6fc" font-size="14" font-weight="600">ci-web.yml</text>
+      <text x="520" y="197" fill="#8b949e">lint · test (Node 24 y 26) → build → dist-report</text>
+      <rect x="400" y="220" width="530" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="416" y="247" fill="#f0f6fc" font-size="14" font-weight="600">smoke.yml</text>
+      <text x="520" y="247" fill="#8b949e">compose up --build --wait → smoke-test.sh</text>
+      <rect x="400" y="274" width="530" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="416" y="297" fill="#f0f6fc" font-size="14" font-weight="600">images.yml</text>
+      <text x="520" y="297" fill="#8b949e">matriz api · web → GHCR desde main</text>
+    </g>
+    <g stroke="#30363d" stroke-width="2">
+      <line x1="370" y1="100" x2="400" y2="100"/><line x1="370" y1="146" x2="400" y2="146"/>
+      <line x1="370" y1="192" x2="400" y2="192"/><line x1="370" y1="242" x2="400" y2="242"/>
+      <line x1="370" y1="292" x2="400" y2="292"/>
+    </g>
+
+    <!-- franja común -->
+    <rect x="400" y="320" width="530" height="58" rx="8" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="416" y="342" fill="#2088ff" font-size="13" font-weight="600">en los cinco · nuevo en esta capa</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="416" y="364" fill="#f0f6fc">concurrency: workflow-ref</text>
+      <text x="610" y="364" fill="#e3b341">cancel solo en PR</text>
+      <text x="760" y="364" fill="#f0f6fc">timeout-minutes en cada job</text>
+    </g>
+
+    <!-- nightly -->
+    <g font-size="13">
+      <rect x="30" y="460" width="150" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="105" y="482" fill="#79c0ff" text-anchor="middle">cron 17 3 * * *</text>
+      <rect x="30" y="510" width="150" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="105" y="532" fill="#79c0ff" text-anchor="middle">workflow_dispatch</text>
+    </g>
+    <text x="105" y="566" fill="#8b949e" font-size="11" text-anchor="middle">target: all · ci-api ·</text>
+    <text x="105" y="580" fill="#8b949e" font-size="11" text-anchor="middle">ci-web · smoke</text>
+    <path d="M180 502 L226 502" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a07)"/>
+
+    <rect x="230" y="410" width="460" height="170" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="246" y="436" fill="#2088ff" font-size="15" font-weight="600">nightly.yml</text>
+    <text x="674" y="436" fill="#2088ff" font-size="12" text-anchor="end">nuevo en esta capa</text>
+    <rect x="246" y="450" width="428" height="116" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="262" y="472" fill="#f0f6fc" font-size="14" font-weight="600">dispatch</text>
+    <text x="658" y="472" fill="#d2a8ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="end">actions: write</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="262" y="484" width="396" height="30" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="274" y="503" fill="#f0f6fc">github-script</text>
+      <text x="646" y="503" fill="#8b949e" text-anchor="end">TARGET por env:, || 'all'</text>
+      <rect x="262" y="522" width="396" height="30" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="274" y="541" fill="#f0f6fc">createWorkflowDispatch</text>
+      <text x="646" y="541" fill="#8b949e" text-anchor="end">ref: main</text>
+    </g>
+
+    <!-- vuelta al CI -->
+    <path d="M690 450 C 950 450, 950 250, 934 250" stroke="#2088ff" stroke-width="2" fill="none" stroke-dasharray="7 4"/>
+    <path d="M934 250 L 930 250" stroke="#2088ff" stroke-width="2" marker-end="url(#a07b)"/>
+    <text x="708" y="532" fill="#2088ff" font-size="12">workflow_dispatch: sin filtro</text>
+    <text x="708" y="550" fill="#8b949e" font-size="11">ci-api · ci-web · smoke corren</text>
+    <text x="708" y="566" fill="#8b949e" font-size="11">aunque su carpeta no cambiara</text>
+
+    <!-- lo que llega después -->
+    <text x="30" y="616" fill="#8b949e" font-size="14" font-weight="600">Lo que llega después</text>
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="651" font-weight="600">Semana 08</text><text x="46" y="670">lint-workflows.yml con actionlint y zizmor</text>
+      <rect x="340" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="651" font-weight="600">Semana 09</text><text x="356" y="670">los CI pasan a llamar a reutilizables</text>
+      <rect x="650" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="651" font-weight="600">Semana 18</text><text x="666" y="670">ci-gate: el check que un filtro no salta</text>
+    </g>
+    <text x="480" y="710" fill="#8b949e" font-size="12" text-anchor="middle">En azul, lo que esta semana crea. En amarillo, los filtros. En gris discontinuo, lo que añaden las siguientes.</text>
+  </g>
+</svg>

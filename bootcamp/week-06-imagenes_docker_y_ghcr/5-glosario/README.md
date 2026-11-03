@@ -124,4 +124,4 @@ cuando se usa en la documentación. Glosario de todas las semanas:
 
 | ← Anterior | Siguiente → |
 |:---|---:|
-| [Webgrafía](../4-recursos/webgrafia/README.md) | [Índice del bootcamp](../../README.md) |
+| [Webgrafía](../4-recursos/webgrafia/README.md) | [Semana 07 — Disparadores, filtros y concurrencia](../../week-07-disparadores_filtros_y_concurrencia/README.md) |

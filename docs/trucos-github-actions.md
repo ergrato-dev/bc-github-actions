@@ -94,6 +94,24 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   En un multi-stage eso deja fuera el `uv sync` y el `pnpm install` de la etapa de build, que son
   justo las capas que más tardan.
 
+## Semana 07 — [Disparadores, filtros y concurrencia](../bootcamp/week-07-disparadores_filtros_y_concurrencia/README.md)
+
+- **`gh workflow run nightly.yml -f target=ci-web --ref main`** lanza un `workflow_dispatch` con
+  sus inputs sin abrir la UI. Con `--json` lee los inputs de la entrada estándar:
+  `echo '{"target":"smoke"}' | gh workflow run nightly.yml --json`.
+- **`gh run list --event schedule --workflow nightly.yml`** filtra los runs por evento. Es la forma
+  rápida de saber si tu cron se ha ejecutado de verdad, y a qué hora, sin bucear en la UI.
+- **`gh api repos/{owner}/{repo}/dispatches -f event_type=tablero-ping -F 'client_payload[from]=cli'`**
+  dispara un `repository_dispatch` desde tu terminal. `-F` con corchetes construye el objeto
+  anidado sin escribir JSON a mano.
+- **Un run cancelado por `concurrency` dice por qué**: en sus anotaciones aparece *Canceling since
+  a higher priority waiting request for '<grupo>' exists*. Con `gh run view <id> --json jobs --jq
+  '.jobs[].conclusion'` ves `cancelled` sin abrir el log.
+- **El minuto 0 está saturado**: los cron en punto se retrasan más porque media plataforma programa
+  ahí. Un minuto raro (`17 3 * * *`) llega antes y no compite.
+- **`gh workflow disable` / `enable`** apagan un workflow sin borrar el archivo. Útil para parar un
+  cron mientras investigas por qué falla cada noche.
+
 ---
 
 | ← Anterior | Siguiente → |

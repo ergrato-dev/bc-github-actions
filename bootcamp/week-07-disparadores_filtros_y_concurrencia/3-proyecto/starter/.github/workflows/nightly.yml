@@ -1,0 +1,48 @@
+# nightly.yml — relanza cada noche el CI de tablero sobre main, aunque nadie haya hecho push.
+# Se copia a <tu-org>/tablero/.github/workflows/nightly.yml.
+name: nightly
+
+on:
+  # TODO 1: programa el workflow con schedule y un cron diario de cinco campos, fuera del minuto 0.
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Qué workflow relanzar sobre main
+        # TODO 2: hazlo de tipo choice con las opciones all, ci-api, ci-web y smoke, y all por defecto.
+        type: string
+        default: all
+
+# TODO 3: añade concurrency con un grupo fijo por workflow y sin cancelar el run en curso.
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    name: Relanzar el CI sobre main
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # TODO 4: da a este job, y solo a él, el permiso actions: write.
+    steps:
+      - name: Disparar los workflows elegidos
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        # TODO 5: pasa el input al script con env: TARGET, con 'all' como valor cuando lo lanza el cron.
+        with:
+          script: |
+            const all = ['ci-api', 'ci-web', 'smoke'];
+            const target = process.env.TARGET;
+            const selected = target === 'all' ? all : all.filter((name) => name === target);
+            if (selected.length === 0) {
+              core.setFailed(`target desconocido: ${target}`);
+              return;
+            }
+            for (const name of selected) {
+              // TODO 6: llama a github.rest.actions.createWorkflowDispatch con owner, repo,
+              // workflow_id `${name}.yml` y ref 'main'.
+              core.info(`${name}.yml lanzado sobre main`);
+            }
+            await core.summary
+              .addHeading('Workflows lanzados sobre main', 3)
+              .addList(selected.map((name) => `${name}.yml`))
+              .write();

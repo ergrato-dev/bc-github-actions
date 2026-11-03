@@ -24,6 +24,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | `docker/metadata-action` | v6.2.0 | `dc802804100637a589fabce1cb79ff13a1411302` | 06 | `resolve-sha.sh` (2026-11-02). Inputs `images`, `tags`, `flavor`; outputs `tags`, `labels`, `version`. Pasa el nombre de la imagen a minúsculas |
 | `docker/login-action` | v4.7.0 | `81c6f93d4bc991e510b342a00b419b3bb4efc5c6` | 06 | `resolve-sha.sh` (2026-11-02). Release del 2026-10-23. Inputs `registry`, `username`, `password` |
 | `docker/build-push-action` | v7.4.0 | `c3c9e263c25d99ce0380d002d59b67737d91b0dc` | 06 | `resolve-sha.sh` (2026-11-02). Release del 2026-09-15. Inputs `context`, `push`, `load`, `tags`, `labels`, `cache-from`, `cache-to`; outputs `digest`, `imageid`, `metadata`. `push` y `load` valen `false` por defecto |
+| `actions/github-script` | v9.0.0 | `3a2844b7e9c422d3c10d287c895573f7108da1b3` | 07 | `resolve-sha.sh` (2026-11-02). Release del 2026-04-09, runtime node24. Inputs `script`, `github-token`, `result-encoding`, `retries`; output `result`. En v9 `require('@actions/github')` ya no funciona y `getOctokit` viene inyectado |
 
 ### Herramientas
 
@@ -75,7 +76,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Pieza | Vigente (2026-11-02) | Semana | Nota |
 |---|---|:--:|---|
-| `actions/github-script` | v9.0.0 | 07 | |
 | act | v0.2.94 | 08 | `act_Linux_x86_64.tar.gz`. Comprobar qué imagen usa para `ubuntu-24.04` |
 | `googleapis/release-please-action` | v5.0.0 | 14 | |
 | `actions/attest-build-provenance` | v4.2.2 | 14 | Comprobar si ya es un alias de `actions/attest` |

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t03">
+  <title id="t03">Tres formas de que un workflow despierte a otro y la regla del GITHUB_TOKEN. Un push, un pull request o una issue creados con el GITHUB_TOKEN no crean runs nuevos, para evitar bucles. Las dos excepciones son workflow_dispatch, con el endpoint actions/workflows/archivo/dispatches y el permiso actions: write, que corre sobre la ref que se le pase; y repository_dispatch, con el endpoint dispatches, event_type y client_payload y el permiso contents: write, que corre siempre en la rama por defecto y se filtra con types. La tercera forma, workflow_run, no la crea ningún token: GitHub la emite cuando el workflow vigilado cambia de estado; solo funciona si el workflow que la declara está en la rama por defecto, completed incluye fallos y cancelaciones, y encadena como mucho tres niveles</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a03g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+    <marker id="a03r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Encadenar workflows</text>
+    <text x="480" y="58" fill="#8b949e" font-size="13" text-anchor="middle">lo que hace el GITHUB_TOKEN casi nunca despierta a otro workflow</text>
+
+    <!-- emisor -->
+    <rect x="30" y="90" width="220" height="380" rx="10" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="140" y="116" fill="#f0f6fc" font-size="15" font-weight="600" text-anchor="middle">Workflow A</text>
+    <text x="140" y="136" fill="#8b949e" font-size="12" text-anchor="middle">un job con GITHUB_TOKEN</text>
+
+    <!-- fila 1: push con token -->
+    <rect x="48" y="160" width="184" height="44" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="140" y="187" fill="#f0f6fc" font-size="12" text-anchor="middle">git push, PR, issue, tag</text>
+    <path d="M232 182 L560 182" stroke="#f85149" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#a03r)"/>
+    <text x="396" y="174" fill="#f85149" font-size="12" text-anchor="middle">no crea runs: evita bucles</text>
+    <rect x="566" y="160" width="364" height="44" rx="6" fill="#161b22" stroke="#f85149"/>
+    <text x="748" y="187" fill="#f85149" font-size="13" font-weight="600" text-anchor="middle">Ningún workflow se entera</text>
+
+    <!-- fila 2: workflow_dispatch -->
+    <rect x="48" y="232" width="184" height="58" rx="6" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="140" y="256" fill="#79c0ff" font-size="12" font-weight="600" text-anchor="middle">workflow_dispatch</text>
+    <text x="140" y="276" fill="#8b949e" font-size="11" text-anchor="middle">permiso actions: write</text>
+    <path d="M232 261 L560 261" stroke="#3fb950" stroke-width="2" marker-end="url(#a03g)"/>
+    <text x="396" y="253" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">POST …/actions/workflows/ci-api.yml/dispatches</text>
+    <rect x="566" y="232" width="364" height="58" rx="6" fill="#161b22" stroke="#3fb950"/>
+    <text x="748" y="256" fill="#3fb950" font-size="13" font-weight="600" text-anchor="middle">Corre el workflow nombrado</text>
+    <text x="748" y="276" fill="#8b949e" font-size="11" text-anchor="middle">sobre la ref que le pasas, con sus inputs</text>
+
+    <!-- fila 3: repository_dispatch -->
+    <rect x="48" y="318" width="184" height="58" rx="6" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="140" y="342" fill="#79c0ff" font-size="12" font-weight="600" text-anchor="middle">repository_dispatch</text>
+    <text x="140" y="362" fill="#8b949e" font-size="11" text-anchor="middle">permiso contents: write</text>
+    <path d="M232 347 L560 347" stroke="#3fb950" stroke-width="2" marker-end="url(#a03g)"/>
+    <text x="396" y="339" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">POST …/dispatches  event_type + client_payload</text>
+    <rect x="566" y="318" width="364" height="58" rx="6" fill="#161b22" stroke="#3fb950"/>
+    <text x="748" y="342" fill="#3fb950" font-size="13" font-weight="600" text-anchor="middle">Corre quien escuche ese types:</text>
+    <text x="748" y="362" fill="#8b949e" font-size="11" text-anchor="middle">siempre en la rama por defecto</text>
+
+    <!-- fila 4: workflow_run -->
+    <rect x="48" y="404" width="184" height="50" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="140" y="426" fill="#f0f6fc" font-size="12" text-anchor="middle">A termina</text>
+    <text x="140" y="443" fill="#8b949e" font-size="11" text-anchor="middle">success, failure, cancelled</text>
+    <path d="M232 429 L560 429" stroke="#79c0ff" stroke-width="2" marker-end="url(#a03)"/>
+    <text x="396" y="421" fill="#79c0ff" font-size="12" text-anchor="middle">GitHub emite workflow_run</text>
+    <rect x="566" y="404" width="364" height="50" rx="6" fill="#161b22" stroke="#e3b341"/>
+    <text x="748" y="425" fill="#e3b341" font-size="13" font-weight="600" text-anchor="middle">Corre B si está en la rama por defecto</text>
+    <text x="748" y="443" fill="#8b949e" font-size="11" text-anchor="middle">comprueba workflow_run.conclusion</text>
+
+    <!-- notas -->
+    <rect x="30" y="494" width="440" height="88" rx="8" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="50" y="518" fill="#d2a8ff" font-size="13" font-weight="600">La regla del GITHUB_TOKEN</text>
+    <text x="50" y="540" fill="#8b949e" font-size="12">sus eventos no crean runs nuevos</text>
+    <text x="50" y="560" fill="#8b949e" font-size="12">excepciones: workflow_dispatch y repository_dispatch</text>
+
+    <rect x="490" y="494" width="440" height="88" rx="8" fill="#161b22" stroke="#f85149"/>
+    <text x="510" y="518" fill="#f85149" font-size="13" font-weight="600">workflow_run con cuidado</text>
+    <text x="510" y="540" fill="#8b949e" font-size="12">como mucho tres niveles de cadena</text>
+    <text x="510" y="560" fill="#8b949e" font-size="12">sin checkout ni artefactos de forks: Semana 12</text>
+  </g>
+</svg>
