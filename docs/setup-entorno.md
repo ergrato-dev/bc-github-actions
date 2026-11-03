@@ -39,14 +39,14 @@ Cada release de GitHub publica el **digest SHA-256 de cada archivo** en su API. 
 pégala en tu terminal (o en `~/.bashrc` / `~/.zshrc`):
 
 ```bash
-# descargar_verificado <owner/repo> <tag> <archivo>
-descargar_verificado() {
-  local repo="$1" tag="$2" archivo="$3" esperado
-  esperado=$(gh api "repos/$repo/releases/tags/$tag" \
-    --jq ".assets[] | select(.name == \"$archivo\") | .digest" | sed 's/^sha256://')
-  [[ -n "$esperado" ]] || { echo "Sin digest para $archivo en $repo@$tag" >&2; return 1; }
-  gh release download "$tag" --repo "$repo" --pattern "$archivo" --clobber
-  echo "$esperado  $archivo" | sha256sum -c
+# download_verified <owner/repo> <tag> <file>
+download_verified() {
+  local repo="$1" tag="$2" file="$3" expected
+  expected=$(gh api "repos/$repo/releases/tags/$tag" \
+    --jq ".assets[] | select(.name == \"$file\") | .digest" | sed 's/^sha256://')
+  [[ -n "$expected" ]] || { echo "Sin digest para $file en $repo@$tag" >&2; return 1; }
+  gh release download "$tag" --repo "$repo" --pattern "$file" --clobber
+  echo "$expected  $file" | sha256sum -c
 }
 ```
 
@@ -66,7 +66,7 @@ que se llama igual: su sintaxis es distinta y los `checks.json` usan la de mikef
 ```bash
 sudo apt install jq              # Debian/Ubuntu (Fedora: sudo dnf install jq)
 
-descargar_verificado mikefarah/yq v4.54.1 yq_linux_amd64
+download_verified mikefarah/yq v4.54.1 yq_linux_amd64
 # yq_linux_amd64: OK
 install -m 0755 yq_linux_amd64 ~/.local/bin/yq
 yq --version
@@ -76,7 +76,7 @@ yq --version
 ## 3. actionlint
 
 ```bash
-descargar_verificado rhysd/actionlint v1.7.12 actionlint_1.7.12_linux_amd64.tar.gz
+download_verified rhysd/actionlint v1.7.12 actionlint_1.7.12_linux_amd64.tar.gz
 # actionlint_1.7.12_linux_amd64.tar.gz: OK
 tar -xzf actionlint_1.7.12_linux_amd64.tar.gz actionlint
 install -m 0755 actionlint ~/.local/bin/actionlint
@@ -87,7 +87,7 @@ actionlint -version | head -1
 ## 4. uv, y zizmor con uv
 
 ```bash
-descargar_verificado astral-sh/uv 0.13.6 uv-x86_64-unknown-linux-gnu.tar.gz
+download_verified astral-sh/uv 0.13.6 uv-x86_64-unknown-linux-gnu.tar.gz
 # uv-x86_64-unknown-linux-gnu.tar.gz: OK
 tar -xzf uv-x86_64-unknown-linux-gnu.tar.gz
 install -m 0755 uv-x86_64-unknown-linux-gnu/uv uv-x86_64-unknown-linux-gnu/uvx ~/.local/bin/
@@ -113,7 +113,7 @@ pnpm se distribuye como ejecutable autónomo que ya incluye Node, así que no ne
 instalarlo:
 
 ```bash
-descargar_verificado pnpm/pnpm v12.16.1 pnpm-linux-x64.tar.gz
+download_verified pnpm/pnpm v12.16.1 pnpm-linux-x64.tar.gz
 # pnpm-linux-x64.tar.gz: OK
 mkdir -p ~/.local/share/pnpm-standalone
 tar -xzf pnpm-linux-x64.tar.gz -C ~/.local/share/pnpm-standalone
@@ -140,7 +140,7 @@ node --version
 > Desde Node 25, corepack ya no viene incluido con Node: por eso aquí no se usa `corepack enable`.
 > En CI, pnpm lo instala `pnpm/action-setup`, que verás en la Semana 04.
 
-## 6. Docker con Compose v2
+## 6. Docker y el plugin Compose
 
 Lo necesitas desde la Semana 05. Instala Docker Engine con el repositorio oficial de tu distro
 (<https://docs.docker.com/engine/install/>) o Docker Desktop con integración WSL2. Comprueba que

@@ -6,7 +6,7 @@
 #   3. Todo junto: imágenes construidas, compose levantado y smoke test
 #
 # Uso: ./scripts/check.sh            (desde app/ o desde cualquier sitio)
-#      SIN_COMPOSE=1 ./scripts/check.sh   salta el paso 3
+#      SKIP_COMPOSE=1 ./scripts/check.sh   salta el paso 3
 #
 # Es el mismo script en tu máquina y en el CI propio del bootcamp: lo que
 # pasa aquí pasa allí.
@@ -33,14 +33,14 @@ echo "== 2. Web =="
   pnpm build
 )
 
-if [[ "${SIN_COMPOSE:-}" == 1 ]]; then
-  echo "SIN_COMPOSE=1: se omite el paso 3."
+if [[ "${SKIP_COMPOSE:-}" == 1 ]]; then
+  echo "SKIP_COMPOSE=1: se omite el paso 3."
   exit 0
 fi
 
 echo "== 3. Compose y smoke test =="
-proyecto="tablero-check-$$"
+project="tablero-check-$$"
 # Volumen e imágenes del proyecto temporal se borran al salir, pase lo que pase.
-trap 'docker compose -p "$proyecto" down -v --rmi local --remove-orphans >/dev/null 2>&1 || true' EXIT
-docker compose -p "$proyecto" up --build --wait --quiet-pull
+trap 'docker compose -p "$project" down -v --rmi local --remove-orphans >/dev/null 2>&1 || true' EXIT
+docker compose -p "$project" up --build --wait --quiet-pull
 ./scripts/smoke-test.sh http://127.0.0.1:8080

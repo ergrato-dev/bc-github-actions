@@ -58,7 +58,7 @@ lo levanta un service container (Semana 05).
 
 ```bash
 ./scripts/check.sh              # API, web, imágenes, compose y smoke test
-SIN_COMPOSE=1 ./scripts/check.sh   # sin Docker
+SKIP_COMPOSE=1 ./scripts/check.sh   # sin Docker
 ```
 
 ## Decisiones

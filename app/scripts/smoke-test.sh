@@ -14,12 +14,12 @@ echo "health:"
 curl -fsS "$base/api/health"
 echo
 
-titulo="smoke $(date +%s)"
+title="smoke $(date +%s)"
 id=$(curl -fsS -X POST "$base/api/tasks" -H 'Content-Type: application/json' \
-       -d "{\"title\": \"$titulo\"}" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
+       -d "{\"title\": \"$title\"}" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
 echo "creada la tarea $id"
 
-curl -fsS "$base/api/tasks" | grep -q "$titulo"
+curl -fsS "$base/api/tasks" | grep -q "$title"
 echo "la tarea aparece en el listado"
 
 curl -fsS -X DELETE "$base/api/tasks/$id" -o /dev/null

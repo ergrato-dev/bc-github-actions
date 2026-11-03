@@ -7,11 +7,11 @@
 
 set -euo pipefail
 
-RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CLUSTER="gha"
 
 if ! kind get clusters 2>/dev/null | grep -qx "$CLUSTER"; then
-  kind create cluster --config "$RAIZ/lab/kind-config.yaml" --wait 120s
+  kind create cluster --config "$ROOT/lab/kind-config.yaml" --wait 120s
 fi
 
 kubectl config use-context "kind-${CLUSTER}" >/dev/null
