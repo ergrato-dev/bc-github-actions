@@ -6,8 +6,12 @@ un término sin saber en qué semana apareció.
 
 | Semana | Glosario |
 |:--:|---|
-
-_Todavía no hay semanas publicadas._
+| 01 | [Primer workflow y modelo de ejecución](../bootcamp/week-01-primer_workflow_y_modelo_de_ejecucion/5-glosario/README.md) |
+| 02 | [Expresiones, contextos y flujo de datos](../bootcamp/week-02-expresiones_contextos_y_flujo_de_datos/5-glosario/README.md) |
+| 03 | [CI de Python con uv](../bootcamp/week-03-ci_de_python_con_uv/5-glosario/README.md) |
+| 04 | [CI de frontend con pnpm, matrices y artefactos](../bootcamp/week-04-ci_de_frontend_pnpm_matrices_y_artefactos/5-glosario/README.md) |
+| 05 | [Service containers y PostgreSQL](../bootcamp/week-05-service_containers_y_postgresql/5-glosario/README.md) |
+| 06 | [Imágenes Docker y GHCR](../bootcamp/week-06-imagenes_docker_y_ghcr/5-glosario/README.md) |
 
 Fuente de referencia para los términos oficiales: la
 [documentación de GitHub Actions](https://docs.github.com/en/actions).

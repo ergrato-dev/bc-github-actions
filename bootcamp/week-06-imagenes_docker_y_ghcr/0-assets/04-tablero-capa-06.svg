@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="t06">
+  <title id="t06">Mapa del pipeline de tablero en la capa 06. Los eventos push a main, pull_request y workflow_dispatch disparan cinco workflows a la vez. ci.yml de las capas 01 y 02, ci-api.yml con lint, test e integration contra PostgreSQL 17.11 de las capas 03 y 05, ci-web.yml de la capa 04 y smoke.yml con Compose de la capa 05 siguen sin cambios. El nuevo images.yml tiene un job build en matriz con las imágenes api y web y fail-fast false, y permisos contents read y packages write solo en ese job. Sus steps calculan etiquetas y labels con metadata-action sin latest, crean el builder con setup-buildx-action, inician sesión en GHCR con el GITHUB_TOKEN solo fuera de los pull request, construyen con build-push-action, que publica solo fuera de los pull request y lee y escribe la caché type=gha con un scope por imagen y mode max, y escriben el digest en el resumen del job. El resultado son los paquetes públicos ghcr.io tu-org tablero-api y tablero-web con las etiquetas main y sha corto. En gris, lo que llega después: filtros por carpeta y concurrencia en la Semana 07, SBOM y attestations en la 14 y despliegue por digest a kind en la 17</title>
+  <rect width="960" height="720" fill="#0d1117"/>
+  <defs>
+    <marker id="a06" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a06g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+    <marker id="a06p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d2a8ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 06</text>
+
+    <!-- eventos -->
+    <g font-size="13">
+      <rect x="30" y="230" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="252" fill="#79c0ff" text-anchor="middle">push a main</text>
+      <rect x="30" y="280" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="302" fill="#79c0ff" text-anchor="middle">pull_request</text>
+      <rect x="30" y="330" width="170" height="34" rx="17" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="115" y="352" fill="#79c0ff" text-anchor="middle">workflow_dispatch</text>
+    </g>
+    <path d="M200 297 C 225 297, 225 82, 246 82" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a06)"/>
+    <path d="M200 297 C 225 297, 225 136, 246 136" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a06)"/>
+    <path d="M200 297 C 225 297, 225 190, 246 190" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a06)"/>
+    <path d="M200 297 C 225 297, 225 244, 246 244" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a06)"/>
+    <path d="M200 297 C 225 297, 225 320, 246 320" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a06)"/>
+    <text x="115" y="392" fill="#8b949e" font-size="11" text-anchor="middle">los cinco</text>
+    <text x="115" y="406" fill="#8b949e" font-size="11" text-anchor="middle">a la vez</text>
+
+    <!-- workflows sin cambios -->
+    <g font-size="12">
+      <rect x="250" y="60" width="680" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="270" y="87" fill="#f0f6fc" font-size="15" font-weight="600">ci.yml</text>
+      <text x="370" y="87" fill="#8b949e">runner-info · structure · version → summary</text>
+      <text x="910" y="87" fill="#8b949e" text-anchor="end">capas 01-02</text>
+
+      <rect x="250" y="114" width="680" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="270" y="141" fill="#f0f6fc" font-size="15" font-weight="600">ci-api.yml</text>
+      <text x="370" y="141" fill="#8b949e">lint · test → integration con postgres:17.11-alpine</text>
+      <text x="910" y="141" fill="#8b949e" text-anchor="end">capas 03 y 05</text>
+
+      <rect x="250" y="168" width="680" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="270" y="195" fill="#f0f6fc" font-size="15" font-weight="600">ci-web.yml</text>
+      <text x="370" y="195" fill="#8b949e">lint · test (Node 24 y 26) → build → web-dist → dist-report</text>
+      <text x="910" y="195" fill="#8b949e" text-anchor="end">capa 04</text>
+
+      <rect x="250" y="222" width="680" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="270" y="249" fill="#f0f6fc" font-size="15" font-weight="600">smoke.yml</text>
+      <text x="370" y="249" fill="#8b949e">compose: up --build --wait → smoke-test.sh → down</text>
+      <text x="910" y="249" fill="#8b949e" text-anchor="end">capa 05</text>
+    </g>
+
+    <!-- images.yml -->
+    <rect x="250" y="280" width="680" height="300" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="270" y="308" fill="#2088ff" font-size="15" font-weight="600">images.yml</text>
+    <text x="910" y="308" fill="#2088ff" font-size="12" text-anchor="end">nuevo en esta capa</text>
+
+    <rect x="270" y="322" width="330" height="244" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="286" y="344" fill="#f0f6fc" font-size="14" font-weight="600">build</text>
+    <rect x="336" y="330" width="120" height="22" rx="11" fill="#161b22" stroke="#79c0ff"/>
+    <text x="396" y="345" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">matriz api · web</text>
+    <text x="586" y="345" fill="#d2a8ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="end">packages: write</text>
+
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="286" y="362" width="298" height="30" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="298" y="381" fill="#f0f6fc">metadata-action</text>
+      <text x="572" y="381" fill="#8b949e" text-anchor="end">sha · branch · pr · latest=false</text>
+      <rect x="286" y="398" width="298" height="30" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="298" y="417" fill="#f0f6fc">setup-buildx-action</text>
+      <text x="572" y="417" fill="#8b949e" text-anchor="end">docker-container</text>
+      <rect x="286" y="434" width="298" height="30" rx="5" fill="#161b22" stroke="#e3b341"/>
+      <text x="298" y="453" fill="#f0f6fc">login-action</text>
+      <text x="572" y="453" fill="#e3b341" text-anchor="end">if: != pull_request</text>
+      <rect x="286" y="470" width="298" height="46" rx="5" fill="#161b22" stroke="#2088ff"/>
+      <text x="298" y="489" fill="#f0f6fc">build-push-action</text>
+      <text x="572" y="489" fill="#e3b341" text-anchor="end">push: != pull_request</text>
+      <text x="298" y="507" fill="#d2a8ff">cache type=gha · scope=image · mode=max</text>
+      <rect x="286" y="522" width="298" height="30" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="298" y="541" fill="#f0f6fc">digest → $GITHUB_STEP_SUMMARY</text>
+      <text x="572" y="541" fill="#8b949e" text-anchor="end">por env:</text>
+    </g>
+
+    <!-- GHCR -->
+    <rect x="640" y="322" width="270" height="132" rx="8" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <text x="656" y="346" fill="#3fb950" font-size="14" font-weight="600">GHCR, público</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="656" y="370" fill="#f0f6fc">ghcr.io/&lt;tu-org&gt;/tablero-api</text>
+      <text x="656" y="388" fill="#f0f6fc">ghcr.io/&lt;tu-org&gt;/tablero-web</text>
+      <text x="656" y="412" fill="#8b949e">:main · :sha-1a2b3c4</text>
+      <text x="656" y="432" fill="#3fb950">@sha256:… en el resumen</text>
+    </g>
+    <path d="M584 493 C 615 493, 612 400, 636 400" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a06g)"/>
+    <text x="606" y="436" fill="#3fb950" font-size="11" text-anchor="end">main</text>
+
+    <!-- cache -->
+    <rect x="640" y="474" width="270" height="92" rx="8" fill="#0d1117" stroke="#d2a8ff"/>
+    <text x="656" y="498" fill="#d2a8ff" font-size="14" font-weight="600">Caché de Actions</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="656" y="520" fill="#f0f6fc">index-api · index-web</text>
+      <text x="656" y="540" fill="#8b949e">PR: construye y no publica</text>
+      <text x="656" y="556" fill="#8b949e">lee la caché de main</text>
+    </g>
+    <path d="M584 510 L636 516" stroke="#d2a8ff" stroke-width="2" fill="none" marker-end="url(#a06p)"/>
+
+    <!-- lo que llega después -->
+    <text x="30" y="616" fill="#8b949e" font-size="14" font-weight="600">Lo que llega después</text>
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="651" font-weight="600">Semana 07</text><text x="46" y="670">solo si cambian api/ o web/, con concurrencia</text>
+      <rect x="340" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="651" font-weight="600">Semana 14</text><text x="356" y="670">versiones, SBOM y attestations firmadas</text>
+      <rect x="650" y="628" width="280" height="56" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="651" font-weight="600">Semana 17</text><text x="666" y="670">despliegue a kind por digest</text>
+    </g>
+    <text x="480" y="710" fill="#8b949e" font-size="12" text-anchor="middle">En azul, lo que esta semana crea. En gris, lo que ya existía. En gris discontinuo, lo que añaden las siguientes.</text>
+  </g>
+</svg>

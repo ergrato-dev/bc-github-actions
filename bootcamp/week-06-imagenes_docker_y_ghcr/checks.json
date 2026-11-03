@@ -1,0 +1,125 @@
+{
+  "week": "06",
+  "title": "Imágenes Docker y GHCR",
+  "checks": [
+    {
+      "id": "build-lab-dispatched",
+      "description": "build-lab.yml terminó en success al menos una vez lanzado a mano",
+      "cmd": "gh run list --workflow build-lab.yml --event workflow_dispatch --status success --json databaseId --jq length",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/02-primer-build-en-actions.md, paso 5"
+    },
+    {
+      "id": "images-actionlint",
+      "description": "images.yml pasa actionlint",
+      "cmd": "actionlint .github/workflows/images.yml",
+      "assert": "exit0",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 1"
+    },
+    {
+      "id": "images-matrix",
+      "description": "El job build de images.yml recorre las imágenes api y web con una matriz",
+      "cmd": "yq '.jobs.build.strategy.matrix.image // [] | sort | join(\",\")' .github/workflows/images.yml",
+      "assert": "stdout~^api,web$",
+      "hint": "3-proyecto/starter/.github/workflows/images.yml, TODO 2"
+    },
+    {
+      "id": "images-packages-write",
+      "description": "Solo el job build pide packages: write; la raíz se queda en contents: read",
+      "cmd": "yq '(.permissions.contents // \"\") + \",\" + (.permissions.packages // \"none\") + \",\" + (.jobs.build.permissions.packages // \"\")' .github/workflows/images.yml",
+      "assert": "stdout~^read,none,write$",
+      "hint": "1-teoria/04-ghcr-y-github-token.md, sección 2"
+    },
+    {
+      "id": "images-no-latest",
+      "description": "metadata-action no genera la etiqueta latest",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/metadata-action\")) | .with.flavor // \"\"] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~latest=false",
+      "hint": "3-proyecto/starter/.github/workflows/images.yml, TODO 3"
+    },
+    {
+      "id": "images-sha-tag",
+      "description": "Cada imagen lleva una etiqueta con el SHA del commit (type=sha)",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/metadata-action\")) | .with.tags // \"\"] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~type=sha",
+      "hint": "1-teoria/05-etiquetas-con-metadata-action.md, sección 3"
+    },
+    {
+      "id": "images-login-ghcr",
+      "description": "login-action inicia sesión en ghcr.io con el GITHUB_TOKEN",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/login-action\")) | (.with.registry // \"\") + \" \" + (.with.password // \"\")] | join(\",\")' .github/workflows/images.yml",
+      "assert": "stdout~^ghcr\\.io \\$\\{\\{ *secrets\\.GITHUB_TOKEN *\\}\\}$",
+      "hint": "3-proyecto/starter/.github/workflows/images.yml, TODO 5"
+    },
+    {
+      "id": "images-login-not-on-pr",
+      "description": "El login a GHCR no se ejecuta en los pull requests",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/login-action\")) | .if // \"\"] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~event_name *!= *'pull_request'",
+      "hint": "1-teoria/07-construir-en-pr-publicar-en-main.md, sección 2"
+    },
+    {
+      "id": "images-push-not-on-pr",
+      "description": "build-push-action construye en cada PR pero solo publica fuera de ellos",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/build-push-action\")) | .with.push // \"\" | tostring] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~event_name *!= *'pull_request'",
+      "hint": "3-proyecto/starter/.github/workflows/images.yml, TODO 6"
+    },
+    {
+      "id": "images-tags-from-meta",
+      "description": "build-push-action usa las etiquetas y labels que calcula metadata-action",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/build-push-action\")) | (.with.tags // \"\") + \" \" + (.with.labels // \"\")] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~outputs\\.tags.*outputs\\.labels",
+      "hint": "1-teoria/05-etiquetas-con-metadata-action.md, sección 3"
+    },
+    {
+      "id": "images-cache-gha",
+      "description": "La caché de capas usa type=gha con un scope por imagen, en lectura y en escritura",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/build-push-action\")) | (.with.cache-from // \"\") + \" | \" + (.with.cache-to // \"\")] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~type=gha,.*scope=\\$\\{\\{ *matrix\\.image *\\}\\}.* \\| type=gha,.*scope=\\$\\{\\{ *matrix\\.image *\\}\\}",
+      "hint": "3-proyecto/starter/.github/workflows/images.yml, TODO 8"
+    },
+    {
+      "id": "images-cache-mode-max",
+      "description": "cache-to guarda también las capas de la etapa de build (mode=max)",
+      "cmd": "yq '[.jobs.build.steps[] | select((.uses // \"\") | test(\"docker/build-push-action\")) | .with.cache-to // \"\"] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~mode=max",
+      "hint": "1-teoria/06-cache-de-capas-type-gha.md, sección 2"
+    },
+    {
+      "id": "images-digest-summary",
+      "description": "El digest de cada imagen llega al resumen del job por env:, no interpolado en run:",
+      "cmd": "yq '[.jobs.build.steps[] | select((.run // \"\") | test(\"GITHUB_STEP_SUMMARY\")) | .env // {} | .[]] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~outputs\\.digest",
+      "hint": "3-proyecto/starter/.github/workflows/images.yml, TODO 9"
+    },
+    {
+      "id": "workflows-pinned",
+      "description": "Toda uses: remota de tus workflows está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -hE '^\\s*-?\\s*uses:' .github/workflows/*.yml | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "Semana 01, 2-practicas/04-actionlint-y-sha.md, paso 3"
+    },
+    {
+      "id": "images-green-on-main",
+      "description": "images.yml terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow images.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '.[0].conclusion'",
+      "assert": "stdout~^success$",
+      "hint": "3-proyecto/README.md, Cómo entregarlo, paso 2"
+    },
+    {
+      "id": "ghcr-api-public",
+      "description": "ghcr.io/<tu-org>/tablero-api:main se puede descargar sin iniciar sesión",
+      "cmd": "o=$(gh repo view --json owner --jq '.owner.login | ascii_downcase'); t=$(curl -fsS \"https://ghcr.io/token?scope=repository:$o/tablero-api:pull\" | jq -r .token); curl -sS -o /dev/null -w '%{http_code}' -H \"Authorization: Bearer $t\" -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json' \"https://ghcr.io/v2/$o/tablero-api/manifests/main\"",
+      "assert": "stdout~^200$",
+      "hint": "2-practicas/03-publicar-en-ghcr.md, paso 5"
+    },
+    {
+      "id": "ghcr-web-public",
+      "description": "ghcr.io/<tu-org>/tablero-web:main se puede descargar sin iniciar sesión",
+      "cmd": "o=$(gh repo view --json owner --jq '.owner.login | ascii_downcase'); t=$(curl -fsS \"https://ghcr.io/token?scope=repository:$o/tablero-web:pull\" | jq -r .token); curl -sS -o /dev/null -w '%{http_code}' -H \"Authorization: Bearer $t\" -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json' \"https://ghcr.io/v2/$o/tablero-web/manifests/main\"",
+      "assert": "stdout~^200$",
+      "hint": "2-practicas/04-matriz-y-cache-de-capas.md, paso 6"
+    }
+  ]
+}

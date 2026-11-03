@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t03">
+  <title id="t03">Qué caché type=gha ve cada run de images.yml. La caché de Actions está separada por ref. En refs/heads/main hay un índice para el scope api, otro para el scope web y los blobs de las capas, compartidos por digest. Un push a main lee y escribe en main. Un pull request número 12 lee la caché de main y la de su propio merge ref, y escribe solo en refs/pull/12/merge. main no puede leer lo que escribió el PR 12, y el PR 13 tampoco: solo ve main y lo suyo. Tras fusionar el PR, el siguiente push a main reconstruye lo que cambió y vuelve a llenar la caché de main. Dentro de cada ref, la API y la web usan índices distintos gracias a scope igual a matrix.image</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a03g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+    <marker id="a03y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Caché type=gha: qué ve cada run</text>
+    <text x="480" y="58" fill="#8b949e" font-size="13" text-anchor="middle">cache-from: type=gha,scope=${{ matrix.image }} · cache-to: type=gha,mode=max,scope=${{ matrix.image }}</text>
+
+    <!-- runs -->
+    <g font-size="13">
+      <rect x="30" y="110" width="190" height="56" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="125" y="134" fill="#f0f6fc" font-weight="600" text-anchor="middle">push a main</text>
+      <text x="125" y="153" fill="#8b949e" font-size="11" text-anchor="middle">matriz api · web</text>
+      <rect x="30" y="300" width="190" height="56" rx="8" fill="#161b22" stroke="#2088ff"/>
+      <text x="125" y="324" fill="#f0f6fc" font-weight="600" text-anchor="middle">pull_request #12</text>
+      <text x="125" y="343" fill="#8b949e" font-size="11" text-anchor="middle">rama feature/login</text>
+      <rect x="30" y="460" width="190" height="56" rx="8" fill="#161b22" stroke="#2088ff"/>
+      <text x="125" y="484" fill="#f0f6fc" font-weight="600" text-anchor="middle">pull_request #13</text>
+      <text x="125" y="503" fill="#8b949e" font-size="11" text-anchor="middle">rama hermana</text>
+    </g>
+
+    <!-- cache main -->
+    <rect x="400" y="84" width="300" height="150" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="420" y="108" fill="#3fb950" font-size="14" font-weight="600">Caché de refs/heads/main</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="420" y="122" width="125" height="32" rx="5" fill="#0d1117" stroke="#d2a8ff"/>
+      <text x="482" y="143" fill="#f0f6fc" text-anchor="middle">index-api-…</text>
+      <rect x="555" y="122" width="125" height="32" rx="5" fill="#0d1117" stroke="#d2a8ff"/>
+      <text x="617" y="143" fill="#f0f6fc" text-anchor="middle">index-web-…</text>
+      <rect x="420" y="164" width="260" height="32" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="550" y="185" fill="#f0f6fc" text-anchor="middle">buildkit-blob-1-sha256:… (capas)</text>
+    </g>
+    <text x="550" y="220" fill="#8b949e" font-size="11" text-anchor="middle">la que leen todos los runs del repo</text>
+
+    <!-- cache pr 12 -->
+    <rect x="400" y="290" width="300" height="110" rx="10" fill="#161b22" stroke="#e3b341"/>
+    <text x="420" y="314" fill="#e3b341" font-size="14" font-weight="600">Caché de refs/pull/12/merge</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="420" y="328" width="125" height="32" rx="5" fill="#0d1117" stroke="#d2a8ff"/>
+      <text x="482" y="349" fill="#f0f6fc" text-anchor="middle">index-api-…</text>
+      <rect x="555" y="328" width="125" height="32" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="617" y="349" fill="#f0f6fc" text-anchor="middle">blobs nuevos</text>
+    </g>
+    <text x="550" y="386" fill="#8b949e" font-size="11" text-anchor="middle">solo las capas que cambió el PR</text>
+
+    <!-- push main: lee y escribe main -->
+    <path d="M220 128 L396 128" stroke="#3fb950" stroke-width="2" marker-end="url(#a03g)"/>
+    <text x="308" y="120" fill="#3fb950" font-size="12" text-anchor="middle">cache-to: escribe</text>
+    <path d="M396 150 L224 150" stroke="#79c0ff" stroke-width="2" marker-end="url(#a03)"/>
+    <text x="308" y="168" fill="#79c0ff" font-size="12" text-anchor="middle">cache-from: lee</text>
+
+    <!-- pr 12 -->
+    <path d="M220 310 C 300 310, 320 200, 396 200" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <text x="250" y="262" fill="#79c0ff" font-size="12">lee main</text>
+    <path d="M220 340 L396 340" stroke="#e3b341" stroke-width="2" marker-end="url(#a03y)"/>
+    <text x="308" y="360" fill="#e3b341" font-size="12" text-anchor="middle">lee y escribe lo suyo</text>
+
+    <!-- pr 13 -->
+    <path d="M220 475 C 330 475, 340 230, 396 220" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <text x="250" y="450" fill="#79c0ff" font-size="12">lee main</text>
+    <path d="M220 500 C 300 500, 330 400, 398 392" stroke="#f85149" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+    <text x="232" y="540" fill="#f85149" font-size="12">no ve la del PR 12</text>
+
+    <!-- main no ve pr -->
+    <path d="M550 234 L550 286" stroke="#f85149" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="562" y="266" fill="#f85149" font-size="12">main no lee la del PR</text>
+
+    <!-- notas -->
+    <rect x="730" y="84" width="200" height="316" rx="10" fill="#0d1117" stroke="#30363d"/>
+    <text x="746" y="110" fill="#f0f6fc" font-size="13" font-weight="600">Por qué así</text>
+    <g font-size="12" fill="#8b949e">
+      <text x="746" y="136">Un scope por imagen: la</text>
+      <text x="746" y="152">API y la web no pisan el</text>
+      <text x="746" y="168">índice de la otra.</text>
+      <text x="746" y="198">Los blobs se guardan por</text>
+      <text x="746" y="214">digest: una capa idéntica</text>
+      <text x="746" y="230">ocupa un solo hueco.</text>
+      <text x="746" y="260">El primer build de un PR</text>
+      <text x="746" y="276">sale rápido si main está</text>
+      <text x="746" y="292">caliente.</text>
+      <text x="746" y="322">Tras fusionar, el push a</text>
+      <text x="746" y="338">main reconstruye lo que</text>
+      <text x="746" y="354">cambió y rellena la caché</text>
+      <text x="746" y="370">que comparten todos.</text>
+    </g>
+
+    <rect x="400" y="440" width="530" height="90" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="420" y="466" fill="#f0f6fc" font-size="13" font-weight="600">mode=max frente a mode=min</text>
+    <text x="420" y="490" fill="#8b949e" font-size="12">min guarda solo las capas de la imagen final. max guarda también la etapa build,</text>
+    <text x="420" y="508" fill="#8b949e" font-size="12">donde viven uv sync y pnpm install: las capas que más tardan en cada commit.</text>
+
+    <text x="480" y="580" fill="#8b949e" font-size="12" text-anchor="middle">En verde, la caché de main. En amarillo, la de un PR. En rojo discontinuo, lo que no se ve.</text>
+  </g>
+</svg>

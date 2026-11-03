@@ -141,7 +141,7 @@ while IFS= read -r file; do
   in_scope "$file" || continue
   while IFS= read -r line; do
     ref=$(sed -E 's/^[[:space:]-]*image:[[:space:]]*//; s/[[:space:]]+#.*$//; s/["'\'']//g' <<<"$line")
-    case "$ref" in *'<'*|*'$'*|*'{{'*) continue ;; esac   # placeholders y expresiones
+    case "$ref" in *'<'*|*'$'*|*'{{'*|'['*) continue ;; esac   # placeholders, expresiones y listas de matriz
     last="${ref##*/}"
     if { [[ "$last" != *:* ]] && [[ "$ref" != *@sha256:* ]]; } || [[ "$last" == *:latest ]]; then
       echo "IMAGEN SIN VERSION: $file: $line"; fail=1

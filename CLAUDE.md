@@ -110,7 +110,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 | 03 ✅ | `week-03-ci_de_python_con_uv` | CI de Python con uv |
 | 04 ✅ | `week-04-ci_de_frontend_pnpm_matrices_y_artefactos` | CI de frontend con pnpm, matrices y artefactos |
 | 05 ✅ | `week-05-service_containers_y_postgresql` | Service containers y PostgreSQL |
-| 06 | `week-06-imagenes_docker_y_ghcr` | Imágenes Docker y GHCR |
+| 06 ✅ | `week-06-imagenes_docker_y_ghcr` | Imágenes Docker y GHCR |
 | 07 | `week-07-disparadores_filtros_y_concurrencia` | Disparadores, filtros y concurrencia |
 | 08 | `week-08-probar_y_depurar_workflows` | Probar y depurar workflows |
 | 09 | `week-09-workflows_reutilizables` | Workflows reutilizables |

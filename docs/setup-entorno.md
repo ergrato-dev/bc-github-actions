@@ -154,6 +154,14 @@ docker compose version
 # Docker Compose version v5.6.1
 ```
 
+Desde la Semana 06 construyes con BuildKit a través de buildx, que también es un plugin y viene
+con Docker Engine y con Docker Desktop:
+
+```bash
+docker buildx version
+# github.com/docker/buildx v0.38.1 ...
+```
+
 ### WSL2: memoria
 
 WSL2 usa por defecto la mitad de la RAM de Windows. Hasta la Semana 15 te sobra. Desde la 16, kind

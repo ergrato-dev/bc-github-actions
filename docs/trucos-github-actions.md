@@ -77,6 +77,23 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **`healthy` no es `migrado`**: `pg_isready` dice que PostgreSQL acepta conexiones, no que tu
   esquema exista. Las migraciones son un step aparte, antes de los tests.
 
+## Semana 06 — [Imágenes Docker y GHCR](../bootcamp/week-06-imagenes_docker_y_ghcr/README.md)
+
+- **`docker buildx imagetools inspect ghcr.io/<tu-org>/tablero-api:main`** enseña el índice y sus
+  manifiestos sin descargar ni una capa. Ahí ves que la entrada `unknown/unknown` que muestra la UI
+  de GHCR no es una plataforma rota: es el manifiesto de la attestation de procedencia.
+- **El resumen de build de `build-push-action`** aparece solo en el resumen del run, con la
+  duración, las capas cacheadas y un artefacto `.dockerbuild` que abre Docker Desktop. Si no lo
+  quieres, `DOCKER_BUILD_SUMMARY: false` en el `env:` del step.
+- **`gh api /orgs/<tu-org>/packages/container/tablero-api/versions --jq '.[0].metadata.container.tags'`**
+  lista las etiquetas de la última versión publicada. Necesita el scope `read:packages`:
+  `gh auth refresh -s read:packages`.
+- **El digest también vale en local**: `docker buildx build --metadata-file meta.json` y
+  `jq -r '."containerimage.digest"' meta.json` te dan lo mismo que el output `digest` de la action.
+- **`mode=max` frente a `mode=min`**: el modo por defecto solo cachea las capas de la imagen final.
+  En un multi-stage eso deja fuera el `uv sync` y el `pnpm install` de la etapa de build, que son
+  justo las capas que más tardan.
+
 ---
 
 | ← Anterior | Siguiente → |

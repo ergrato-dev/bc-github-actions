@@ -1,0 +1,63 @@
+# images.yml — capa 06 de tablero: imágenes tablero-api y tablero-web construidas en cada PR y
+# publicadas en GHCR desde main, con caché de capas y digest en el resumen.
+# Cópialo a .github/workflows/images.yml de <tu-org>/tablero y completa los TODO.
+# Tal como está pasa actionlint, construye solo la API y no publica nada: los checks fallan.
+name: images
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Imagen tablero-${{ matrix.image }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      # TODO 1: el GITHUB_TOKEN de este job necesita escribir en GHCR. Añade el permiso.
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO 2: una entrada por carpeta de app/ que tiene Dockerfile.
+        image: [api]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Calcular etiquetas y labels
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/tablero-${{ matrix.image }}
+          # TODO 3: desactiva la etiqueta latest con flavor.
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            # TODO 4: añade la etiqueta con el SHA corto del commit.
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # TODO 5: inicia sesión en ghcr.io con docker/login-action (v4.7.0, fijada por SHA) y el
+      # GITHUB_TOKEN, solo cuando el evento no sea un pull request.
+
+      - name: Construir y, fuera de los PR, publicar
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ matrix.image }}
+          # TODO 6: publica solo cuando el evento no sea un pull request.
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          # TODO 7: pasa también los labels OCI que calcula metadata-action.
+          # TODO 8: lee y escribe la caché de capas en el backend gha, un scope por imagen y
+          # guardando también las etapas intermedias.
+
+      # TODO 9: escribe el digest de la imagen en $GITHUB_STEP_SUMMARY. El output del step build
+      # entra por env:, nunca interpolado dentro de run:.

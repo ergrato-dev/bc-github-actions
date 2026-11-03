@@ -20,6 +20,10 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | `actions/setup-node` | v7.1.0 | `949feb2413d6458794dcd2491c4babbbce0c15c1` | 04 | `resolve-sha.sh` (2026-11-02). Input `node-version` comprobado en su `action.yml` |
 | `actions/upload-artifact` | v7.0.2 | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` | 04 | `resolve-sha.sh` (2026-11-02). Runtime node24 |
 | `actions/download-artifact` | v8.0.2 | `9000827ccba6bdab643e8b6fd33ac0654aef8333` | 04 | `resolve-sha.sh` (2026-11-02). Runtime node24 |
+| `docker/setup-buildx-action` | v4.4.1 | `f87e5991a6d7451dcb8d9637bfbc97413f497069` | 06 | `resolve-sha.sh` (2026-11-02). Release del 2026-09-16, runtime node24. Driver por defecto `docker-container` |
+| `docker/metadata-action` | v6.2.0 | `dc802804100637a589fabce1cb79ff13a1411302` | 06 | `resolve-sha.sh` (2026-11-02). Inputs `images`, `tags`, `flavor`; outputs `tags`, `labels`, `version`. Pasa el nombre de la imagen a minúsculas |
+| `docker/login-action` | v4.7.0 | `81c6f93d4bc991e510b342a00b419b3bb4efc5c6` | 06 | `resolve-sha.sh` (2026-11-02). Release del 2026-10-23. Inputs `registry`, `username`, `password` |
+| `docker/build-push-action` | v7.4.0 | `c3c9e263c25d99ce0380d002d59b67737d91b0dc` | 06 | `resolve-sha.sh` (2026-11-02). Release del 2026-09-15. Inputs `context`, `push`, `load`, `tags`, `labels`, `cache-from`, `cache-to`; outputs `digest`, `imageid`, `metadata`. `push` y `load` valen `false` por defecto |
 
 ### Herramientas
 
@@ -36,6 +40,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | Node | 26 LTS (26.13.0); la web admite `>=24` (24.22.2, LTS Krypton) y el CI prueba las dos | 04 | `nodejs.org/dist/index.json`: 26.13.0, línea LTS "Lithium" (2026-11-02). Instalado con `pnpm runtime set node 26 -g`, probado |
 | Python | 3.15 (3.15.2) | 03 | endoflife.date (2026-11-02). Lo instala uv según `.python-version` |
 | Docker Engine | 29.9.2 como referencia | 05 | moby v29.9.2 (2026-10-20) |
+| Docker buildx | v0.38.1 como referencia | 06 | `docker buildx version` en el equipo del autor (2026-11-02). Plugin que viene con Docker Engine |
 | Docker Compose | v5.6.1 como referencia | 05 | `docker compose version` en el equipo del autor (2026-11-02). Plugin, nunca `docker-compose`. El runner `ubuntu-24.04` (imagen 20261026.354.1) trae Docker 28.0.4 y Compose 2.38.2 <!-- antipatron --> |
 | kind | v0.33.0 | 16 | Release del 2026-08-26 |
 | Nodo de kind | `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5` | 16 | Imagen por defecto de kind v0.33.0; el mismo digest que fija bc-kubernetes (2026-10-30) |
@@ -70,10 +75,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Pieza | Vigente (2026-11-02) | Semana | Nota |
 |---|---|:--:|---|
-| `docker/setup-buildx-action` | v4.4.1 | 06 | |
-| `docker/build-push-action` | v7.4.0 | 06 | |
-| `docker/metadata-action` | v6.2.0 | 06 | |
-| `docker/login-action` | v4.7.0 | 06 | |
 | `actions/github-script` | v9.0.0 | 07 | |
 | act | v0.2.94 | 08 | `act_Linux_x86_64.tar.gz`. Comprobar qué imagen usa para `ubuntu-24.04` |
 | `googleapis/release-please-action` | v5.0.0 | 14 | |

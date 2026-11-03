@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t01">
+  <title id="t01">Cómo se enlazan las piezas de una imagen en GHCR. Las etiquetas main y sha-1a2b3c4 apuntan al índice sha256:4e7a; main apuntaba antes a otro índice y se movió con el último push. El índice lista dos manifiestos: el de linux/amd64 y el de la attestation de procedencia, con plataforma unknown/unknown, que apunta al primero. El manifiesto linux/amd64 cita por digest la configuración y las capas en orden: la base de Python, el usuario, el directorio de trabajo y el /app con el entorno virtual y el código. Todo lo que está a la derecha de las etiquetas se identifica por el hash de su contenido y no se puede mover</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a01y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker>
+    <marker id="a01p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d2a8ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Etiqueta, índice, manifiesto y capas</text>
+    <text x="480" y="58" fill="#8b949e" font-size="13" text-anchor="middle">ghcr.io/&lt;tu-org&gt;/tablero-api</text>
+
+    <!-- columnas -->
+    <text x="110" y="96" fill="#e3b341" font-size="13" font-weight="600" text-anchor="middle">Etiquetas: se mueven</text>
+    <text x="580" y="96" fill="#3fb950" font-size="13" font-weight="600" text-anchor="middle">Todo lo demás: direccionado por contenido, no se mueve</text>
+    <line x1="220" y1="84" x2="220" y2="540" stroke="#30363d" stroke-dasharray="4 4"/>
+
+    <!-- etiquetas -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">
+      <rect x="40" y="170" width="140" height="36" rx="18" fill="#161b22" stroke="#e3b341"/>
+      <text x="110" y="193" fill="#e3b341" text-anchor="middle">:main</text>
+      <rect x="40" y="226" width="140" height="36" rx="18" fill="#161b22" stroke="#e3b341"/>
+      <text x="110" y="249" fill="#e3b341" text-anchor="middle">:sha-1a2b3c4</text>
+    </g>
+    <path d="M180 188 C 210 188, 220 220, 246 220" stroke="#e3b341" stroke-width="2" fill="none" marker-end="url(#a01y)"/>
+    <path d="M180 244 C 210 244, 220 226, 246 226" stroke="#e3b341" stroke-width="2" fill="none" marker-end="url(#a01y)"/>
+
+    <!-- índice anterior -->
+    <rect x="40" y="110" width="140" height="40" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+    <text x="110" y="128" fill="#8b949e" font-size="11" text-anchor="middle">índice del push anterior</text>
+    <text x="110" y="143" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">sha256:91f0…</text>
+    <path d="M110 170 L110 156" stroke="#8b949e" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+    <text x="40" y="300" fill="#8b949e" font-size="12">Un push nuevo mueve</text>
+    <text x="40" y="316" fill="#8b949e" font-size="12">:main a otro índice.</text>
+    <text x="40" y="340" fill="#8b949e" font-size="12">:sha-1a2b3c4 no se</text>
+    <text x="40" y="356" fill="#8b949e" font-size="12">reutiliza, pero quien</text>
+    <text x="40" y="372" fill="#8b949e" font-size="12">tenga escritura podría</text>
+    <text x="40" y="388" fill="#8b949e" font-size="12">reescribirla.</text>
+
+    <!-- índice -->
+    <rect x="250" y="170" width="200" height="110" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="350" y="196" fill="#2088ff" font-size="15" font-weight="600" text-anchor="middle">Índice</text>
+    <text x="350" y="218" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">sha256:4e7a…</text>
+    <text x="350" y="240" fill="#8b949e" font-size="11" text-anchor="middle">image.index.v1+json</text>
+    <text x="350" y="262" fill="#3fb950" font-size="11" text-anchor="middle">el output digest del build</text>
+
+    <path d="M450 205 C 480 205, 480 150, 506 150" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M450 250 C 480 250, 480 400, 506 400" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+
+    <!-- manifiesto amd64 -->
+    <rect x="510" y="110" width="200" height="90" rx="8" fill="#161b22" stroke="#2088ff"/>
+    <text x="610" y="134" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">Manifiesto</text>
+    <text x="610" y="154" fill="#79c0ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">linux/amd64</text>
+    <text x="610" y="174" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">sha256:b19c…</text>
+    <text x="610" y="191" fill="#8b949e" font-size="11" text-anchor="middle">image.manifest.v1+json</text>
+
+    <!-- attestation -->
+    <rect x="510" y="360" width="200" height="90" rx="8" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="610" y="384" fill="#d2a8ff" font-size="14" font-weight="600" text-anchor="middle">Attestation</text>
+    <text x="610" y="404" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">unknown/unknown</text>
+    <text x="610" y="424" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" text-anchor="middle">sha256:7d02…</text>
+    <text x="610" y="441" fill="#8b949e" font-size="11" text-anchor="middle">procedencia SLSA</text>
+    <path d="M610 360 L610 206" stroke="#d2a8ff" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#a01p)"/>
+    <text x="620" y="290" fill="#d2a8ff" font-size="11">reference.digest</text>
+    <text x="620" y="305" fill="#d2a8ff" font-size="11">= sha256:b19c…</text>
+
+    <!-- config y capas -->
+    <path d="M710 140 L746 140" stroke="#79c0ff" stroke-width="2" marker-end="url(#a01)"/>
+    <path d="M710 175 C 728 175, 728 214, 746 214" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+
+    <rect x="750" y="116" width="180" height="48" rx="6" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="840" y="136" fill="#d2a8ff" font-size="13" font-weight="600" text-anchor="middle">Configuración</text>
+    <text x="840" y="154" fill="#8b949e" font-size="11" text-anchor="middle">ENV · USER · CMD · labels</text>
+
+    <text x="840" y="204" fill="#f0f6fc" font-size="13" font-weight="600" text-anchor="middle">Capas, en orden</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="750" y="214" width="180" height="34" rx="4" fill="#0d1117" stroke="#30363d"/>
+      <text x="760" y="235" fill="#8b949e">python:3.15.2-slim</text>
+      <rect x="750" y="252" width="180" height="34" rx="4" fill="#0d1117" stroke="#30363d"/>
+      <text x="760" y="273" fill="#8b949e">… capas de la base</text>
+      <rect x="750" y="290" width="180" height="34" rx="4" fill="#0d1117" stroke="#30363d"/>
+      <text x="760" y="311" fill="#f0f6fc">RUN useradd</text>
+      <rect x="750" y="328" width="180" height="34" rx="4" fill="#0d1117" stroke="#30363d"/>
+      <text x="760" y="349" fill="#f0f6fc">WORKDIR /app</text>
+      <rect x="750" y="366" width="180" height="34" rx="4" fill="#0d1117" stroke="#2088ff"/>
+      <text x="760" y="387" fill="#f0f6fc">COPY /app · 42.7MB</text>
+    </g>
+    <text x="840" y="424" fill="#8b949e" font-size="11" text-anchor="middle">cada una: sha256 de su tar</text>
+
+    <!-- pie -->
+    <rect x="40" y="480" width="880" height="72" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="60" y="508" fill="#f0f6fc" font-size="13">Cambiar un byte de una capa cambia su digest, que cambia el manifiesto, que cambia el índice.</text>
+    <text x="60" y="532" fill="#f0f6fc" font-size="13">Por eso</text>
+    <text x="116" y="532" fill="#3fb950" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-api@sha256:4e7a…</text>
+    <text x="304" y="532" fill="#f0f6fc" font-size="13">es siempre la misma imagen, y</text>
+    <text x="494" y="532" fill="#e3b341" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace">:main</text>
+    <text x="538" y="532" fill="#f0f6fc" font-size="13">no.</text>
+    <text x="480" y="584" fill="#8b949e" font-size="12" text-anchor="middle">En amarillo, punteros que se mueven. En azul y morado, piezas identificadas por su hash.</text>
+  </g>
+</svg>

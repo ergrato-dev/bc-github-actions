@@ -25,7 +25,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 | Semana | Tema | Estado |
 |:--:|---|:--:|
 | [05](week-05-service_containers_y_postgresql/README.md) | Service containers y PostgreSQL | ✅ |
-| 06 | Imágenes Docker y GHCR | ⬜ |
+| [06](week-06-imagenes_docker_y_ghcr/README.md) | Imágenes Docker y GHCR | ✅ |
 | 07 | Disparadores, filtros y concurrencia | ⬜ |
 | 08 | Probar y depurar workflows | ⬜ |
 

@@ -78,7 +78,7 @@ Equipo: Linux o WSL2 con Docker, **8 GB de RAM** (16 GB recomendados desde la Se
 | [03](bootcamp/week-03-ci_de_python_con_uv/README.md) | CI de Python con uv |
 | [04](bootcamp/week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md) | CI de frontend con pnpm, matrices y artefactos |
 | [05](bootcamp/week-05-service_containers_y_postgresql/README.md) | Service containers y PostgreSQL |
-| 06 | Imágenes Docker y GHCR |
+| [06](bootcamp/week-06-imagenes_docker_y_ghcr/README.md) | Imágenes Docker y GHCR |
 | 07 | Disparadores, filtros y concurrencia |
 | 08 | Probar y depurar workflows |
 | 09 | Workflows reutilizables |
