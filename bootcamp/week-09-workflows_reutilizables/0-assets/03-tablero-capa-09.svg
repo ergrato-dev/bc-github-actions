@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 840" xml:space="preserve" role="img" aria-labelledby="t09">
+  <title id="t09">Mapa del pipeline de tablero en la capa 09. Arriba, sin cambios desde la capa 08: ci.yml, smoke.yml, nightly.yml y lint-workflows.yml. En el centro, a la izquierda, los tres llamadores, que ahora solo deciden cuándo corren y con qué inputs: ci-api.yml, con paths api y _python.yml, concurrency y un único job api que llama a _python.yml; ci-web.yml, con paths web y _node.yml, el job web que llama a _node.yml y el job dist-report, que descarga el artefacto cuyo nombre devuelve el reutilizable; images.yml, con paths api, web e _image.yml, los jobs api y web que llaman a _image.yml concediendo packages write y pasando registry-password de forma explícita, y el job summary, que recibe los dos digests por env. A la derecha, los tres reutilizables, que solo se disparan con workflow_call: _python.yml con los inputs working-directory, package, coverage-min e integration y los jobs lint, test e integration, este último solo si integration es true; _node.yml con working-directory, node-versions como lista JSON y artifact-name, los jobs lint, test en matriz con fromJSON y build, y el output artifact-name; _image.yml con image y push, el secreto obligatorio registry-password, el job build y el output digest. Cada job de los reutilizables lleva su timeout-minutes. Debajo, lint-workflows.yml valida las llamadas: actionlint lee los reutilizables locales y comprueba inputs y secretos, y zizmor bloquea secrets inherit. En gris, lo que llega después: actions composite en la Semana 10, el repo central actions-tablero con referencias por SHA en la 11 y permisos a fondo en la 12</title>
+  <rect width="960" height="840" fill="#0d1117"/>
+  <defs>
+    <marker id="a09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+    <marker id="a09g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 09</text>
+
+    <!-- sin cambios -->
+    <rect x="30" y="58" width="900" height="56" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="80" fill="#8b949e" font-size="12" font-weight="600">capas 01-08, sin cambios</text>
+    <g font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#f0f6fc">
+      <text x="46" y="102">ci.yml</text><text x="196" y="102">smoke.yml</text><text x="366" y="102">nightly.yml</text><text x="546" y="102">lint-workflows.yml</text>
+    </g>
+
+    <!-- columnas -->
+    <text x="30" y="144" fill="#f0f6fc" font-size="14" font-weight="600">Llamadores: cuándo y con qué</text>
+    <text x="930" y="144" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Reutilizables: on: workflow_call · nuevos en esta capa</text>
+
+    <!-- ci-api -->
+    <rect x="30" y="156" width="330" height="140" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="180" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci-api.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="202" fill="#e3b341">paths: api/** · ci-api.yml · _python.yml</text>
+      <text x="46" y="220" fill="#8b949e">concurrency · contents: read</text>
+      <rect x="46" y="232" width="298" height="48" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="58" y="252" fill="#f0f6fc">api · name: API</text>
+      <text x="58" y="270" fill="#79c0ff">with: api · tablero · coverage 60</text>
+    </g>
+
+    <!-- ci-web -->
+    <rect x="30" y="316" width="330" height="160" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="340" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci-web.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="362" fill="#e3b341">paths: web/** · ci-web.yml · _node.yml</text>
+      <rect x="46" y="372" width="298" height="44" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="58" y="390" fill="#f0f6fc">web · name: Web</text>
+      <text x="58" y="406" fill="#79c0ff">node-versions: "[24, 26]"</text>
+      <rect x="46" y="424" width="298" height="40" rx="5" fill="#0d1117" stroke="#3fb950"/>
+      <text x="58" y="441" fill="#f0f6fc">dist-report · needs: web</text>
+      <text x="58" y="456" fill="#3fb950">needs.web.outputs.artifact-name</text>
+    </g>
+
+    <!-- images -->
+    <rect x="30" y="496" width="330" height="200" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="520" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">images.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="542" fill="#e3b341">paths: api/** · web/** · _image.yml</text>
+      <rect x="46" y="552" width="298" height="44" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="58" y="570" fill="#f0f6fc">api · packages: write</text>
+      <text x="58" y="586" fill="#d2a8ff">registry-password: GITHUB_TOKEN</text>
+      <rect x="46" y="602" width="298" height="44" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="58" y="620" fill="#f0f6fc">web · packages: write</text>
+      <text x="58" y="636" fill="#d2a8ff">registry-password: GITHUB_TOKEN</text>
+      <rect x="46" y="652" width="298" height="34" rx="5" fill="#0d1117" stroke="#3fb950"/>
+      <text x="58" y="673" fill="#3fb950">summary · env: los dos digests</text>
+    </g>
+
+    <!-- _python -->
+    <rect x="460" y="156" width="470" height="140" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="476" y="180" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">_python.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="476" y="202" fill="#79c0ff">working-directory · package (string)</text>
+      <text x="476" y="218" fill="#79c0ff">coverage-min (number) · integration (boolean)</text>
+      <rect x="476" y="232" width="120" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="488" y="252" fill="#f0f6fc">lint</text><text x="488" y="270" fill="#8b949e">10 min</text>
+      <rect x="606" y="232" width="120" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="618" y="252" fill="#f0f6fc">test</text><text x="618" y="270" fill="#8b949e">10 min</text>
+      <rect x="736" y="232" width="178" height="48" rx="5" fill="#0d1117" stroke="#e3b341"/>
+      <text x="748" y="252" fill="#f0f6fc">integration</text><text x="748" y="270" fill="#e3b341">if: inputs.integration</text>
+    </g>
+
+    <!-- _node -->
+    <rect x="460" y="316" width="470" height="160" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="476" y="340" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">_node.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="476" y="362" fill="#79c0ff">working-directory · node-versions (JSON) · artifact-name</text>
+      <rect x="476" y="372" width="134" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="488" y="392" fill="#f0f6fc">lint</text><text x="488" y="410" fill="#8b949e">10 min</text>
+      <rect x="620" y="372" width="150" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="632" y="392" fill="#f0f6fc">test · Node 24, 26</text><text x="632" y="410" fill="#8b949e">fromJSON(...)</text>
+      <rect x="780" y="372" width="134" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="792" y="392" fill="#f0f6fc">build</text><text x="792" y="410" fill="#8b949e">artefacto</text>
+      <text x="476" y="450" fill="#3fb950">output: artifact-name</text>
+      <text x="476" y="466" fill="#8b949e">← jobs.build.outputs.artifact-name</text>
+    </g>
+
+    <!-- _image -->
+    <rect x="460" y="496" width="470" height="200" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="476" y="520" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">_image.yml</text>
+    <text x="914" y="520" fill="#8b949e" font-size="11" text-anchor="end">llamado dos veces</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="476" y="542" fill="#79c0ff">image (string) · push (boolean)</text>
+      <text x="476" y="560" fill="#d2a8ff">secret: registry-password (required)</text>
+      <text x="476" y="578" fill="#e3b341">permissions: contents: read · packages: write</text>
+      <rect x="476" y="592" width="438" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="488" y="612" fill="#f0f6fc">build · Imagen tablero-&lt;image&gt;</text><text x="488" y="630" fill="#8b949e">30 min · login solo si push · build-push</text>
+      <text x="476" y="664" fill="#3fb950">output: digest</text>
+      <text x="476" y="680" fill="#8b949e">← jobs.build.outputs.digest</text>
+    </g>
+
+    <!-- llamadas -->
+    <path d="M344 256 L456 256" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a09)"/>
+    <path d="M344 394 L456 394" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a09)"/>
+    <path d="M344 574 L456 574" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a09)"/>
+    <path d="M344 624 L456 574" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a09)"/>
+    <text x="400" y="248" fill="#2088ff" font-size="11" text-anchor="middle">uses: ./</text>
+    <!-- outputs de vuelta -->
+    <path d="M472 446 L348 444" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a09g)"/>
+    <path d="M472 660 L348 669" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a09g)"/>
+
+    <!-- puerta -->
+    <rect x="30" y="716" width="900" height="44" rx="8" fill="#0d1117" stroke="#e3b341"/>
+    <text x="46" y="743" fill="#e3b341" font-size="12" font-weight="600">lint-workflows.yml</text>
+    <text x="186" y="743" fill="#f0f6fc" font-size="12">actionlint lee los ./ y valida inputs y secretos de cada llamada · zizmor bloquea secrets: inherit</text>
+
+    <!-- lo que llega después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="772" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="799"><tspan font-weight="600">Semana 10</tspan> · setup en actions composite</text>
+      <rect x="340" y="772" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="799"><tspan font-weight="600">Semana 11</tspan> · actions-tablero por SHA</text>
+      <rect x="650" y="772" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="799"><tspan font-weight="600">Semana 12</tspan> · permisos a fondo</text>
+    </g>
+    <text x="480" y="832" fill="#8b949e" font-size="11" text-anchor="middle">Azul: llamadas. Verde: outputs de vuelta. Morado: secretos. Amarillo: filtros, permisos y la puerta. Gris discontinuo: lo que añaden las siguientes.</text>
+  </g>
+</svg>

@@ -12,6 +12,9 @@ un término sin saber en qué semana apareció.
 | 04 | [CI de frontend con pnpm, matrices y artefactos](../bootcamp/week-04-ci_de_frontend_pnpm_matrices_y_artefactos/5-glosario/README.md) |
 | 05 | [Service containers y PostgreSQL](../bootcamp/week-05-service_containers_y_postgresql/5-glosario/README.md) |
 | 06 | [Imágenes Docker y GHCR](../bootcamp/week-06-imagenes_docker_y_ghcr/5-glosario/README.md) |
+| 07 | [Disparadores, filtros y concurrencia](../bootcamp/week-07-disparadores_filtros_y_concurrencia/5-glosario/README.md) |
+| 08 | [Probar y depurar workflows](../bootcamp/week-08-probar_y_depurar_workflows/5-glosario/README.md) |
+| 09 | [Workflows reutilizables](../bootcamp/week-09-workflows_reutilizables/5-glosario/README.md) |
 
 Fuente de referencia para los términos oficiales: la
 [documentación de GitHub Actions](https://docs.github.com/en/actions).

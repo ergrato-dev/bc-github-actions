@@ -1,0 +1,55 @@
+# ci-web.yml — capa 09 de tablero. Sustituye a tu .github/workflows/ci-web.yml.
+# Los jobs viven ahora en _node.yml, salvo dist-report, que consume lo que _node.yml devuelve.
+name: ci-web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/ci-web.yml"
+  # TODO 9: añade _node.yml a paths (aquí y en pull_request) y, en dist-report, descarga el
+  # artefacto cuyo nombre devuelve el job web en su output artifact-name.
+  pull_request:
+    paths:
+      - "web/**"
+      - ".github/workflows/ci-web.yml"
+  workflow_dispatch:
+
+# Un run por workflow y ref: en un PR, el push nuevo cancela el run anterior;
+# en main cada commit termina su run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Web
+    uses: ./.github/workflows/_node.yml # zizmor: ignore[self-repository] actionlint 1.7.12 no admite $/
+    with:
+      working-directory: web
+      artifact-name: web-dist
+
+  dist-report:
+    name: Informe de dist
+    needs: web
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: web-dist
+          path: dist
+      - name: Tamaño de cada archivo
+        run: |
+          {
+            echo "## web/dist"
+            echo
+            echo '```'
+            du -ah dist | sort -h
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,65 @@
+# _image.yml — capa 09 de tablero. Cópialo a .github/workflows/_image.yml.
+# Reutilizable con el job build de images de la capa 07, para una sola imagen.
+name: _image
+
+on:
+  workflow_call:
+    inputs:
+      component:
+        description: Carpeta con el Dockerfile; la imagen se llama tablero-<component>
+        type: string
+        required: true
+      push:
+        description: Publicar la imagen en GHCR además de construirla
+        type: boolean
+        default: false
+    # TODO 6: declara el secreto registry-password (obligatorio) y úsalo en el login a GHCR.
+    # TODO 7: devuelve como output digest el digest que calcula el step build.
+
+# Techo de permisos del reutilizable: el llamador puede dar menos, nunca más.
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Imagen tablero-${{ inputs.component }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Calcular etiquetas y labels
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/tablero-${{ inputs.component }}
+          flavor: |
+            latest=false
+          tags: |
+            type=sha
+            type=ref,event=branch
+            type=ref,event=pr
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Iniciar sesión en GHCR
+        if: ${{ inputs.push }}
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y, si se pide, publicar
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ inputs.component }}
+          push: ${{ inputs.push }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ inputs.component }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.component }}

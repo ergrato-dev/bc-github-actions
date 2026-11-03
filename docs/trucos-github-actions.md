@@ -128,6 +128,21 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **Las anotaciones viven en la API**: `gh api repos/{owner}/{repo}/check-runs/<job-id>/annotations`
   te las da en JSON, con archivo y línea, para un informe o un script.
 
+## Semana 09 — [Workflows reutilizables](../bootcamp/week-09-workflows_reutilizables/README.md)
+
+- **`gh run view <id> --json jobs --jq '.jobs[].name'`** enseña los jobs de un reutilizable con
+  su prefijo, `API / Tests unitarios`: así filtras con `grep 'API /'` lo que vino de una llamada
+  concreta.
+- **`actionlint` valida la llamada local**: si pasas un input que `_python.yml` no declara, u
+  olvidas uno obligatorio, falla antes del push. Con una referencia remota (`owner/repo/...@sha`)
+  no puede leer el reutilizable y esa comprobación se pierde.
+- **`act` ejecuta los reutilizables locales**: `scripts/ci-local.sh ci-api api` corre los tres
+  jobs de `_python.yml` en tu Docker y los nombra `API/_python/<job>`.
+- **Un input `string` con JSON** es la forma de pasar listas: `node-versions: "[24, 26]"` y, dentro,
+  `${{ fromJSON(inputs.node-versions) }}`. `workflow_call` no tiene tipo lista.
+- **`zizmor` caza `secrets: inherit`** con la auditoría `secrets-inherit`, sin red y con la
+  persona por defecto: la puerta de la Semana 08 ya lo bloquea.
+
 ---
 
 | ← Anterior | Siguiente → |

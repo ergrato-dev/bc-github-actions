@@ -1,0 +1,115 @@
+# _python.yml — capa 09 de tablero. Cópialo a .github/workflows/_python.yml.
+# Reutilizable con los jobs de ci-api de la capa 07. Tal como está pasa actionlint,
+# pero no cumple la capa: check-week.sh 09 sale en rojo.
+name: _python
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: Carpeta del proyecto, la que contiene pyproject.toml y uv.lock
+        type: string
+        required: true
+      # TODO 1: declara los inputs package (string, obligatorio), coverage-min (number, 60 por
+      # defecto) e integration (boolean, true por defecto).
+
+# Techo de permisos del reutilizable: el llamador puede dar menos, nunca más.
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint y formato (ruff)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+          enable-cache: true
+          cache-dependency-glob: ${{ inputs.working-directory }}/uv.lock
+      - name: Dependencias exactas del lockfile
+        run: uv sync --locked
+      - name: ruff check
+        run: uv run --no-sync ruff check --output-format=github .
+      - name: ruff format
+        run: uv run --no-sync ruff format --check .
+
+  test:
+    name: Tests unitarios
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+          enable-cache: true
+          cache-dependency-glob: ${{ inputs.working-directory }}/uv.lock
+      - name: Dependencias exactas del lockfile
+        run: uv sync --locked
+      - name: pytest con cobertura
+        # TODO 2: que el paquete y la cobertura mínima salgan de los inputs package y coverage-min,
+        # pasados al shell por env: (aquí y en el step Migraciones).
+        run: uv run --no-sync pytest tests/unit --cov=tablero --cov-report=term-missing --cov-fail-under=60
+
+  integration:
+    name: Tests de integración (PostgreSQL 17)
+    needs: test
+    # TODO 3: que este job solo corra si el input integration es true.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: tablero
+          # Credencial desechable de CI: la base nace y muere con el job.
+          POSTGRES_PASSWORD: cambiame
+          POSTGRES_DB: tablero_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tablero -d tablero_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://tablero:cambiame@localhost:5432/tablero_test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+          enable-cache: true
+          cache-dependency-glob: ${{ inputs.working-directory }}/uv.lock
+      - name: Dependencias exactas del lockfile
+        run: uv sync --locked
+      - name: Migraciones
+        run: uv run --no-sync python -m tablero.migrate
+      - name: pytest contra PostgreSQL
+        run: uv run --no-sync pytest tests/integration -rs
+      - name: Logs de PostgreSQL
+        if: ${{ failure() }}
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: docker logs "$POSTGRES_CONTAINER"

@@ -1,0 +1,33 @@
+# ci-api.yml — capa 09 de tablero. Sustituye a tu .github/workflows/ci-api.yml.
+# Los jobs viven ahora en _python.yml: este workflow solo decide cuándo y con qué inputs.
+name: ci-api
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - ".github/workflows/ci-api.yml"
+  # TODO 8: un cambio en _python.yml también cambia este CI: añádelo a paths, aquí y en pull_request.
+  pull_request:
+    paths:
+      - "api/**"
+      - ".github/workflows/ci-api.yml"
+  workflow_dispatch:
+
+# Un run por workflow y ref: en un PR, el push nuevo cancela el run anterior;
+# en main cada commit termina su run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: API
+    uses: ./.github/workflows/_python.yml # zizmor: ignore[self-repository] actionlint 1.7.12 no admite $/
+    with:
+      working-directory: api

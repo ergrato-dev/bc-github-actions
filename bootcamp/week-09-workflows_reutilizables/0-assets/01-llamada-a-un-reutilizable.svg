@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" xml:space="preserve" role="img" aria-labelledby="t01">
+  <title id="t01">Llamada a un workflow reutilizable. A la izquierda, el llamador ci-api.yml decide el cuándo: eventos push y pull_request con sus paths, concurrency y permissions contents read. Su único job, api, con name API, no tiene runs-on ni steps: tiene uses apuntando a ./.github/workflows/_python.yml y with con working-directory api, package tablero y coverage-min 60. A la derecha, el llamado _python.yml empieza por su contrato on workflow_call, con inputs, secrets y outputs, y contiene los jobs lint, test e integration, cada uno con runs-on ubuntu-24.04 y su timeout-minutes. Del job api al contrato entran los inputs, por with, y los secretos, por secrets, uno a uno; del contrato vuelven los outputs, que el llamador lee como needs.api.outputs. Abajo, el único run resultante: los jobs del reutilizable aparecen en la UI con el nombre del job que llama delante, API / Lint y formato (ruff), API / Tests unitarios y API / Tests de integración (PostgreSQL 17)</title>
+  <rect width="960" height="620" fill="#0d1117"/>
+  <defs>
+    <marker id="a01b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a01p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d2a8ff"/></marker>
+    <marker id="a01g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Un job que llama, los jobs de otro archivo</text>
+
+    <!-- llamador -->
+    <rect x="30" y="60" width="300" height="360" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="86" fill="#f0f6fc" font-size="15" font-weight="600">Llamador · ci-api.yml</text>
+    <text x="314" y="86" fill="#8b949e" font-size="12" text-anchor="end">cuándo y con qué</text>
+    <rect x="46" y="104" width="268" height="180" rx="6" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="62" y="128" fill="#2088ff" font-size="14" font-weight="600">job api · name: API</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#f0f6fc">
+      <text x="62" y="152">uses: ./.github/workflows/</text>
+      <text x="62" y="168">      _python.yml</text>
+      <text x="62" y="192" fill="#79c0ff">with:</text>
+      <text x="62" y="208" fill="#79c0ff">  working-directory: api</text>
+      <text x="62" y="224" fill="#79c0ff">  package: tablero</text>
+      <text x="62" y="240" fill="#79c0ff">  coverage-min: 60</text>
+    </g>
+    <text x="62" y="270" fill="#8b949e" font-size="11">sin runs-on, steps ni timeout-minutes</text>
+    <text x="46" y="310" fill="#8b949e" font-size="12">a nivel de workflow</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="46" y="320" width="268" height="26" rx="5" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="58" y="337" fill="#79c0ff">on: push · pull_request</text>
+      <rect x="46" y="352" width="268" height="26" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="58" y="369" fill="#f0f6fc">concurrency: workflow + ref</text>
+      <rect x="46" y="384" width="268" height="26" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="58" y="401" fill="#f0f6fc">permissions: contents: read</text>
+    </g>
+
+    <!-- flechas -->
+    <text x="400" y="142" fill="#79c0ff" font-size="12" font-weight="600" text-anchor="middle">inputs · with:</text>
+    <path d="M316 152 L482 152" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01b)"/>
+    <text x="400" y="176" fill="#d2a8ff" font-size="12" font-weight="600" text-anchor="middle">secrets · uno a uno</text>
+    <path d="M316 186 L482 186" stroke="#d2a8ff" stroke-width="2" fill="none" marker-end="url(#a01p)"/>
+    <path d="M484 214 L318 214" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a01g)"/>
+    <text x="400" y="234" fill="#3fb950" font-size="12" font-weight="600" text-anchor="middle">outputs</text>
+    <text x="400" y="250" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">needs.api.outputs</text>
+
+    <!-- llamado -->
+    <rect x="470" y="60" width="460" height="360" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="486" y="86" fill="#2088ff" font-size="15" font-weight="600">Llamado · _python.yml</text>
+    <text x="914" y="86" fill="#8b949e" font-size="12" text-anchor="end">cómo se prueba</text>
+    <rect x="486" y="104" width="428" height="120" rx="6" fill="#0d1117" stroke="#d2a8ff"/>
+    <text x="500" y="126" fill="#d2a8ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">on: workflow_call</text>
+    <text x="900" y="126" fill="#8b949e" font-size="11" text-anchor="end">el contrato</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="500" y="156" fill="#79c0ff">inputs:  working-directory, package,</text>
+      <text x="500" y="172" fill="#79c0ff">         coverage-min, integration</text>
+      <text x="500" y="192" fill="#d2a8ff">secrets: los que declare (aquí, 0)</text>
+      <text x="500" y="212" fill="#3fb950">outputs: los que declare (aquí, 0)</text>
+    </g>
+    <g font-size="12">
+      <rect x="486" y="240" width="136" height="164" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="500" y="262" fill="#f0f6fc" font-weight="600">lint</text>
+      <rect x="632" y="240" width="136" height="164" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="646" y="262" fill="#f0f6fc" font-weight="600">test</text>
+      <rect x="778" y="240" width="136" height="164" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="792" y="262" fill="#f0f6fc" font-weight="600">integration</text>
+      <g fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+        <text x="500" y="286">runs-on:</text><text x="500" y="302">ubuntu-24.04</text>
+        <text x="500" y="326">timeout: 10</text><text x="500" y="350" fill="#f0f6fc">ruff check</text><text x="500" y="366" fill="#f0f6fc">ruff format</text>
+        <text x="646" y="286">runs-on:</text><text x="646" y="302">ubuntu-24.04</text>
+        <text x="646" y="326">timeout: 10</text><text x="646" y="350" fill="#f0f6fc">pytest unit</text><text x="646" y="366" fill="#f0f6fc">--cov</text>
+        <text x="792" y="286">runs-on:</text><text x="792" y="302">ubuntu-24.04</text>
+        <text x="792" y="326">timeout: 15</text><text x="792" y="350" fill="#f0f6fc">postgres:17</text><text x="792" y="366" fill="#e3b341">if: integration</text>
+      </g>
+    </g>
+
+    <!-- un solo run -->
+    <rect x="30" y="446" width="900" height="112" rx="8" fill="#0d1117" stroke="#30363d"/>
+    <text x="46" y="472" fill="#f0f6fc" font-size="14" font-weight="600">Un solo run de ci-api: así lo enseñan la UI, los checks del PR y gh run view</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="46" y="488" width="260" height="32" rx="16" fill="#161b22" stroke="#3fb950"/>
+      <text x="176" y="509" fill="#f0f6fc" text-anchor="middle">API / Lint y formato (ruff)</text>
+      <rect x="320" y="488" width="220" height="32" rx="16" fill="#161b22" stroke="#3fb950"/>
+      <text x="430" y="509" fill="#f0f6fc" text-anchor="middle">API / Tests unitarios</text>
+      <rect x="554" y="488" width="360" height="32" rx="16" fill="#161b22" stroke="#3fb950"/>
+      <text x="734" y="509" fill="#f0f6fc" text-anchor="middle">API / Tests de integración (PostgreSQL 17)</text>
+    </g>
+    <text x="46" y="542" fill="#8b949e" font-size="12">name del job que llama + " / " + name del job del reutilizable. Mismo evento, mismo GITHUB_TOKEN, mismo contexto github.</text>
+
+    <text x="480" y="596" fill="#8b949e" font-size="12" text-anchor="middle">Azul claro: inputs. Morado: secretos y contrato. Verde: outputs y jobs en success.</text>
+  </g>
+</svg>

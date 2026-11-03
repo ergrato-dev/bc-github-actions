@@ -1,0 +1,47 @@
+# images.yml — capa 09 de tablero. Sustituye a tu .github/workflows/images.yml.
+# Cada imagen es una llamada a _image.yml; el resumen de digests se queda aquí.
+name: images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "web/**"
+      - ".github/workflows/images.yml"
+  # TODO 10: añade _image.yml a paths, aquí y en pull_request.
+  pull_request:
+    paths:
+      - "api/**"
+      - "web/**"
+      - ".github/workflows/images.yml"
+  workflow_dispatch:
+
+# Un run por workflow y ref: en un PR, el push nuevo cancela el run anterior;
+# en main cada commit termina su run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: API
+    # El reutilizable pide packages: write; si este job no lo concede, el run no arranca.
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/_image.yml # zizmor: ignore[self-repository] actionlint 1.7.12 no admite $/
+    with:
+      component: api
+      push: ${{ github.event_name != 'pull_request' }}
+
+  # TODO 10: un job web igual que api, para la imagen web.
+  # TODO 6 (en el llamador): pasa a cada llamada el secreto registry-password con el valor de
+  # secrets.GITHUB_TOKEN, nombrado de forma explícita.
+
+  # TODO 11: un job summary que espere a api y web y escriba sus digests en $GITHUB_STEP_SUMMARY,
+  # recibidos por env:. Necesita el TODO 7.

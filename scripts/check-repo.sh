@@ -190,15 +190,21 @@ done < <(find_files -name '*.md' -o -name '*.yml' -o -name '*.yaml' -o -name '*.
 
 echo "== 13. Workflows de los starters con actionlint =="
 if command -v actionlint >/dev/null 2>&1; then
-  while IFS= read -r workflow; do
-    is_published "$workflow" || continue
-    if ! output=$(actionlint -no-color "$workflow" 2>&1); then
-      echo "ACTIONLINT FALLA: $workflow"
+  # actionlint resuelve "uses: ./.github/workflows/x.yml" desde la raiz del repo git: cada
+  # starter se valida en una copia con su propio git, o las llamadas locales no se encuentran.
+  while IFS= read -r starter; do
+    is_published "$starter" || continue
+    [ -d "$starter/.github/workflows" ] || continue
+    tmp=$(mktemp -d)
+    cp -r "$starter/." "$tmp/"
+    git -C "$tmp" init -q
+    if ! output=$(cd "$tmp" && actionlint -no-color 2>&1); then
+      echo "ACTIONLINT FALLA: $starter"
       printf '%s\n' "$output" | sed 's/^/    /'
       fail=1
     fi
-  done < <(find bootcamp -path "*/3-proyecto/starter/.github/workflows/*" \
-             \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null)
+    rm -rf "$tmp"
+  done < <(find bootcamp -type d -path "*/3-proyecto/starter" 2>/dev/null)
 else
   echo "AVISO: actionlint no esta instalado, no se validan los starters"
 fi

@@ -1,0 +1,111 @@
+# _node.yml — capa 09 de tablero. Cópialo a .github/workflows/_node.yml.
+# Reutilizable con los jobs de ci-web de la capa 07, salvo dist-report, que se queda en ci-web.
+name: _node
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: Carpeta del proyecto, la que contiene package.json y pnpm-lock.yaml
+        type: string
+        required: true
+      artifact-name:
+        description: Nombre del artefacto con el build
+        type: string
+        required: true
+    # TODO 5: devuelve como output artifact-name el output del mismo nombre del job build.
+
+# Techo de permisos del reutilizable: el llamador puede dar menos, nunca más.
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (eslint)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: ${{ inputs.working-directory }}/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "26"
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+      - name: Dependencias exactas del lockfile
+        run: pnpm install --frozen-lockfile
+      - name: eslint
+        run: pnpm lint
+
+  test:
+    name: Tests (Node ${{ matrix.node }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO 4: declara el input node-versions (string, "[24, 26]" por defecto) y saca de él
+        # esta lista con fromJSON.
+        node: [24, 26]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: ${{ inputs.working-directory }}/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+      - name: Dependencias exactas del lockfile
+        run: pnpm install --frozen-lockfile
+      - name: vitest
+        run: pnpm test
+
+  build:
+    name: Build
+    needs: [lint, test]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+    outputs:
+      artifact-name: ${{ inputs.artifact-name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: ${{ inputs.working-directory }}/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "26"
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+      - name: Dependencias exactas del lockfile
+        run: pnpm install --frozen-lockfile
+      - name: tsc y vite build
+        run: pnpm build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.working-directory }}/dist
+          if-no-files-found: error
+          retention-days: 7

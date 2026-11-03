@@ -81,7 +81,7 @@ Equipo: Linux o WSL2 con Docker, **8 GB de RAM** (16 GB recomendados desde la Se
 | [06](bootcamp/week-06-imagenes_docker_y_ghcr/README.md) | Imágenes Docker y GHCR |
 | [07](bootcamp/week-07-disparadores_filtros_y_concurrencia/README.md) | Disparadores, filtros y concurrencia |
 | [08](bootcamp/week-08-probar_y_depurar_workflows/README.md) | Probar y depurar workflows |
-| 09 | Workflows reutilizables |
+| [09](bootcamp/week-09-workflows_reutilizables/README.md) | Workflows reutilizables |
 | 10 | Actions propias: composite, JavaScript y Docker |
 | 11 | Actions a escala de organización |
 | 12 | Modelo de amenazas y endurecimiento |

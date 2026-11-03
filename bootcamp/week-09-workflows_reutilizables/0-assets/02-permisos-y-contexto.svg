@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" xml:space="preserve" role="img" aria-labelledby="t02">
+  <title id="t02">Qué cruza una llamada a un reutilizable. Tres columnas: el llamador images.yml, el llamado _image.yml y un reutilizable anidado hipotético. Arriba, una banda que atraviesa las tres: el contexto github es el del llamador en todos los niveles, así que github.workflow vale images y github.event_name vale push también dentro de _image.yml. En el centro, los permisos del GITHUB_TOKEN bajan de izquierda a derecha y solo se mantienen o bajan: la raíz de images.yml da contents read; el job api que llama concede contents read y packages write; _image.yml declara contents read y packages write, que caben en lo concedido; el anidado puede quedarse con contents read, pero si pidiera actions write, que nadie le concedió, la llamada no valida y el run no arranca. Abajo, el env de nivel workflow del llamador choca contra una barrera roja: no llega al llamado ni vuelve de él; para cruzar se usan inputs, outputs o variables vars de repo, organización o environment</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a02b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a02g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Qué cruza una llamada</text>
+
+    <!-- cabeceras de columna -->
+    <g font-size="14" font-weight="600">
+      <text x="160" y="72" fill="#f0f6fc" text-anchor="middle">Llamador · images.yml</text>
+      <text x="480" y="72" fill="#2088ff" text-anchor="middle">Llamado · _image.yml</text>
+      <text x="800" y="72" fill="#8b949e" text-anchor="middle">Anidado (hipotético)</text>
+    </g>
+
+    <!-- contexto github -->
+    <rect x="30" y="88" width="900" height="92" rx="8" fill="#161b22" stroke="#79c0ff"/>
+    <text x="46" y="112" fill="#79c0ff" font-size="13" font-weight="600">Contexto github: el del llamador, en todos los niveles</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#f0f6fc">
+      <text x="46" y="140">github.workflow   = images</text>
+      <text x="46" y="160">github.event_name = push</text>
+      <text x="366" y="140">github.workflow   = images</text>
+      <text x="366" y="160">github.event_name = push</text>
+      <text x="686" y="140">github.workflow   = images</text>
+      <text x="686" y="160">github.event_name = push</text>
+    </g>
+    <path d="M300 150 L356 150" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02b)"/>
+    <path d="M620 150 L676 150" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02b)"/>
+
+    <!-- permisos -->
+    <text x="30" y="214" fill="#f0f6fc" font-size="13" font-weight="600">Permisos del GITHUB_TOKEN: solo se mantienen o bajan</text>
+    <rect x="30" y="226" width="260" height="196" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="250" fill="#8b949e" font-size="12">raíz del workflow</text>
+    <rect x="46" y="258" width="228" height="28" rx="5" fill="#0d1117" stroke="#30363d"/>
+    <text x="58" y="277" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">contents: read</text>
+    <text x="46" y="312" fill="#8b949e" font-size="12">job api (el que llama)</text>
+    <rect x="46" y="320" width="228" height="28" rx="5" fill="#0d1117" stroke="#30363d"/>
+    <text x="58" y="339" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">contents: read</text>
+    <rect x="46" y="354" width="228" height="28" rx="5" fill="#0d1117" stroke="#e3b341"/>
+    <text x="58" y="373" fill="#e3b341" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">packages: write</text>
+    <text x="46" y="406" fill="#8b949e" font-size="11">el techo de esta llamada</text>
+
+    <rect x="350" y="226" width="260" height="196" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="366" y="250" fill="#8b949e" font-size="12">permissions de su raíz</text>
+    <rect x="366" y="320" width="228" height="28" rx="5" fill="#0d1117" stroke="#30363d"/>
+    <text x="378" y="339" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">contents: read</text>
+    <rect x="366" y="354" width="228" height="28" rx="5" fill="#0d1117" stroke="#e3b341"/>
+    <text x="378" y="373" fill="#e3b341" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">packages: write</text>
+    <text x="366" y="280" fill="#3fb950" font-size="12" font-weight="600">✓ cabe en lo concedido</text>
+    <text x="366" y="298" fill="#8b949e" font-size="11">pedir menos, o lo mismo, vale</text>
+    <text x="366" y="406" fill="#8b949e" font-size="11">login y push a GHCR</text>
+
+    <rect x="670" y="226" width="260" height="196" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+    <text x="686" y="250" fill="#8b949e" font-size="12">si _image.yml llamara a otro</text>
+    <rect x="686" y="320" width="228" height="28" rx="5" fill="#161b22" stroke="#30363d"/>
+    <text x="698" y="339" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">contents: read</text>
+    <text x="686" y="280" fill="#3fb950" font-size="12" font-weight="600">✓ bajar a contents: read</text>
+    <rect x="686" y="354" width="228" height="28" rx="5" fill="#161b22" stroke="#f85149"/>
+    <text x="698" y="373" fill="#f85149" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">actions: write</text>
+    <text x="686" y="406" fill="#f85149" font-size="11">✗ nadie lo concedió: el run no arranca</text>
+
+    <path d="M290 324 L346 324" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a02g)"/>
+    <path d="M610 324 L666 324" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a02g)"/>
+
+    <!-- env -->
+    <text x="30" y="458" fill="#f0f6fc" font-size="13" font-weight="600">env de nivel workflow: no cruza en ningún sentido</text>
+    <rect x="30" y="470" width="260" height="56" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="503" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">env: REGISTRY: ghcr.io</text>
+    <path d="M296 476 L296 520" stroke="#f85149" stroke-width="4"/>
+    <path d="M320 498 L346 498" stroke="#f85149" stroke-width="2" stroke-dasharray="5 4"/>
+    <rect x="350" y="470" width="260" height="56" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="366" y="503" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">env.REGISTRY → vacío</text>
+    <rect x="670" y="470" width="260" height="56" rx="8" fill="#0d1117" stroke="#3fb950"/>
+    <text x="686" y="494" fill="#3fb950" font-size="12" font-weight="600">Para cruzar</text>
+    <text x="686" y="513" fill="#f0f6fc" font-size="12">inputs, outputs o vars de repo/org/env</text>
+
+    <text x="480" y="580" fill="#8b949e" font-size="12" text-anchor="middle">Azul claro: contexto. Amarillo: permiso de escritura. Verde: lo que vale. Rojo: lo que no cruza o no valida.</text>
+  </g>
+</svg>
