@@ -1,7 +1,7 @@
 # 🎬 Videografía — Semana 06
 
 Vídeos en inglés. Las versiones que enseñan son anteriores a las de `docs/stack-versions.md`, y
-alguno fija las actions por tag o publican `latest`: quédate con los conceptos y usa siempre los
+alguno fija las actions por tag o publica `latest`: quédate con los conceptos y usa siempre los
 workflows de la teoría.
 
 | Vídeo | Por qué vale la pena | Comprobado |
