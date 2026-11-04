@@ -99,4 +99,4 @@ cuando se usa en la documentación. Glosario de todas las semanas:
 
 | ← Anterior | Siguiente → |
 |:---|---:|
-| [Webgrafía](../4-recursos/webgrafia/README.md) | [Índice del bootcamp](../../README.md) |
+| [Webgrafía](../4-recursos/webgrafia/README.md) | [Semana 12 — Modelo de amenazas y endurecimiento](../../week-12-modelo_de_amenazas_y_endurecimiento/README.md) |

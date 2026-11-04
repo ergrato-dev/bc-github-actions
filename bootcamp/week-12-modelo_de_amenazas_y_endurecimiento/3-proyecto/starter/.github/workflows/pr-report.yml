@@ -1,0 +1,33 @@
+# Comenta en el PR el informe de web/dist que sube ci-web, sin ejecutar código del PR.
+# Se copia en <tu-org>/tablero como .github/workflows/pr-report.yml.
+name: pr-report
+on:
+  workflow_run: # zizmor: ignore[dangerous-triggers] sin checkout, el artefacto se valida
+    workflows: [ci-web]
+    types: [completed]
+permissions: {}
+jobs:
+  comment:
+    name: Comentar el informe de dist
+    # TODO 5: corre solo si el run de ci-web vino de un pull_request y terminó en success.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist-report
+          path: ${{ runner.temp }}/dist-report
+          # TODO 6: descarga el artefacto del run de ci-web que disparó este workflow, no de este run.
+          github-token: ${{ github.token }}
+      - name: Comentar en el PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          REPORT_DIR: ${{ runner.temp }}/dist-report
+        run: |
+          pr=$(cat "$REPORT_DIR/pr-number")
+          # TODO 7: el artefacto lo escribió código del PR; valida que pr es solo un número antes de usarlo.
+          gh pr comment "$pr" --body-file "$REPORT_DIR/report.md"

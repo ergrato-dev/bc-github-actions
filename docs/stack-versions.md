@@ -25,6 +25,8 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | `docker/login-action` | v4.7.0 | `81c6f93d4bc991e510b342a00b419b3bb4efc5c6` | 06 | `resolve-sha.sh` (2026-11-02). Release del 2026-10-23. Inputs `registry`, `username`, `password` |
 | `docker/build-push-action` | v7.4.0 | `c3c9e263c25d99ce0380d002d59b67737d91b0dc` | 06 | `resolve-sha.sh` (2026-11-02). Release del 2026-09-15. Inputs `context`, `push`, `load`, `tags`, `labels`, `cache-from`, `cache-to`; outputs `digest`, `imageid`, `metadata`. `push` y `load` valen `false` por defecto |
 | `actions/github-script` | v9.0.0 | `3a2844b7e9c422d3c10d287c895573f7108da1b3` | 07 | `resolve-sha.sh` (2026-11-02). Release del 2026-04-09, runtime node24. Inputs `script`, `github-token`, `result-encoding`, `retries`; output `result`. En v9 `require('@actions/github')` ya no funciona y `getOctokit` viene inyectado |
+| `github/codeql-action` (`init`, `analyze`) | v4.39.1 | `9b3254085494b55a0f7c4c2b3d2d52cc712ce370` | 12 | `resolve-sha.sh` (2026-11-03). Release del 2026-10-21 (la v4.39.2 salió el 2026-11-03: se respeta el mismo cooldown de 7 días que se enseña). Bundle CodeQL v2.27.4. Runtime node24. Inputs `languages` (`init`) y `category` (`analyze`) comprobados en su `action.yml` |
+| `actions/labeler` | v7.0.0 | `bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13` | 12 | `resolve-sha.sh` (2026-11-03). Release del 2026-07-21, runtime node24. Inputs `repo-token`, `configuration-path`, `sync-labels`, `dot`, `pr-number`. Lee `.github/labeler.yml` de la rama base por la API, sin checkout |
 
 ### Herramientas
 
@@ -35,7 +37,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | jq | 1.6 o superior | 01 | El de la distro. `check-week.sh` está probado con 1.6 |
 | yq (mikefarah) | v4.54.1 | 01 | Release del 2026-09-29. Descarga con digest probada (2026-11-02). La imagen `ubuntu-24.04` del runner trae la misma versión (README de actions/runner-images, 2026-11-02) |
 | actionlint | 1.7.12 | 01 | Release del 2026-03-30. Descarga con digest probada (2026-11-02) |
-| zizmor | 1.31.1 | 08 (se instala en 01) | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos |
+| zizmor | 1.31.1 | 08 (se instala en 01) | Release del 2026-10-15. `uv tool install zizmor==1.31.1`; `--offline` probado sobre el CI propio: sin hallazgos. Online (S12): `GH_TOKEN` en el entorno; `impostor-commit` y compañía consultan la API. `dangerous-triggers` marca todo `pull_request_target` y `workflow_run`; `dependabot-cooldown` pide 7 días o más (probado 2026-11-03) |
 | act | v0.2.94 | 08 | Release del 2026-10-31. `act_Linux_x86_64.tar.gz`, digest `sha256:33e6748e3c07affb6855f19fb7a28bc6c344c1d0888fae0564e6d34d4a71915a` comprobado (2026-11-02). Probado con `ci-api` (job `lint`) y `lint-workflows` en local |
 | uv | 0.13.6 | 03 | Release del 2026-10-27. El tarball trae `uv` y `uvx` |
 | pnpm | 12.16.1 | 04 | Release del 2026-10-27. Ejecutable autónomo `pnpm-linux-x64.tar.gz`, descarga con digest probada. `pnpm env` está deprecado en favor de `pnpm runtime` |
@@ -94,7 +96,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 | syft | v1.56.0 | 14 | |
 | `actions/dependency-review-action` | v5.0.0 | 14 | |
 | Trivy | v0.76.1 | 14 | **Nunca v0.69.4** (GHSA-69fq-xp46-6x23, compromiso del 2026-03-19). Revisar los avisos de 2026-06 (GHSA-mcj4-mphf-j9ff y otros). Binario con checksum, nunca `trivy-action` por tag |
-| `github/codeql-action` | bundle v2.27.4 | 12 | Las actions se fijan por el tag `vN.x.y` de la action, no por el del bundle |
 | actions/runner | v2.338.2 | 15 | Imagen `ghcr.io/actions/actions-runner` |
 | ARC (`gha-runner-scale-set-controller`, `gha-runner-scale-set`) | 0.15.1 | 16 | Charts OCI en `ghcr.io/actions/actions-runner-controller-charts` |
 | Helm | v4.3.1 | 16 | |

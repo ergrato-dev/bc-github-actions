@@ -1,0 +1,6 @@
+# Reglas de actions/labeler: etiqueta => rutas cambiadas.
+# Se copia en <tu-org>/tablero como .github/labeler.yml.
+api:
+  - changed-files:
+      - any-glob-to-any-file: api/**
+# TODO 8: añade las etiquetas web (cambios en web/) y ci (cambios en .github/).

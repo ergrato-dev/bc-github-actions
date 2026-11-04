@@ -1,0 +1,13 @@
+# Configuración de Dependabot version updates.
+# Se copia en <tu-org>/tablero como .github/dependabot.yml.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  # TODO 9: añade los ecosistemas de la API (uv, en /api) y del frontend (pnpm, en /web).
+  # TODO 10: en cada ecosistema, un cooldown que espere al menos 7 días a las versiones nuevas.

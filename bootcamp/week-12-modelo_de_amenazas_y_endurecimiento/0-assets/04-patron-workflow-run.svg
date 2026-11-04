@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t04">
+  <title id="t04">Patrón seguro con workflow_run. Un PR desde un fork dispara ci-web con pull_request: corre el workflow y el código del PR, con token de solo lectura y sin secretos; el job dist-report escribe report.md y pr-number y los sube como artefacto dist-report. Al terminar ci-web, workflow_run dispara pr-report desde main: si el evento fue pull_request y la conclusión success, el job comment, con actions read y pull-requests write y sin checkout, descarga el artefacto con run-id en runner.temp, valida que pr-number cumple ^[0-9]+$ y comenta con gh pr comment --body-file. Una línea roja marca la frontera: el código del PR nunca cruza al lado con escritura, solo cruzan datos. Debajo, el caso de labeler con pull_request_target: workflow y configuración de la rama base, sin checkout, solo la lista de archivos cambiados por la API.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">workflow_run: el PR corre sin permisos, el comentario se escribe sin el PR</text>
+
+    <text x="215" y="72" fill="#8b949e" font-size="13" font-weight="600" text-anchor="middle">Sin escritura · sin secretos</text>
+    <text x="745" y="72" fill="#e3b341" font-size="13" font-weight="600" text-anchor="middle">Con escritura · desde main</text>
+
+    <!-- PR -->
+    <rect x="30" y="86" width="370" height="50" rx="8" fill="#161b22" stroke="#f85149"/>
+    <text x="46" y="116" fill="#f0f6fc" font-size="13">PR desde un fork <tspan fill="#8b949e" font-size="11">· código y textos del atacante</tspan></text>
+
+    <!-- ci-web -->
+    <rect x="30" y="156" width="370" height="200" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="182" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci-web.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="206" fill="#79c0ff">on: pull_request</text>
+      <text x="46" y="226" fill="#f0f6fc">web: build del código del PR</text>
+      <text x="46" y="250" fill="#f0f6fc">dist-report:</text>
+      <text x="62" y="268" fill="#8b949e">du -ah dist → report/report.md</text>
+      <text x="62" y="286" fill="#8b949e">env: PR_NUMBER → report/pr-number</text>
+      <text x="62" y="304" fill="#f0f6fc">upload-artifact name: dist-report</text>
+      <text x="46" y="334" fill="#3fb950">token de solo lectura · contents: read</text>
+    </g>
+
+    <!-- artefacto -->
+    <rect x="290" y="390" width="380" height="66" rx="8" fill="#0d1117" stroke="#79c0ff" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="480" y="416" fill="#79c0ff" font-size="13" font-weight="600" text-anchor="middle">Artefacto dist-report · datos no confiables</text>
+    <text x="480" y="438" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">report.md · pr-number</text>
+
+    <!-- pr-report -->
+    <rect x="560" y="86" width="370" height="270" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="576" y="112" fill="#e3b341" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">pr-report.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="576" y="136" fill="#79c0ff">on: workflow_run [ci-web] completed</text>
+      <text x="576" y="156" fill="#f0f6fc">if: event == 'pull_request'</text>
+      <text x="576" y="174" fill="#f0f6fc">    &amp;&amp; conclusion == 'success'</text>
+      <text x="576" y="198" fill="#d2a8ff">actions: read · pull-requests: write</text>
+      <text x="576" y="222" fill="#3fb950">sin checkout</text>
+      <text x="576" y="246" fill="#f0f6fc">download-artifact</text>
+      <text x="592" y="264" fill="#8b949e">run-id: workflow_run.id</text>
+      <text x="592" y="282" fill="#8b949e">path: runner.temp/dist-report</text>
+      <text x="576" y="306" fill="#f0f6fc">pr =~ ^[0-9]+$  o exit 1</text>
+      <text x="576" y="330" fill="#f0f6fc">gh pr comment "$pr" --body-file</text>
+    </g>
+
+    <!-- frontera -->
+    <path d="M480 84 L480 362" stroke="#f85149" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="480" y="378" fill="#f85149" font-size="11" text-anchor="middle">el código del PR no cruza</text>
+
+    <g stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)">
+      <path d="M215 136 L215 152"/>
+      <path d="M300 356 L340 386"/>
+      <path d="M620 386 L680 360"/>
+    </g>
+    <text x="250" y="380" fill="#79c0ff" font-size="11">sube</text>
+    <text x="668" y="384" fill="#79c0ff" font-size="11">descarga como datos</text>
+
+    <!-- labeler -->
+    <rect x="30" y="480" width="900" height="76" rx="8" fill="#161b22" stroke="#e3b341"/>
+    <text x="46" y="504" fill="#e3b341" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">labeler.yml · pull_request_target</text>
+    <text x="46" y="526" fill="#f0f6fc" font-size="12">Workflow y .github/labeler.yml de la rama base · sin checkout · solo la lista de archivos cambiados por la API</text>
+    <text x="46" y="544" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace"># zizmor: ignore[dangerous-triggers] sin checkout del PR, solo etiqueta</text>
+
+    <text x="480" y="584" fill="#8b949e" font-size="11" text-anchor="middle">Rojo: frontera de confianza. Amarillo: workflow con escritura. Azul claro: lo único que cruza, como datos.</text>
+  </g>
+</svg>

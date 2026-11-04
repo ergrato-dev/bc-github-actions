@@ -1,0 +1,125 @@
+{
+  "week": "12",
+  "title": "Modelo de amenazas y endurecimiento",
+  "checks": [
+    {
+      "id": "root-permissions-empty",
+      "description": "Todos los workflows de tablero declaran permissions: {} en la raíz",
+      "cmd": "for f in .github/workflows/*.yml; do [ \"$(yq '.permissions | (tag == \"!!map\" and length == 0)' \"$f\")\" = true ] || echo \"$f\"; done",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/01-permisos-minimos-por-job.md, paso 2"
+    },
+    {
+      "id": "jobs-declare-permissions",
+      "description": "Cada job de cada workflow declara sus propios permissions",
+      "cmd": "yq -N '.jobs | to_entries | .[] | select(.value.permissions == null) | filename + \":\" + .key' .github/workflows/*.yml",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/01-permisos-minimos-por-job.md, paso 3"
+    },
+    {
+      "id": "writes-only-where-needed",
+      "description": "Solo escriben codeql (security-events), images (packages), labeler y pr-report (pull-requests) y nightly (actions); ningún write-all ni read-all",
+      "cmd": "grep -rlE 'permissions: *(write|read)-all' .github/workflows; yq -N '.jobs | to_entries | .[] | .value.permissions // {} | to_entries | .[] | select(.value == \"write\") | (filename | sub(\".*/\"; \"\")) + \":\" + .key' .github/workflows/*.yml | sort -u | tr '\\n' ' '",
+      "assert": "stdout~^codeql.yml:security-events images.yml:packages labeler.yml:pull-requests nightly.yml:actions pr-report.yml:pull-requests $",
+      "hint": "2-practicas/01-permisos-minimos-por-job.md, paso 4"
+    },
+    {
+      "id": "no-expressions-in-run",
+      "description": "Ningún run ni script de github-script contiene una expresión ${{ }}: todo dato llega por env",
+      "cmd": "yq '.jobs[].steps[]? | (.run // \"\") + (.with.script // \"\")' .github/workflows/*.yml | grep -E '\\$\\{\\{' || true",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/02-inyeccion-de-scripts.md, paso 5"
+    },
+    {
+      "id": "codeql-workflow",
+      "description": "codeql.yml analiza el lenguaje actions con init y analyze en un job con security-events: write",
+      "cmd": "yq '[.jobs[] | select(.permissions.\"security-events\" == \"write\") | .steps[] | select(.uses // \"\" | test(\"^github/codeql-action/(init|analyze)@\"))] | \"languages=\" + ([.[] | select(.with.languages) | .with.languages] | join(\",\")) + \" steps=\" + (length | tostring)' .github/workflows/codeql.yml",
+      "assert": "stdout~^languages=actions steps=2$",
+      "hint": "2-practicas/02-inyeccion-de-scripts.md, paso 6"
+    },
+    {
+      "id": "code-scanning-clean",
+      "description": "Code scanning tiene análisis de CodeQL y ninguna alerta abierta",
+      "cmd": "gh api 'repos/{owner}/{repo}/code-scanning/alerts?state=open&tool_name=CodeQL&per_page=100' --jq length",
+      "assert": "stdout~^0$",
+      "hint": "2-practicas/02-inyeccion-de-scripts.md, paso 7"
+    },
+    {
+      "id": "labeler-safe",
+      "description": "labeler.yml se dispara con pull_request_target, no hace checkout y usa actions/labeler fijada por SHA",
+      "cmd": "yq '\"trigger=\" + (.on | keys | join(\",\")) + \" checkout=\" + ([.jobs[].steps[] | select(.uses // \"\" | test(\"^actions/checkout@\"))] | length | tostring) + \" labeler=\" + ([.jobs[].steps[] | select(.uses // \"\" | test(\"^actions/labeler@[0-9a-f]{40}$\"))] | length | tostring)' .github/workflows/labeler.yml",
+      "assert": "stdout~^trigger=pull_request_target checkout=0 labeler=1$",
+      "hint": "2-practicas/03-pull-request-target-y-workflow-run.md, paso 2"
+    },
+    {
+      "id": "labeler-labeled",
+      "description": "Al menos un pull request de tablero tiene una etiqueta api, web o ci puesta por labeler",
+      "cmd": "gh pr list --state all --limit 50 --json labels --jq '[.[].labels[].name | select(. == \"api\" or . == \"web\" or . == \"ci\")] | length'",
+      "assert": "stdout~^[1-9][0-9]*$",
+      "hint": "2-practicas/03-pull-request-target-y-workflow-run.md, paso 3"
+    },
+    {
+      "id": "pr-report-safe",
+      "description": "pr-report.yml se dispara al terminar ci-web, solo actúa si el run vino de un pull_request, no hace checkout y descarga el artefacto de ese run",
+      "cmd": "yq '\"from=\" + (.on.workflow_run.workflows | join(\",\")) + \" guard=\" + ([.jobs[] | select(.if // \"\" | test(\"workflow_run.event == .pull_request.\"))] | length | tostring) + \" checkout=\" + ([.jobs[].steps[] | select(.uses // \"\" | test(\"^actions/checkout@\"))] | length | tostring) + \" run-id=\" + ([.jobs[].steps[] | select(.with.\"run-id\" // \"\" | test(\"workflow_run.id\"))] | length | tostring)' .github/workflows/pr-report.yml",
+      "assert": "stdout~^from=ci-web guard=1 checkout=0 run-id=1$",
+      "hint": "2-practicas/03-pull-request-target-y-workflow-run.md, paso 5"
+    },
+    {
+      "id": "pr-report-commented",
+      "description": "github-actions[bot] ha comentado el informe de web/dist en un pull request de tablero",
+      "cmd": "gh api 'repos/{owner}/{repo}/issues/comments?sort=created&direction=desc&per_page=100' --jq '[.[] | select(.user.login == \"github-actions[bot]\" and (.body | test(\"web/dist\")))] | length'",
+      "assert": "stdout~^[1-9][0-9]*$",
+      "hint": "2-practicas/03-pull-request-target-y-workflow-run.md, paso 6"
+    },
+    {
+      "id": "fork-pr-approval",
+      "description": "tablero exige aprobación para los workflows de todos los colaboradores externos",
+      "cmd": "gh api 'repos/{owner}/{repo}/actions/permissions/fork-pr-contributor-approval' --jq .approval_policy",
+      "assert": "stdout~^all_external_contributors$",
+      "hint": "2-practicas/01-permisos-minimos-por-job.md, paso 6"
+    },
+    {
+      "id": "dependabot-ecosystems",
+      "description": "dependabot.yml vigila github-actions en la raíz, uv en /api y npm (pnpm) en /web",
+      "cmd": "yq '[.updates[] | .package-ecosystem + \":\" + (.directory // .directories[0])] | sort | join(\" \")' .github/dependabot.yml",
+      "assert": "stdout~^github-actions:/ npm:/web uv:/api$",
+      "hint": "2-practicas/04-dependabot-y-zizmor-online.md, paso 2"
+    },
+    {
+      "id": "dependabot-cooldown",
+      "description": "Cada ecosistema de dependabot.yml espera al menos 7 días antes de proponer una versión nueva",
+      "cmd": "yq '[.updates[] | select((.cooldown.default-days // 0) < 7)] | length' .github/dependabot.yml",
+      "assert": "stdout~^0$",
+      "hint": "2-practicas/04-dependabot-y-zizmor-online.md, paso 3"
+    },
+    {
+      "id": "zizmor-online",
+      "description": "El job zizmor de lint-workflows.yml corre las auditorías online con el GITHUB_TOKEN",
+      "cmd": "yq '.jobs[].steps[] | select(.run // \"\" | test(\"^zizmor \")) | \"offline=\" + (.run | test(\"--offline|--no-online-audits\") | tostring) + \" token=\" + ((.env.GH_TOKEN // \"\") != \"\" | tostring)' .github/workflows/lint-workflows.yml",
+      "assert": "stdout~^offline=false token=true$",
+      "hint": "2-practicas/04-dependabot-y-zizmor-online.md, paso 5"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "Los workflows y dependabot.yml de tablero pasan actionlint y zizmor con las auditorías online sin hallazgos",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/04-dependabot-y-zizmor-online.md, paso 6"
+    },
+    {
+      "id": "actions-pinned",
+      "description": "Toda uses remota de los workflows de tablero está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -rhE '^\\s*-?\\s*uses:' .github/workflows --include='*.yml' | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "docs/reglas-de-seguridad-de-workflows.md, regla 1"
+    },
+    {
+      "id": "green-on-main",
+      "description": "ci, ci-api, ci-web, lint-workflows y codeql terminan en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && sha=$(git rev-parse origin/main) && for w in ci ci-api ci-web lint-workflows codeql; do printf '%s=%s ' \"$w\" \"$(gh run list --workflow $w.yml --commit \"$sha\" --json conclusion --jq '.[0].conclusion')\"; done",
+      "assert": "stdout~^ci=success ci-api=success ci-web=success lint-workflows=success codeql=success $",
+      "hint": "2-practicas/01-permisos-minimos-por-job.md, paso 7"
+    }
+  ]
+}

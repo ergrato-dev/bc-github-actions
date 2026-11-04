@@ -1,0 +1,19 @@
+# Etiqueta cada PR (también los de forks) según las rutas que cambia.
+# Se copia en <tu-org>/tablero como .github/workflows/labeler.yml.
+name: labeler
+on:
+  # TODO 3: cambia el trigger por el que corre con el workflow de la rama base y puede
+  # escribir en PRs de forks, con su comentario de zizmor que justifica la excepción.
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions: {}
+jobs:
+  label:
+    name: Etiquetar por ruta
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      # TODO 4: el único permiso de escritura que necesita para poner etiquetas.
+    steps:
+      - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0

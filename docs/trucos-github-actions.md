@@ -176,6 +176,26 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   `job.workflow_repository` apuntan al archivo del reutilizable, mientras que `github.sha` y
   `github.workflow_sha` siguen siendo los del llamador.
 
+
+## Semana 12 — [Modelo de amenazas y endurecimiento](../bootcamp/week-12-modelo_de_amenazas_y_endurecimiento/README.md)
+
+- **Mira los permisos reales de un job sin abrir la UI**:
+  `gh run view <run-id> --log | grep -A6 "GITHUB_TOKEN Permissions"`. Es lo que el runner
+  recibió de verdad, después de aplicar el default de la org, la raíz, el job y el recorte de los
+  forks.
+- **El mismo grupo del log dice qué acceso a la caché tuvo el job**: la línea `Cache mode:` justo
+  debajo vale `write` en un `push` y `read` en un trigger de baja confianza como
+  `pull_request_target`.
+- **Lista solo los PRs de Dependabot**: `gh pr list --app dependabot`. `--author` no sirve para
+  una GitHub App; `--app` sí.
+- **Las alertas de code scanning en una tabla**:
+  `gh api 'repos/{owner}/{repo}/code-scanning/alerts?state=open' --jq '.[] | [.rule.id, .most_recent_instance.location.path] | @tsv'`.
+  Si `gh` te pide el scope `admin:repo_hook` es un falso aviso: el 403 real es que no tienes
+  permiso de escritura en ese repo.
+- **`zizmor --fix` corrige solo algunos hallazgos**, como el `persist-credentials` que falta. Es
+  experimental: aplica por defecto solo los arreglos seguros, y siempre revisas el diff antes de
+  hacer commit.
+
 ---
 
 | ← Anterior | Siguiente → |

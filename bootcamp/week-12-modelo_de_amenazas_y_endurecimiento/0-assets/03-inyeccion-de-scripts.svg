@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t03">
+  <title id="t03">Inyección de scripts en dos carriles. Arriba, vulnerable: el atacante titula su PR x comillas punto y coma echo PWNED-$((6*7)). El step tiene run: echo "Gracias ${{ github.event.pull_request.title }}". El runner expande la expresión antes de arrancar el shell y escribe un script con dos comandos; el shell ejecuta el segundo y el log muestra PWNED-42. Abajo, seguro: el mismo título entra por env: como PR_TITLE y el step es run: echo "Gracias $PR_TITLE". El script que recibe el shell es igual para todos los PR; el título viaja como variable de entorno y el log muestra el texto literal, sin ejecutarlo.</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a03r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+    <marker id="a03g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">La expresión se expande antes del shell</text>
+
+    <!-- título del PR -->
+    <rect x="30" y="64" width="900" height="44" rx="8" fill="#161b22" stroke="#79c0ff"/>
+    <text x="46" y="91" fill="#8b949e" font-size="12">Título del PR, escrito por el atacante:</text>
+    <text x="300" y="91" fill="#79c0ff" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace">x"; echo "PWNED-$((6*7))</text>
+
+    <!-- carril vulnerable -->
+    <text x="30" y="140" fill="#f85149" font-size="14" font-weight="600">Vulnerable: ${{ }} dentro de run:</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="30" y="152" width="270" height="110" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="174" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">1 · El YAML</text>
+      <text x="46" y="200" fill="#f0f6fc">run: echo "Gracias</text>
+      <text x="46" y="218" fill="#f85149">  ${{ github.event.</text>
+      <text x="46" y="236" fill="#f85149">  pull_request.title }}"</text>
+
+      <rect x="345" y="152" width="300" height="110" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="361" y="174" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">2 · El runner sustituye y escribe el script</text>
+      <text x="361" y="204" fill="#f0f6fc">echo "Gracias x";</text>
+      <text x="361" y="224" fill="#f85149">echo "PWNED-$((6*7))"</text>
+      <text x="361" y="248" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">dos comandos: el título ya es código</text>
+
+      <rect x="690" y="152" width="240" height="110" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="706" y="174" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">3 · El shell ejecuta</text>
+      <text x="706" y="204" fill="#f0f6fc">Gracias x</text>
+      <text x="706" y="224" fill="#f85149" font-size="13" font-weight="600">PWNED-42</text>
+      <text x="706" y="248" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">con el token del job</text>
+    </g>
+    <g stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#a03r)">
+      <path d="M300 207 L341 207"/>
+      <path d="M645 207 L686 207"/>
+      <path d="M520 108 L520 148" stroke-dasharray="5 4"/>
+    </g>
+
+    <!-- carril seguro -->
+    <text x="30" y="310" fill="#3fb950" font-size="14" font-weight="600">Seguro: el dato entra por env: y el shell lo cita</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="30" y="322" width="270" height="128" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="344" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">1 · El YAML</text>
+      <text x="46" y="370" fill="#f0f6fc">env:</text>
+      <text x="46" y="388" fill="#d2a8ff">  PR_TITLE: ${{ github.</text>
+      <text x="46" y="406" fill="#d2a8ff">    event.pull_request.title }}</text>
+      <text x="46" y="430" fill="#f0f6fc">run: echo "Gracias $PR_TITLE"</text>
+
+      <rect x="345" y="322" width="300" height="128" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="361" y="344" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">2 · El runner escribe el script</text>
+      <text x="361" y="374" fill="#f0f6fc">echo "Gracias $PR_TITLE"</text>
+      <text x="361" y="398" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">igual para todos los PR</text>
+      <text x="361" y="424" fill="#d2a8ff">entorno: PR_TITLE=x"; echo …</text>
+
+      <rect x="690" y="322" width="240" height="128" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="706" y="344" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">3 · El shell imprime</text>
+      <text x="706" y="374" fill="#f0f6fc">Gracias x"; echo</text>
+      <text x="706" y="392" fill="#f0f6fc">"PWNED-$((6*7))</text>
+      <text x="706" y="424" fill="#3fb950" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">texto literal, un solo argumento</text>
+    </g>
+    <g stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a03g)">
+      <path d="M300 386 L341 386"/>
+      <path d="M645 386 L686 386"/>
+    </g>
+
+    <!-- contextos -->
+    <rect x="30" y="474" width="900" height="50" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="496" fill="#f0f6fc" font-size="12" font-weight="600">Mismo trato para todo lo que escribe el actor</text>
+    <text x="46" y="514" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">issue.title/body · pull_request.title/body/head.ref · comment.body · review.body · commits[*].message · github.head_ref · inputs.*</text>
+
+    <text x="480" y="548" fill="#8b949e" font-size="11" text-anchor="middle">Rojo: el texto se convierte en código. Verde: el texto sigue siendo dato. Morado: valor que viaja por el entorno del proceso.</text>
+  </g>
+</svg>

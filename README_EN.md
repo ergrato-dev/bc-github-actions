@@ -78,7 +78,7 @@ Hardware: Linux or WSL2 with Docker, **8 GB RAM** (16 GB recommended from Week 1
 | [09](bootcamp/week-09-workflows_reutilizables/README.md) | Reusable workflows |
 | [10](bootcamp/week-10-actions_propias/README.md) | Custom actions: composite, JavaScript and Docker |
 | [11](bootcamp/week-11-actions_a_escala_de_organizacion/README.md) | Actions at organization scale |
-| 12 | Threat model and hardening |
+| [12](bootcamp/week-12-modelo_de_amenazas_y_endurecimiento/README.md) | Threat model and hardening |
 | 13 | Secrets, environments and OIDC |
 | 14 | Releases, supply chain and attestations |
 | 15 | Self-hosted runners |

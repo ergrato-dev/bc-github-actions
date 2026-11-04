@@ -19,6 +19,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - `bootcamp/week-02-expresiones_contextos_y_flujo_de_datos/`: Semana 02, expresiones, contextos y flujo de datos
 - `bootcamp/week-10-actions_propias/`: Semana 10, actions propias: composite, JavaScript y Docker
 - `bootcamp/week-11-actions_a_escala_de_organizacion/`: Semana 11, actions a escala de organización
+- `bootcamp/week-12-modelo_de_amenazas_y_endurecimiento/`: Semana 12, modelo de amenazas y endurecimiento
 - `bootcamp/week-09-workflows_reutilizables/`: Semana 09, workflows reutilizables
 - `bootcamp/week-08-probar_y_depurar_workflows/`: Semana 08, probar y depurar workflows
 - `bootcamp/week-07-disparadores_filtros_y_concurrencia/`: Semana 07, disparadores, filtros y concurrencia

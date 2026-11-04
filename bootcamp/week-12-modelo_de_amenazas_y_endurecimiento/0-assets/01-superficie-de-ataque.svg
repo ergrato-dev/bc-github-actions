@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t01">
+  <title id="t01">Superficie de ataque de un pipeline. A la izquierda, cinco actores: autor de un PR desde un fork, colaborador con escritura, comentarista, dependencia o action comprometida y mantenedor de una action. En el centro, las cuatro fronteras de confianza por las que entra lo que no controlas: el evento (título, cuerpo, rama, comentario), el checkout del código del PR, lo que se hereda entre runs (caché y artefactos) y las referencias externas (uses y lockfiles). A la derecha, los seis activos: GITHUB_TOKEN, secretos, caché de Actions, artefactos, runner y releases e imágenes. Debajo de cada frontera, el control que la cierra: env en lugar de expresiones en run, sin checkout del PR con permisos, artefactos fuera del workspace y caché de solo lectura en triggers de baja confianza, y SHA de 40 caracteres con Dependabot.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Superficie de ataque de un pipeline</text>
+
+    <text x="130" y="76" fill="#f85149" font-size="14" font-weight="600" text-anchor="middle">Actores</text>
+    <text x="480" y="76" fill="#e3b341" font-size="14" font-weight="600" text-anchor="middle">Fronteras de confianza</text>
+    <text x="830" y="76" fill="#2088ff" font-size="14" font-weight="600" text-anchor="middle">Activos</text>
+
+    <!-- actores -->
+    <g font-size="12" fill="#f0f6fc">
+      <rect x="30" y="92" width="200" height="56" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="46" y="116">Autor de un PR de fork</text>
+      <text x="46" y="136" fill="#8b949e" font-size="11">código, título, rama, commits</text>
+      <rect x="30" y="160" width="200" height="56" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="46" y="184">Colaborador con escritura</text>
+      <text x="46" y="204" fill="#8b949e" font-size="11">push a ramas del repo</text>
+      <rect x="30" y="228" width="200" height="56" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="46" y="252">Comentarista</text>
+      <text x="46" y="272" fill="#8b949e" font-size="11">comentarios y revisiones</text>
+      <rect x="30" y="296" width="200" height="56" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="46" y="320">Dependencia comprometida</text>
+      <text x="46" y="340" fill="#8b949e" font-size="11">código que corre en tu job</text>
+      <rect x="30" y="364" width="200" height="56" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="46" y="388">Mantenedor de una action</text>
+      <text x="46" y="408" fill="#8b949e" font-size="11">a qué commit apunta cada tag</text>
+    </g>
+
+    <!-- fronteras -->
+    <g font-size="13">
+      <rect x="300" y="92" width="360" height="74" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="316" y="116" fill="#f0f6fc" font-weight="600">1 · El evento</text>
+      <text x="316" y="136" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">github.event.* · github.head_ref · inputs</text>
+      <text x="316" y="156" fill="#3fb950" font-size="11">control: env: y "$VAR", nunca ${{ }} en run</text>
+
+      <rect x="300" y="178" width="360" height="74" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="316" y="202" fill="#f0f6fc" font-weight="600">2 · El checkout</text>
+      <text x="316" y="222" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">ref: head.sha en un job con permisos</text>
+      <text x="316" y="242" fill="#3fb950" font-size="11">control: el PR nunca corre donde se escribe</text>
+
+      <rect x="300" y="264" width="360" height="74" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="316" y="288" fill="#f0f6fc" font-weight="600">3 · Lo que se hereda entre runs</text>
+      <text x="316" y="308" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">caché · artefactos</text>
+      <text x="316" y="328" fill="#3fb950" font-size="11">control: runner.temp, validar, caché en read</text>
+
+      <rect x="300" y="350" width="360" height="74" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="316" y="374" fill="#f0f6fc" font-weight="600">4 · Las referencias externas</text>
+      <text x="316" y="394" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">uses: · uv.lock · pnpm-lock.yaml</text>
+      <text x="316" y="414" fill="#3fb950" font-size="11">control: SHA de 40 caracteres y Dependabot</text>
+    </g>
+
+    <!-- activos -->
+    <g font-size="13" fill="#f0f6fc">
+      <rect x="730" y="92" width="200" height="44" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="746" y="119" font-family="ui-monospace, Menlo, Consolas, monospace">GITHUB_TOKEN</text>
+      <rect x="730" y="148" width="200" height="44" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="746" y="175">Secretos</text>
+      <rect x="730" y="204" width="200" height="44" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="746" y="231">Caché de Actions</text>
+      <rect x="730" y="260" width="200" height="44" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="746" y="287">Artefactos</text>
+      <rect x="730" y="316" width="200" height="44" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="746" y="343">Runner</text>
+      <rect x="730" y="372" width="200" height="44" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="746" y="399">Releases e imágenes</text>
+    </g>
+
+    <!-- flechas actor → frontera -->
+    <g stroke="#f85149" stroke-width="1.5" fill="none" marker-end="url(#a01)">
+      <path d="M230 120 L296 125"/>
+      <path d="M230 128 L296 210"/>
+      <path d="M230 188 L296 135"/>
+      <path d="M230 256 L296 140"/>
+      <path d="M230 324 L296 300"/>
+      <path d="M230 392 L296 386"/>
+    </g>
+    <!-- flechas frontera → activos -->
+    <g stroke="#e3b341" stroke-width="1.5" fill="none" stroke-dasharray="5 4">
+      <path d="M660 129 L726 114"/>
+      <path d="M660 215 L726 170"/>
+      <path d="M660 290 L726 226"/>
+      <path d="M660 310 L726 282"/>
+      <path d="M660 387 L726 338"/>
+      <path d="M660 395 L726 394"/>
+    </g>
+
+    <!-- eventos -->
+    <rect x="30" y="448" width="900" height="92" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="472" fill="#f0f6fc" font-size="13" font-weight="600">Qué recibe cada evento</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="496" fill="#3fb950">pull_request de fork</text>
+      <text x="250" y="496" fill="#8b949e">workflow y código del PR · token de solo lectura · sin secretos</text>
+      <text x="46" y="516" fill="#e3b341">pull_request_target</text>
+      <text x="250" y="516" fill="#8b949e">workflow de main · token con escritura · secretos</text>
+      <text x="46" y="536" fill="#e3b341">workflow_run</text>
+      <text x="250" y="536" fill="#8b949e">workflow de main · token con escritura · secretos</text>
+    </g>
+
+    <text x="480" y="572" fill="#8b949e" font-size="11" text-anchor="middle">Rojo: quien controla la entrada. Amarillo: dónde entra. Verde: el control que la cierra. Azul y morado: lo que se puede robar o envenenar.</text>
+  </g>
+</svg>

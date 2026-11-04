@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 880" role="img" aria-labelledby="t12">
+  <title id="t12">Mapa del pipeline de tablero en la capa 12. Arriba, la regla que ahora cumplen todos los workflows: permissions vacío en la raíz, permisos por job y ninguna expresión dentro de run. A la izquierda, los workflows que ya existían, endurecidos: ci-api y ci con contents read; ci-web con contents read, que además sube el artefacto dist-report con report.md y pr-number; images con packages write en los jobs api y web; nightly con actions write en dispatch; smoke con contents read; lint-workflows con zizmor online gracias a GH_TOKEN. Los que llaman al repo central siguen fijados al SHA de v1.0.0 y su permissions es el techo del reutilizable. A la derecha, lo nuevo: labeler.yml con pull_request_target y pull-requests write, sin checkout, que lee .github/labeler.yml de la rama base; pr-report.yml con workflow_run sobre ci-web, actions read y pull-requests write, que descarga el artefacto en runner.temp, valida el número y comenta; codeql.yml con languages actions y security-events write; dependabot.yml con github-actions, uv y npm para pnpm, cooldown de 7 días y un grupo para las actions. Abajo, la organización: actions-tablero sin cambios en v1.0.0, y las políticas de la Semana 11 más, en tablero, la aprobación obligatoria para todos los colaboradores externos. En gris, lo que llega después: secretos, environments y OIDC en la Semana 13, releases y attestations en la 14, runners propios en la 15.</title>
+  <rect width="960" height="880" fill="#0d1117"/>
+  <defs>
+    <marker id="a12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 12</text>
+
+    <!-- regla común -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="85" fill="#3fb950" font-size="12" font-weight="600">en todos los workflows</text>
+    <text x="210" y="85" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · permisos por job · ninguna ${{ }} en run:</text>
+
+    <!-- columnas -->
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">Ya existían · endurecidos</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Nuevos en la capa 12</text>
+
+    <!-- existentes -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="30" y="146" width="410" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="173" fill="#f0f6fc" font-size="13" font-weight="600">ci-api.yml · ci.yml</text>
+      <text x="424" y="173" fill="#8b949e" font-size="11" text-anchor="end">contents: read</text>
+
+      <rect x="30" y="200" width="410" height="92" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="224" fill="#f0f6fc" font-size="13" font-weight="600">ci-web.yml</text>
+      <text x="424" y="224" fill="#8b949e" font-size="11" text-anchor="end">contents: read</text>
+      <text x="46" y="248" fill="#79c0ff" font-size="11">dist-report → report.md · pr-number</text>
+      <text x="46" y="266" fill="#79c0ff" font-size="11">upload-artifact name: dist-report</text>
+      <text x="46" y="284" fill="#8b949e" font-size="11">web → _node.yml: el permissions es el techo</text>
+
+      <rect x="30" y="302" width="410" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="329" fill="#f0f6fc" font-size="13" font-weight="600">images.yml</text>
+      <text x="424" y="329" fill="#e3b341" font-size="11" text-anchor="end">api · web: packages: write</text>
+
+      <rect x="30" y="356" width="410" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="383" fill="#f0f6fc" font-size="13" font-weight="600">nightly.yml</text>
+      <text x="424" y="383" fill="#e3b341" font-size="11" text-anchor="end">dispatch: actions: write</text>
+
+      <rect x="30" y="410" width="410" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="437" fill="#f0f6fc" font-size="13" font-weight="600">smoke.yml</text>
+      <text x="424" y="437" fill="#8b949e" font-size="11" text-anchor="end">contents: read</text>
+
+      <rect x="30" y="464" width="410" height="66" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="488" fill="#f0f6fc" font-size="13" font-weight="600">lint-workflows.yml</text>
+      <text x="46" y="512" fill="#3fb950" font-size="11">zizmor online: GH_TOKEN · sin --offline · .github/</text>
+    </g>
+
+    <!-- nuevos -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="520" y="146" width="410" height="84" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="536" y="170" fill="#2088ff" font-size="13" font-weight="600">labeler.yml</text>
+      <text x="914" y="170" fill="#e3b341" font-size="11" text-anchor="end">pull-requests: write</text>
+      <text x="536" y="194" fill="#79c0ff" font-size="11">on: pull_request_target · sin checkout</text>
+      <text x="536" y="214" fill="#8b949e" font-size="11">lee .github/labeler.yml de la rama base</text>
+
+      <rect x="520" y="240" width="410" height="102" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="536" y="264" fill="#2088ff" font-size="13" font-weight="600">pr-report.yml</text>
+      <text x="914" y="264" fill="#e3b341" font-size="11" text-anchor="end">pull-requests: write</text>
+      <text x="536" y="288" fill="#79c0ff" font-size="11">on: workflow_run [ci-web] · actions: read</text>
+      <text x="536" y="308" fill="#f0f6fc" font-size="11">runner.temp · ^[0-9]+$ · --body-file</text>
+      <text x="536" y="328" fill="#8b949e" font-size="11">sin checkout: el artefacto son datos</text>
+
+      <rect x="520" y="352" width="410" height="66" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="536" y="376" fill="#2088ff" font-size="13" font-weight="600">codeql.yml</text>
+      <text x="914" y="376" fill="#e3b341" font-size="11" text-anchor="end">security-events: write</text>
+      <text x="536" y="400" fill="#79c0ff" font-size="11">languages: actions · push · PR · semanal</text>
+
+      <rect x="520" y="428" width="410" height="102" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="536" y="452" fill="#2088ff" font-size="13" font-weight="600">dependabot.yml</text>
+      <text x="536" y="476" fill="#f0f6fc" font-size="11">github-actions / · uv /api · npm /web</text>
+      <text x="536" y="496" fill="#8b949e" font-size="11">"npm" es el ecosistema, también de pnpm</text>
+      <text x="536" y="516" fill="#f0f6fc" font-size="11">cooldown 7 días · grupo para las actions</text>
+    </g>
+
+    <!-- flecha ci-web → pr-report -->
+    <path d="M440 257 L516 292" stroke="#79c0ff" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#a12)"/>
+    <text x="478" y="246" fill="#79c0ff" font-size="11" text-anchor="middle">artefacto</text>
+
+    <!-- excepciones -->
+    <text x="725" y="556" fill="#e3b341" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace"># zizmor: ignore[dangerous-triggers] con motivo en los dos</text>
+
+    <!-- org -->
+    <text x="30" y="600" fill="#d2a8ff" font-size="14" font-weight="600">Organización &lt;tu-org&gt;</text>
+    <rect x="30" y="612" width="410" height="110" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="46" y="636" fill="#d2a8ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">&lt;tu-org&gt;/actions-tablero</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="660" fill="#f0f6fc">sin cambios · release inmutable v1.0.0</text>
+      <text x="46" y="680" fill="#8b949e">7 uses desde tablero · 1 SHA · 1 tag</text>
+      <text x="46" y="700" fill="#8b949e">Dependabot propone el siguiente SHA</text>
+    </g>
+
+    <rect x="520" y="612" width="410" height="110" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="536" y="636" fill="#d2a8ff" font-size="13" font-weight="600">Políticas de actions</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="536" y="660" fill="#8b949e">selected · SHA obligatorio · token read (S11)</text>
+      <text x="536" y="680" fill="#3fb950">tablero · approval_policy:</text>
+      <text x="552" y="698" fill="#3fb950">all_external_contributors</text>
+    </g>
+
+    <!-- después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="756" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="783"><tspan font-weight="600">Semana 13</tspan> · secretos y OIDC</text>
+      <rect x="340" y="756" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="783"><tspan font-weight="600">Semana 14</tspan> · attestations y SBOM</text>
+      <rect x="650" y="756" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="783"><tspan font-weight="600">Semana 15</tspan> · runners propios</text>
+    </g>
+    <text x="480" y="836" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows nuevos. Azul claro discontinuo: el artefacto que cruza como datos. Amarillo: los únicos permisos de escritura.</text>
+    <text x="480" y="854" fill="#8b949e" font-size="11" text-anchor="middle">Verde: controles añadidos. Morado: configuración de la organización. Gris discontinuo: lo que añaden las siguientes.</text>
+  </g>
+</svg>
