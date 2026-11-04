@@ -108,7 +108,8 @@ nuevo, en la tanda que escribe la semana que la usa.
 | Límites de caché por repo y política de expulsión | 03, 19 | |
 | Retención por defecto de artefactos y logs | 04, 19 | |
 | Límites de anidamiento y de llamadas de workflows reutilizables | 09 | |
-| Merge queue, rulesets que exigen workflows y revisores de environment en una org gratuita con repo público | 11, 13, 18 | Lo decide el spike, ver `decision-laboratorio.md` |
+| Merge queue y revisores de environment en una org gratuita con repo público | 13, 18 | Lo decide el spike, ver `decision-laboratorio.md`. Los rulesets de organización que exigen workflows piden el plan Team (S11: solo teoría) |
+| Referencia `$/` (runner 2.336.0 o superior) y su soporte en actionlint | 11 | Changelog de GitHub del 2026-07-30. actionlint 1.7.12 la rechaza (rhysd/actionlint#711, abierto el 2026-11-03): el repo central la tolera con `.github/actionlint.yaml` |
 | Dominios vigentes del examen GH-200 | 20 | `mapa-funcionalidades.md` |
 
 ## Retirado: no se usa

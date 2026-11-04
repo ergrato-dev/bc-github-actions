@@ -83,7 +83,7 @@ Equipo: Linux o WSL2 con Docker, **8 GB de RAM** (16 GB recomendados desde la Se
 | [08](bootcamp/week-08-probar_y_depurar_workflows/README.md) | Probar y depurar workflows |
 | [09](bootcamp/week-09-workflows_reutilizables/README.md) | Workflows reutilizables |
 | [10](bootcamp/week-10-actions_propias/README.md) | Actions propias: composite, JavaScript y Docker |
-| 11 | Actions a escala de organización |
+| [11](bootcamp/week-11-actions_a_escala_de_organizacion/README.md) | Actions a escala de organización |
 | 12 | Modelo de amenazas y endurecimiento |
 | 13 | Secretos, entornos y OIDC |
 | 14 | Releases, cadena de suministro y attestations |

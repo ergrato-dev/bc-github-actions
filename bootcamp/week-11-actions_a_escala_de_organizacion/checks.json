@@ -1,0 +1,125 @@
+{
+  "week": "11",
+  "title": "Actions a escala de organización",
+  "checks": [
+    {
+      "id": "tablero-calls-central-reusables",
+      "description": "ci-api.yml, ci-web.yml e images.yml llaman a los reutilizables de actions-tablero fijados por SHA con el tag en comentario",
+      "cmd": "org=\"${GH_REPO%%/*}\"; for f in ci-api ci-web images; do printf '%s=%s ' \"$f\" \"$(grep -cE \"uses: $org/actions-tablero/\\.github/workflows/_[a-z]+\\.yml@[0-9a-f]{40} # v[0-9]+\\.[0-9]+\\.[0-9]+$\" .github/workflows/$f.yml)\"; done",
+      "assert": "stdout~^ci-api=1 ci-web=1 images=2 $",
+      "hint": "2-practicas/02-consumir-el-repo-central.md, paso 2"
+    },
+    {
+      "id": "tablero-uses-central-actions",
+      "description": "El job coverage de ci-web.yml usa setup-tablero y coverage-report, y el job sql de ci.yml usa sql-lint, todas desde actions-tablero por SHA",
+      "cmd": "org=\"${GH_REPO%%/*}\"; printf 'ci-web=%s ci=%s' \"$(grep -cE \"uses: $org/actions-tablero/(setup-tablero|coverage-report)@[0-9a-f]{40} # v\" .github/workflows/ci-web.yml)\" \"$(grep -cE \"uses: $org/actions-tablero/sql-lint@[0-9a-f]{40} # v\" .github/workflows/ci.yml)\"",
+      "assert": "stdout~^ci-web=2 ci=1$",
+      "hint": "2-practicas/02-consumir-el-repo-central.md, paso 3"
+    },
+    {
+      "id": "no-local-copies",
+      "description": "tablero ya no guarda copias locales: ni .github/actions/, ni reutilizables _*.yml, ni test-actions.yml",
+      "cmd": "ls -d .github/actions .github/workflows/_*.yml .github/workflows/test-actions.yml 2>/dev/null || true",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/02-consumir-el-repo-central.md, paso 4"
+    },
+    {
+      "id": "single-central-version",
+      "description": "Todas las referencias de tablero al repo central fijan el mismo SHA y el mismo tag",
+      "cmd": "org=\"${GH_REPO%%/*}\"; grep -rhoE \"$org/actions-tablero/[^@ ]+@[0-9a-f]{40} # v[0-9]+\\.[0-9]+\\.[0-9]+\" .github/workflows | sed -E 's/.*@//' | sort -u | wc -l",
+      "assert": "stdout~^ *1$",
+      "hint": "2-practicas/02-consumir-el-repo-central.md, paso 5"
+    },
+    {
+      "id": "pinned-sha-matches-tag",
+      "description": "El SHA que fija tablero es el commit al que apunta, en actions-tablero, el tag que lleva en el comentario",
+      "cmd": "org=\"${GH_REPO%%/*}\"; ref=$(grep -rhoE \"$org/actions-tablero/[^@ ]+@[0-9a-f]{40} # v[0-9]+\\.[0-9]+\\.[0-9]+\" .github/workflows | sed -E 's/.*@//' | sort -u | head -1); test -n \"$ref\" && test \"$(gh api \"repos/{owner}/actions-tablero/commits/${ref##* }\" --jq .sha)\" = \"${ref%% *}\" && echo \"${ref##* }\"",
+      "assert": "stdout~^v[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "hint": "2-practicas/01-repo-central-y-primera-release.md, paso 6"
+    },
+    {
+      "id": "central-release-immutable",
+      "description": "La última release de actions-tablero es una v1.x.y publicada (no borrador) e inmutable",
+      "cmd": "gh api repos/{owner}/actions-tablero/releases/latest --jq '\"\\(.tag_name) immutable=\\(.immutable) draft=\\(.draft)\"'",
+      "assert": "stdout~^v1\\.[0-9]+\\.[0-9]+ immutable=true draft=false$",
+      "hint": "2-practicas/01-repo-central-y-primera-release.md, paso 5"
+    },
+    {
+      "id": "central-ci-green-on-release",
+      "description": "El ci.yml de actions-tablero terminó en success sobre el commit de su última release",
+      "cmd": "tag=$(gh api repos/{owner}/actions-tablero/releases/latest --jq .tag_name) && sha=$(gh api \"repos/{owner}/actions-tablero/commits/$tag\" --jq .sha) && gh api \"repos/{owner}/actions-tablero/actions/workflows/ci.yml/runs?head_sha=$sha\" --jq '[.workflow_runs[].conclusion] | index(\"success\") != null'",
+      "assert": "stdout~^true$",
+      "hint": "2-practicas/01-repo-central-y-primera-release.md, paso 4"
+    },
+    {
+      "id": "central-reusables-self-repository",
+      "description": "En la última release, _python.yml y _node.yml preparan cada job con $/setup-tablero y ninguno usa ./",
+      "cmd": "tag=$(gh api repos/{owner}/actions-tablero/releases/latest --jq .tag_name) && for f in _python _node; do c=$(gh api \"repos/{owner}/actions-tablero/contents/.github/workflows/$f.yml?ref=$tag\" -H \"Accept: application/vnd.github.raw\"); printf '%s=%s/%s ' \"$f\" \"$(grep -c 'uses: \\$/setup-tablero' <<<\"$c\")\" \"$(grep -c 'uses: \\./' <<<\"$c\")\"; done",
+      "assert": "stdout~^_python=3/0 _node=3/0 $",
+      "hint": "2-practicas/01-repo-central-y-primera-release.md, paso 2"
+    },
+    {
+      "id": "org-allowed-actions",
+      "description": "La organización solo permite actions seleccionadas y exige fijarlas por SHA completo",
+      "cmd": "gh api orgs/{owner}/actions/permissions --jq '\"\\(.allowed_actions) sha_pinning_required=\\(.sha_pinning_required)\"'",
+      "assert": "stdout~^selected sha_pinning_required=true$",
+      "hint": "2-practicas/03-politicas-de-la-organizacion.md, paso 2"
+    },
+    {
+      "id": "org-selected-actions",
+      "description": "La lista de la organización admite las actions de GitHub y una lista de patrones explícita, sin abrir la puerta a todo creador verificado",
+      "cmd": "gh api orgs/{owner}/actions/permissions/selected-actions --jq '\"github=\\(.github_owned_allowed) verified=\\(.verified_allowed) patterns=\\(.patterns_allowed | length)\"'",
+      "assert": "stdout~^github=true verified=false patterns=[1-9]",
+      "hint": "2-practicas/03-politicas-de-la-organizacion.md, paso 3"
+    },
+    {
+      "id": "org-default-token-read",
+      "description": "El GITHUB_TOKEN de la organización es de solo lectura por defecto y no puede aprobar pull requests",
+      "cmd": "gh api orgs/{owner}/actions/permissions/workflow --jq '\"\\(.default_workflow_permissions) approve_prs=\\(.can_approve_pull_request_reviews)\"'",
+      "assert": "stdout~^read approve_prs=false$",
+      "hint": "2-practicas/03-politicas-de-la-organizacion.md, paso 4"
+    },
+    {
+      "id": "dot-github-public",
+      "description": "El repo .github de la organización existe y es público",
+      "cmd": "gh api repos/{owner}/.github --jq .visibility",
+      "assert": "stdout~^public$",
+      "hint": "2-practicas/04-workflow-templates.md, paso 1"
+    },
+    {
+      "id": "template-metadata",
+      "description": "workflow-templates/ci-python.properties.json tiene name y description propios, sin TODO",
+      "cmd": "gh api repos/{owner}/.github/contents/workflow-templates/ci-python.properties.json -H \"Accept: application/vnd.github.raw\" | jq -r '[.name, .description] | map(select(type == \"string\" and length > 0 and (test(\"TODO\") | not))) | length'",
+      "assert": "stdout~^2$",
+      "hint": "3-proyecto/starter/org-dot-github/workflow-templates/ci-python.properties.json, TODO 9"
+    },
+    {
+      "id": "template-calls-central",
+      "description": "La plantilla ci-python.yml filtra por $default-branch y llama al _python.yml central fijado por SHA",
+      "cmd": "c=$(gh api repos/{owner}/.github/contents/workflow-templates/ci-python.yml -H \"Accept: application/vnd.github.raw\"); printf 'default-branch=%s central=%s' \"$(grep -cF '$default-branch' <<<\"$c\")\" \"$(grep -cE \"uses: ${GH_REPO%%/*}/actions-tablero/\\.github/workflows/_python\\.yml@[0-9a-f]{40} # v\" <<<\"$c\")\"",
+      "assert": "stdout~^default-branch=1 central=1$",
+      "hint": "2-practicas/04-workflow-templates.md, paso 2"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "Los workflows de tablero pasan actionlint y zizmor sin hallazgos",
+      "cmd": "actionlint && zizmor --offline -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/02-consumir-el-repo-central.md, paso 6"
+    },
+    {
+      "id": "actions-pinned",
+      "description": "Toda uses remota de los workflows de tablero está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -rhE '^\\s*-?\\s*uses:' .github/workflows --include='*.yml' | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "docs/reglas-de-seguridad-de-workflows.md, regla 1"
+    },
+    {
+      "id": "green-on-main",
+      "description": "ci, ci-api y ci-web terminan en success sobre el último commit de main, ya con el repo central",
+      "cmd": "git fetch -q origin main && sha=$(git rev-parse origin/main) && for w in ci ci-api ci-web; do printf '%s=%s ' \"$w\" \"$(gh run list --workflow $w.yml --commit \"$sha\" --json conclusion --jq '.[0].conclusion')\"; done",
+      "assert": "stdout~^ci=success ci-api=success ci-web=success $",
+      "hint": "2-practicas/02-consumir-el-repo-central.md, paso 7"
+    }
+  ]
+}

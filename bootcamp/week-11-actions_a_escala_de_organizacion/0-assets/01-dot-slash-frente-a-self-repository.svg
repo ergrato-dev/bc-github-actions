@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t1">
+  <title id="t1">Qué resuelve cada referencia cuando tablero llama al reutilizable _python.yml de actions-tablero fijado por SHA. El job corre en un runner cuyo workspace contiene el checkout de tablero, porque actions/checkout dentro de un reutilizable descarga el repo del llamador. Con uses: ./setup-tablero, el runner busca la action en el workspace, dentro de tablero, donde no existe, y el step falla. Con uses: $/setup-tablero, la referencia se resuelve contra el repo del archivo que contiene el uses, actions-tablero, en el mismo commit que fijó tablero, sin checkout.</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+    <marker id="a1r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+    <marker id="a1g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">./ busca en el workspace · $/ busca en el repo del archivo</text>
+
+    <!-- tablero -->
+    <rect x="30" y="64" width="270" height="150" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="90" fill="#f0f6fc" font-size="15" font-weight="600">&lt;tu-org&gt;/tablero</text>
+    <text x="46" y="110" fill="#8b949e" font-size="12">el llamador</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="46" y="140" fill="#f0f6fc">ci-api.yml</text>
+      <text x="46" y="162" fill="#79c0ff">uses: …/_python.yml@a7e19ff…</text>
+      <text x="46" y="184" fill="#8b949e">api/ · web/ · sin setup-tablero</text>
+    </g>
+
+    <!-- central -->
+    <rect x="660" y="64" width="270" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="676" y="90" fill="#2088ff" font-size="15" font-weight="600">&lt;tu-org&gt;/actions-tablero</text>
+    <text x="676" y="110" fill="#8b949e" font-size="12">commit a7e19ff… (v1.0.0)</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="676" y="140" fill="#f0f6fc">.github/workflows/_python.yml</text>
+      <text x="676" y="162" fill="#3fb950">setup-tablero/action.yml</text>
+      <text x="676" y="184" fill="#8b949e">coverage-report/ · sql-lint/</text>
+    </g>
+
+    <path d="M300 140 L656 140" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a1b)"/>
+    <text x="478" y="130" fill="#2088ff" font-size="12" text-anchor="middle">workflow_call por SHA</text>
+
+    <!-- runner -->
+    <rect x="250" y="250" width="460" height="130" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="266" y="276" fill="#f0f6fc" font-size="15" font-weight="600">Runner del job lint de _python.yml</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="266" y="302" fill="#8b949e">actions/checkout  →  descarga el repo del llamador</text>
+      <rect x="266" y="314" width="428" height="52" rx="5" fill="#0d1117" stroke="#e3b341"/>
+      <text x="280" y="336" fill="#e3b341">$GITHUB_WORKSPACE = checkout de tablero</text>
+      <text x="280" y="355" fill="#8b949e">api/ · web/ · .github/workflows/ci-api.yml</text>
+    </g>
+    <path d="M165 214 L165 300 L246 320" stroke="#e3b341" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+
+    <!-- ./ -->
+    <rect x="30" y="410" width="430" height="120" rx="8" fill="#0d1117" stroke="#f85149" stroke-width="2"/>
+    <text x="46" y="436" fill="#f85149" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">uses: ./setup-tablero</text>
+    <text x="46" y="462" fill="#f0f6fc" font-size="13">Ruta del workspace: busca</text>
+    <text x="46" y="482" fill="#f0f6fc" font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace">tablero/setup-tablero/action.yml</text>
+    <text x="46" y="510" fill="#f85149" font-size="13">No existe: el step falla</text>
+    <path d="M300 410 L360 384" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#a1r)"/>
+
+    <!-- $/ -->
+    <rect x="500" y="410" width="430" height="120" rx="8" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <text x="516" y="436" fill="#3fb950" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">uses: $/setup-tablero</text>
+    <text x="516" y="462" fill="#f0f6fc" font-size="13">Repo del archivo que contiene el uses,</text>
+    <text x="516" y="482" fill="#f0f6fc" font-size="13">en el commit que corre: a7e19ff…</text>
+    <text x="516" y="510" fill="#3fb950" font-size="13">Sin checkout · va con la versión fijada</text>
+    <path d="M800 410 L800 218" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a1g)"/>
+  </g>
+</svg>

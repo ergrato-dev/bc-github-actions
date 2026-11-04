@@ -1,0 +1,7 @@
+# Configuración de actionlint del repo central. Se copia a <tu-org>/actions-tablero como
+# .github/actionlint.yaml (actionlint la encuentra solo, sin flags).
+paths:
+  .github/workflows/**/*.yml:
+    # TODO 1: ignora solo el error que actionlint 1.7.12 da con "uses: $/..." (empieza por
+    # 'specifying action "$/'). Ninguna otra regla se silencia.
+    ignore: []

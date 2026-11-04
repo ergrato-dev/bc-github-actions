@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 880" role="img" aria-labelledby="t11">
+  <title id="t11">Mapa del pipeline de tablero en la capa 11. Arriba, sin cambios: smoke.yml, nightly.yml y lint-workflows.yml. A la izquierda, tablero, que ya no guarda copias locales: desaparecen .github/actions, _python.yml, _node.yml, _image.yml y test-actions.yml. Sus llamadores apuntan al repo central fijado por el SHA de v1.0.0: ci-api.yml llama a _python.yml; ci-web.yml llama a _node.yml en el job web y usa setup-tablero y coverage-report en el job coverage; images.yml llama a _image.yml en los jobs api y web; ci.yml usa sql-lint en el job sql. Siete referencias, un solo SHA y un solo tag. A la derecha, el repo nuevo actions-tablero: setup-tablero, coverage-report y sql-lint en la raíz; _python.yml y _node.yml usan $/setup-tablero; _image.yml; ci.yml con los jobs actionlint, zizmor, coverage-report y sql-lint; .github/actionlint.yaml que ignora solo el error de $/; y la release inmutable v1.0.0 comprobada con gh release verify. Abajo, la organización: el repo .github público con la plantilla ci-python, que llama a _python.yml central por SHA y filtra por $default-branch, y las políticas de actions: allowed_actions selected, pinning por SHA obligatorio, actions de GitHub y lista de patrones, token por defecto de solo lectura sin aprobar pull requests. En gris, lo que llega después: permisos a fondo y Dependabot en la Semana 12, secretos y OIDC en la 13, attestations y SBOM en la 14.</title>
+  <rect width="960" height="880" fill="#0d1117"/>
+  <defs>
+    <marker id="a11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 11</text>
+
+    <!-- sin cambios -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="85" fill="#8b949e" font-size="12" font-weight="600">sin cambios</text>
+    <g font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#f0f6fc">
+      <text x="146" y="85">smoke.yml</text><text x="286" y="85">nightly.yml</text><text x="436" y="85">lint-workflows.yml</text>
+    </g>
+
+    <!-- columnas -->
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">&lt;tu-org&gt;/tablero · solo llamadores</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">&lt;tu-org&gt;/actions-tablero · nuevo</text>
+
+    <!-- tablero -->
+    <rect x="30" y="146" width="410" height="68" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="170" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci-api.yml</text>
+    <text x="46" y="196" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">api → _python.yml@a7e19ff… # v1.0.0</text>
+
+    <rect x="30" y="224" width="410" height="104" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="248" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci-web.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="272" fill="#79c0ff">web → _node.yml@a7e19ff…</text>
+      <text x="46" y="292" fill="#79c0ff">coverage: setup-tablero@a7e19ff…</text>
+      <text x="46" y="312" fill="#79c0ff">          coverage-report@a7e19ff…</text>
+    </g>
+
+    <rect x="30" y="338" width="410" height="68" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="362" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">images.yml</text>
+    <text x="46" y="388" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">api · web → _image.yml@a7e19ff…</text>
+
+    <rect x="30" y="416" width="410" height="68" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="440" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci.yml</text>
+    <text x="46" y="466" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">sql → sql-lint@a7e19ff…</text>
+
+    <rect x="30" y="494" width="410" height="66" rx="8" fill="#0d1117" stroke="#f85149" stroke-dasharray="6 4"/>
+    <text x="46" y="516" fill="#f85149" font-size="12" font-weight="600">Borrado de tablero</text>
+    <text x="46" y="536" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">.github/actions/ · _python · _node · _image</text>
+    <text x="46" y="552" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">test-actions.yml · rutas viejas en paths</text>
+
+    <!-- central -->
+    <rect x="520" y="146" width="410" height="414" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="536" y="172" fill="#8b949e" font-size="11">en la raíz</text>
+      <text x="536" y="194" fill="#2088ff" font-size="13" font-weight="600">setup-tablero/</text>
+      <text x="536" y="214" fill="#2088ff" font-size="13" font-weight="600">coverage-report/</text>
+      <text x="536" y="234" fill="#2088ff" font-size="13" font-weight="600">sql-lint/<tspan fill="#8b949e" font-size="11" font-weight="400">  tests/ok.sql</tspan></text>
+      <text x="536" y="264" fill="#8b949e" font-size="11">.github/workflows/</text>
+      <text x="536" y="286" fill="#f0f6fc" font-size="12">_python.yml · _node.yml</text>
+      <text x="552" y="304" fill="#3fb950" font-size="11">cada job: uses: $/setup-tablero</text>
+      <text x="536" y="324" fill="#f0f6fc" font-size="12">_image.yml</text>
+      <text x="536" y="350" fill="#f0f6fc" font-size="12">ci.yml</text>
+      <text x="552" y="368" fill="#8b949e" font-size="11">actionlint · zizmor .</text>
+      <text x="552" y="386" fill="#8b949e" font-size="11">coverage-report: test + dist</text>
+      <text x="552" y="404" fill="#8b949e" font-size="11">sql-lint: humo, files = 1</text>
+      <text x="536" y="430" fill="#e3b341" font-size="11">.github/actionlint.yaml: ignora solo $/</text>
+    </g>
+    <rect x="536" y="448" width="378" height="96" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+    <text x="552" y="472" fill="#3fb950" font-size="13" font-weight="600">Release v1.0.0 · inmutable</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="552" y="494" fill="#f0f6fc">tag fijo en a7e19ff… (SHA de ejemplo)</text>
+      <text x="552" y="512" fill="#f0f6fc">gh release verify v1.0.0</text>
+      <text x="552" y="530" fill="#8b949e">ci.yml en verde sobre ese commit</text>
+    </g>
+
+    <!-- flechas -->
+    <path d="M440 190 L516 290" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a11)"/>
+    <path d="M440 272 L516 292" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a11)"/>
+    <path d="M440 300 L516 204" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a11)"/>
+    <path d="M440 380 L516 324" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a11)"/>
+    <path d="M440 460 L516 234" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a11)"/>
+    <text x="725" y="584" fill="#2088ff" font-size="11" text-anchor="middle">desde tablero: 7 uses · 1 SHA · 1 tag</text>
+
+    <!-- org -->
+    <text x="30" y="616" fill="#d2a8ff" font-size="14" font-weight="600">Organización &lt;tu-org&gt;</text>
+    <rect x="30" y="628" width="410" height="120" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="46" y="652" fill="#d2a8ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">&lt;tu-org&gt;/.github · público</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="676" fill="#f0f6fc">workflow-templates/ci-python.yml</text>
+      <text x="62" y="694" fill="#e3b341">branches: [$default-branch]</text>
+      <text x="62" y="712" fill="#79c0ff">uses: …/_python.yml@a7e19ff… # v1.0.0</text>
+      <text x="46" y="734" fill="#f0f6fc">ci-python.properties.json · name · description</text>
+    </g>
+    <path d="M440 700 Q470 560 516 300" stroke="#2088ff" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#a11)"/>
+
+    <rect x="520" y="628" width="410" height="120" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="536" y="652" fill="#d2a8ff" font-size="13" font-weight="600">Políticas de actions</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="536" y="676" fill="#f0f6fc">allowed_actions: selected</text>
+      <text x="536" y="694" fill="#f0f6fc">sha_pinning_required: true</text>
+      <text x="536" y="712" fill="#f0f6fc">GitHub sí · verificados no · patrones</text>
+      <text x="536" y="730" fill="#f0f6fc">token: read · no aprueba PR</text>
+    </g>
+
+    <!-- después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="772" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="799"><tspan font-weight="600">Semana 12</tspan> · permisos y Dependabot</text>
+      <rect x="340" y="772" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="799"><tspan font-weight="600">Semana 13</tspan> · secretos y OIDC</text>
+      <rect x="650" y="772" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="799"><tspan font-weight="600">Semana 14</tspan> · attestations y SBOM</text>
+    </g>
+    <text x="480" y="846" fill="#8b949e" font-size="11" text-anchor="middle">Azul: uses hacia el repo central por SHA (discontinuo: la plantilla). Verde: $/ y la release. Rojo discontinuo: lo que se borra.</text>
+    <text x="480" y="864" fill="#8b949e" font-size="11" text-anchor="middle">Morado: configuración de la organización. Amarillo: excepciones y marcadores. Gris discontinuo: lo que añaden las siguientes.</text>
+  </g>
+</svg>

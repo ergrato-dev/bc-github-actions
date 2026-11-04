@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="t2">
+  <title id="t2">De un tag SemVer al SHA que fija el consumidor. En actions-tablero, el tag v1.0.0 de una release inmutable apunta a un commit; si el tag es anotado, pasa por un objeto tag antes de llegar al commit. scripts/resolve-sha.sh o gh api commits/v1.0.0 devuelven siempre el SHA del commit. tablero escribe ese SHA con el comentario # v1.0.0 en sus siete uses, todas con la misma versión. Subir a v1.1.0 es un PR que cambia el SHA en todas a la vez y ejecuta el CI con la versión nueva antes de fusionar. Un tag mayor flotante v1 que se mueve de release en release no puede ser una release inmutable.</title>
+  <rect width="960" height="520" fill="#0d1117"/>
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+    <marker id="a2y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">El consumidor fija el commit, no el tag</text>
+
+    <!-- autor -->
+    <text x="30" y="72" fill="#8b949e" font-size="13" font-weight="600">actions-tablero · el autor publica</text>
+    <rect x="30" y="84" width="200" height="70" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="110" fill="#3fb950" font-size="15" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">v1.0.0</text>
+    <text x="46" y="132" fill="#8b949e" font-size="12">release inmutable</text>
+    <text x="46" y="147" fill="#8b949e" font-size="12">el tag no se mueve</text>
+
+    <rect x="280" y="84" width="200" height="70" rx="8" fill="#161b22" stroke="#30363d" stroke-dasharray="6 4"/>
+    <text x="296" y="110" fill="#d2a8ff" font-size="14" font-weight="600">objeto tag</text>
+    <text x="296" y="132" fill="#8b949e" font-size="12">solo si es anotado:</text>
+    <text x="296" y="147" fill="#8b949e" font-size="12">autor, fecha, mensaje</text>
+
+    <rect x="530" y="84" width="230" height="70" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="546" y="110" fill="#2088ff" font-size="14" font-weight="600">commit</text>
+    <text x="546" y="134" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">a7e19ff8d215…287cea</text>
+    <text x="546" y="148" fill="#8b949e" font-size="11">lo que ejecuta el runner</text>
+
+    <path d="M230 119 L276 119" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a2)"/>
+    <path d="M480 119 L526 119" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a2)"/>
+    <path d="M130 154 Q380 200 640 158" stroke="#30363d" stroke-width="2" fill="none" marker-end="url(#a2)"/>
+    <text x="380" y="198" fill="#8b949e" font-size="11" text-anchor="middle">tag ligero: directo al commit</text>
+
+    <!-- resolver -->
+    <rect x="800" y="84" width="130" height="70" rx="8" fill="#0d1117" stroke="#e3b341"/>
+    <text x="865" y="110" fill="#e3b341" font-size="12" font-weight="600" text-anchor="middle">resuelve</text>
+    <text x="865" y="128" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">resolve-sha.sh</text>
+    <text x="865" y="144" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">commits/v1.0.0</text>
+    <path d="M760 119 L796 119" stroke="#e3b341" stroke-width="2" fill="none" marker-end="url(#a2y)"/>
+
+    <!-- consumidor -->
+    <text x="30" y="250" fill="#8b949e" font-size="13" font-weight="600">tablero · el consumidor fija</text>
+    <rect x="30" y="262" width="900" height="110" rx="8" fill="#161b22" stroke="#30363d"/>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="46" y="288" fill="#f0f6fc">ci-api.yml  uses: &lt;tu-org&gt;/actions-tablero/.github/workflows/_python.yml@<tspan fill="#2088ff">a7e19ff…</tspan> <tspan fill="#8b949e"># v1.0.0</tspan></text>
+      <text x="46" y="310" fill="#f0f6fc">ci-web.yml  uses: &lt;tu-org&gt;/actions-tablero/setup-tablero@<tspan fill="#2088ff">a7e19ff…</tspan> <tspan fill="#8b949e"># v1.0.0</tspan></text>
+      <text x="46" y="332" fill="#f0f6fc">ci.yml      uses: &lt;tu-org&gt;/actions-tablero/sql-lint@<tspan fill="#2088ff">a7e19ff…</tspan> <tspan fill="#8b949e"># v1.0.0</tspan></text>
+    </g>
+    <text x="46" y="358" fill="#3fb950" font-size="12">siete uses, un solo SHA y un solo tag</text>
+    <path d="M865 154 L865 258" stroke="#e3b341" stroke-width="2" fill="none" marker-end="url(#a2y)"/>
+
+    <!-- subir -->
+    <rect x="30" y="400" width="440" height="96" rx="8" fill="#0d1117" stroke="#3fb950"/>
+    <text x="46" y="424" fill="#3fb950" font-size="14" font-weight="600">Subir a v1.1.0</text>
+    <text x="46" y="448" fill="#f0f6fc" font-size="12">Un PR cambia el SHA y el comentario en las siete</text>
+    <text x="46" y="466" fill="#f0f6fc" font-size="12">Cada llamador está en sus paths: el PR prueba la</text>
+    <text x="46" y="484" fill="#f0f6fc" font-size="12">versión nueva antes de fusionar</text>
+
+    <rect x="490" y="400" width="440" height="96" rx="8" fill="#0d1117" stroke="#f85149"/>
+    <text x="506" y="424" fill="#f85149" font-size="14" font-weight="600">Tag mayor flotante v1</text>
+    <text x="506" y="448" fill="#f0f6fc" font-size="12">El autor lo mueve a cada release: quien usa @v1</text>
+    <text x="506" y="466" fill="#f0f6fc" font-size="12">cambia de código sin un commit propio. No puede</text>
+    <text x="506" y="484" fill="#f0f6fc" font-size="12">ser una release inmutable</text>
+  </g>
+</svg>

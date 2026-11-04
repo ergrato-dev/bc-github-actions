@@ -115,7 +115,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 | 08 ✅ | `week-08-probar_y_depurar_workflows` | Probar y depurar workflows |
 | 09 ✅ | `week-09-workflows_reutilizables` | Workflows reutilizables |
 | 10 ✅ | `week-10-actions_propias` | Actions propias: composite, JavaScript y Docker |
-| 11 | `week-11-actions_a_escala_de_organizacion` | Actions a escala de organización |
+| 11 ✅ | `week-11-actions_a_escala_de_organizacion` | Actions a escala de organización |
 | 12 | `week-12-modelo_de_amenazas_y_endurecimiento` | Modelo de amenazas y endurecimiento |
 | 13 | `week-13-secretos_entornos_y_oidc` | Secretos, entornos y OIDC |
 | 14 | `week-14-releases_cadena_de_suministro_y_attestations` | Releases, cadena de suministro y attestations |
@@ -427,7 +427,7 @@ y el CI propio. Versión para el alumno, con ejemplo malo y bueno de cada una:
 1. **Toda `uses:` remota fijada por SHA de 40 caracteres con el tag en
    comentario**: `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1`.
    El SHA se obtiene con `scripts/resolve-sha.sh`; nunca se escribe a mano ni
-   se copia de otro repo. Exentas: `uses: ./ruta` y `docker://imagen@sha256:…`.
+   se copia de otro repo. Exentas: `uses: ./ruta`, `uses: $/ruta` y `docker://imagen@sha256:…`.
 2. **`permissions:` en la raíz** con `contents: read` (o `{}`), y cada job sube
    solo lo que necesita. Antes de la S12 va anotado "lo verás a fondo en la
    Semana 12".
@@ -480,7 +480,9 @@ marcado como tal.
 | `<tu-org>` | Organización gratuita del alumno |
 | `<tu-org>/tablero` | Repo público del proyecto |
 | `<tu-org>/actions-tablero` | Repo central de actions y reutilizables (S11+) |
+| `<tu-org>/.github` | Repo de la org con las workflow templates (S11+) |
 | `kind-gha` | Contexto de kubectl del clúster del laboratorio (S16+) |
+| `<sha-de-vX.Y.Z>` | SHA de una release del repo central del alumno, que solo existe en su org |
 | `<TOKEN>` | Cualquier credencial en ejemplos |
 
 Nunca un token, una clave privada de GitHub App ni un JWT con formato válido,

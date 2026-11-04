@@ -1,0 +1,91 @@
+# CI del repo central: lint de workflows y actions, tests de coverage-report y una prueba de
+# humo de sql-lint. Se copia a <tu-org>/actions-tablero como .github/workflows/ci.yml.
+# Una release de actions-tablero solo se publica sobre un commit con este workflow en verde.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      ACTIONLINT_VERSION: "1.7.12"
+      ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Instalar actionlint con checksum
+        run: |
+          archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl -fsSLO "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${archive}"
+          echo "${ACTIONLINT_SHA256}  ${archive}" | sha256sum -c
+          tar -xzf "$archive" actionlint
+      - name: actionlint con anotaciones
+        run: |
+          echo "::add-matcher::.github/actionlint-matcher.json"
+          ./actionlint -color
+
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+      - name: Instalar zizmor
+        run: uv tool install zizmor==1.31.1
+      - name: zizmor
+        # TODO 2: audita el repo entero, no solo .github/workflows/: aquí los action.yml viven
+        # en la raíz (setup-tablero/, coverage-report/, sql-lint/).
+        run: zizmor --offline --format=github .github/workflows/
+
+  coverage-report:
+    name: coverage-report (tests y dist)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: coverage-report
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # TODO 3: prepara Node y pnpm con la action setup-tablero de este mismo repo, referida
+      # con $/ (stack node, working-directory coverage-report).
+      - name: Tests de la lógica
+        run: pnpm test
+      - name: Reconstruir dist y comprobar que está al día
+        run: |
+          pnpm build
+          git diff --exit-code -- dist || { echo "::error::dist/ no coincide con src/: ejecuta pnpm build y súbelo"; exit 1; }
+
+  sql-lint:
+    name: sql-lint (humo)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # TODO 4: ejecuta $/sql-lint (id lint) sobre sql-lint/tests y añade un step que falle si
+      # su output files no vale 1.

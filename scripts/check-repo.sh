@@ -98,7 +98,7 @@ while IFS= read -r file; do
 done < <(find bootcamp -mindepth 2 \( -path "*/1-teoria/*.md" -o -path "*/2-practicas/*.md" \
             -o -path "*/3-proyecto/README.md" -o -name "rubrica-evaluacion.md" \
             -o -path "*/4-recursos/*/README.md" -o -path "*/5-glosario/README.md" \
-            -o -path "*/week-*/README.md" \) ; find docs -name "*.md")
+            -o -path "*/week-*/README.md" \) -not -path "*/starter/*" ; find docs -name "*.md")
 
 echo "== 4. SVG sin enlazar =="
 while IFS= read -r svg; do
@@ -151,14 +151,16 @@ while IFS= read -r file; do
 done < <(find_files -name '*.yaml' -o -name '*.yml' -o -name '*.md')
 
 echo "== 10. uses: fijado por SHA con el tag en comentario =="
-# Exentas: acciones locales (./ruta) e imágenes (docker://).
+# Exentas: acciones locales (./ruta y $/ruta), imágenes (docker://) y el placeholder
+# @<sha-...> de un repo del alumno, que solo existe en su org.
 while IFS= read -r file; do
   in_scope "$file" || continue
   while IFS= read -r line; do
     echo "USES SIN SHA (resuelvelo con scripts/resolve-sha.sh): $file:$line"; fail=1
   done < <(grep -nE '^[[:space:]-]*uses:[[:space:]]*[^[:space:]]' "$file" \
-           | grep -vE 'uses:[[:space:]]*["'\'']?(\./|docker://)' \
+           | grep -vE 'uses:[[:space:]]*["'\'']?(\./|\$/|docker://)' \
            | grep -vE 'uses:[[:space:]]*[^@[:space:]]+@[0-9a-f]{40}[[:space:]]+#[[:space:]]*v?[0-9]' \
+           | grep -vE '@<sha[^>]*>' \
            | grep -v antipatron)
 done < <(find_files -name '*.yaml' -o -name '*.yml' -o -name '*.md')
 
@@ -193,19 +195,20 @@ echo "== 13. Workflows de los starters con actionlint =="
 if command -v actionlint >/dev/null 2>&1; then
   # actionlint resuelve "uses: ./.github/workflows/x.yml" desde la raiz del repo git: cada
   # starter se valida en una copia con su propio git, o las llamadas locales no se encuentran.
-  while IFS= read -r starter; do
-    is_published "$starter" || continue
-    [ -d "$starter/.github/workflows" ] || continue
+  # Desde la S11 un starter puede traer varios repos (starter/<repo>/.github/workflows).
+  while IFS= read -r root; do
+    root="${root%/.github/workflows}"
+    is_published "$root" || continue
     tmp=$(mktemp -d)
-    cp -r "$starter/." "$tmp/"
+    cp -r "$root/." "$tmp/"
     git -C "$tmp" init -q
     if ! output=$(cd "$tmp" && actionlint -no-color 2>&1); then
-      echo "ACTIONLINT FALLA: $starter"
+      echo "ACTIONLINT FALLA: $root"
       printf '%s\n' "$output" | sed 's/^/    /'
       fail=1
     fi
     rm -rf "$tmp"
-  done < <(find bootcamp -type d -path "*/3-proyecto/starter" 2>/dev/null)
+  done < <(find bootcamp -type d -path "*/3-proyecto/starter/.github/workflows" -o -type d -path "*/3-proyecto/starter/*/.github/workflows" 2>/dev/null)
 else
   echo "AVISO: actionlint no esta instalado, no se validan los starters"
 fi

@@ -16,6 +16,7 @@ un término sin saber en qué semana apareció.
 | 08 | [Probar y depurar workflows](../bootcamp/week-08-probar_y_depurar_workflows/5-glosario/README.md) |
 | 09 | [Workflows reutilizables](../bootcamp/week-09-workflows_reutilizables/5-glosario/README.md) |
 | 10 | [Actions propias: composite, JavaScript y Docker](../bootcamp/week-10-actions_propias/5-glosario/README.md) |
+| 11 | [Actions a escala de organización](../bootcamp/week-11-actions_a_escala_de_organizacion/5-glosario/README.md) |
 
 Fuente de referencia para los términos oficiales: la
 [documentación de GitHub Actions](https://docs.github.com/en/actions).

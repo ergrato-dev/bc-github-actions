@@ -1,0 +1,31 @@
+# Plantilla de workflow de la organización: CI de un proyecto Python con uv. Se copia a
+# <tu-org>/.github como workflow-templates/ci-python.yml. Todo el trabajo lo hace el
+# reutilizable central; este archivo solo decide cuándo corre y con qué inputs.
+name: ci-python
+
+on:
+  push:
+    # TODO 7: que el push filtre por la rama por defecto del repo que adopte la plantilla,
+    # sea cual sea su nombre.
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python
+    # TODO 8: un repo nuevo no tiene _python.yml. Llama al de <tu-org>/actions-tablero fijado
+    # por el SHA de tu release, con el tag en comentario.
+    uses: ./.github/workflows/_python.yml
+    with:
+      # Quien adopte la plantilla cambia estos dos valores a los de su proyecto.
+      working-directory: .
+      package: app
+      integration: false

@@ -23,6 +23,9 @@ el código del atacante con tu token. Un SHA de 40 caracteres es inmutable.
 - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 ```
 
+Exentas: las referencias al propio repo (`./ruta` y `$/ruta`), que no salen de él, y las
+imágenes `docker://` fijadas por digest.
+
 Se aprende en la **S01** y se profundiza en la **S11** (versionado) y la **S12** (cadena de
 dependencias).
 

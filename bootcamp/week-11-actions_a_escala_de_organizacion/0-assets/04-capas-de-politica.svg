@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t4">
+  <title id="t4">Capas de política de GitHub Actions, de fuera hacia dentro: organización, repo y workflow o job. Cada capa puede restringir lo que deja la de fuera, nunca ampliarlo. La organización fija allowed_actions en selected, sha_pinning_required en true, la lista selected-actions con github_owned_allowed true, verified_allowed false y patrones explícitos como astral-sh/setup-uv, pnpm/action-setup y las cuatro actions de docker, y el token por defecto en read sin poder aprobar pull requests. El repo puede restringir más y ve desactivadas las opciones más permisivas. El workflow y el job bajan o suben permissions dentro del máximo, lo que se ve a fondo en la Semana 12. A la derecha, qué pasa con cada uses: actions/checkout por SHA, permitido por ser de GitHub; actions-tablero por SHA y $/setup-tablero, permitidos por ser de la organización; astral-sh/setup-uv por SHA, permitido por patrón; una action de terceros fuera de la lista, bloqueada; cualquier action por tag, bloqueada por el pinning obligatorio.</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cada capa restringe la de fuera, nunca la amplía</text>
+
+    <!-- org -->
+    <rect x="30" y="60" width="540" height="470" rx="10" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="48" y="88" fill="#d2a8ff" font-size="15" font-weight="600">Organización · &lt;tu-org&gt;</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="48" y="114" fill="#f0f6fc">allowed_actions: selected</text>
+      <text x="48" y="132" fill="#f0f6fc">sha_pinning_required: true</text>
+      <text x="48" y="156" fill="#f0f6fc">github_owned_allowed: true</text>
+      <text x="48" y="174" fill="#f0f6fc">verified_allowed: <tspan fill="#f85149">false</tspan></text>
+      <text x="48" y="192" fill="#f0f6fc">patterns_allowed:</text>
+      <text x="64" y="210" fill="#79c0ff">astral-sh/setup-uv@* · pnpm/action-setup@*</text>
+      <text x="64" y="228" fill="#79c0ff">docker/metadata-action@* · docker/login-action@* …</text>
+      <text x="48" y="252" fill="#f0f6fc">default_workflow_permissions: read</text>
+      <text x="48" y="270" fill="#f0f6fc">can_approve_pull_request_reviews: false</text>
+    </g>
+
+    <!-- repo -->
+    <rect x="60" y="290" width="480" height="220" rx="10" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+    <text x="78" y="316" fill="#2088ff" font-size="15" font-weight="600">Repo · tablero, actions-tablero, .github</text>
+    <text x="78" y="340" fill="#f0f6fc" font-size="12">Puede restringir más. Las opciones más permisivas</text>
+    <text x="78" y="358" fill="#f0f6fc" font-size="12">que la org aparecen desactivadas en sus ajustes</text>
+
+    <!-- workflow -->
+    <rect x="90" y="380" width="420" height="110" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="108" y="406" fill="#3fb950" font-size="15" font-weight="600">Workflow y job</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="108" y="432" fill="#f0f6fc">permissions:</text>
+      <text x="124" y="450" fill="#f0f6fc">contents: read</text>
+    </g>
+    <text x="108" y="476" fill="#8b949e" font-size="12">Ajusta el token dentro del máximo · Semana 12</text>
+
+    <!-- decisiones -->
+    <text x="600" y="88" fill="#f0f6fc" font-size="15" font-weight="600">Qué pasa con cada uses:</text>
+    <g font-size="12">
+      <rect x="600" y="104" width="330" height="62" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="614" y="126" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">actions/checkout@3d3c42e… # v7.0.1</text>
+      <text x="614" y="150" fill="#3fb950">Permitida: de GitHub y fijada</text>
+
+      <rect x="600" y="176" width="330" height="62" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="614" y="198" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">&lt;tu-org&gt;/actions-tablero/…@a7e19ff…</text>
+      <text x="614" y="222" fill="#3fb950">Permitida: de la org y fijada · también $/</text>
+
+      <rect x="600" y="248" width="330" height="62" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="614" y="270" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">astral-sh/setup-uv@68559e9… # v10.3.3</text>
+      <text x="614" y="294" fill="#3fb950">Permitida: casa con un patrón</text>
+
+      <rect x="600" y="320" width="330" height="62" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="614" y="342" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">alguien/action-util@&lt;sha&gt;</text>
+      <text x="614" y="366" fill="#f85149">Bloqueada: fuera de la lista</text>
+
+      <rect x="600" y="392" width="330" height="62" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="614" y="414" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">actions/checkout@v7</text>
+      <text x="614" y="438" fill="#f85149">Bloqueada: sin SHA completo</text>
+
+      <text x="600" y="482" fill="#8b949e">Los reutilizables pueden ir por tag según la</text>
+      <text x="600" y="500" fill="#8b949e">política; el bootcamp los fija por SHA igualmente.</text>
+    </g>
+  </g>
+</svg>

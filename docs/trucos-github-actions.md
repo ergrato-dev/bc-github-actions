@@ -159,6 +159,23 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   workflow codifican `%`, `\r` y `\n`. Si buscas el texto con `grep` en `gh run view --log`,
   busca la forma codificada.
 
+## Semana 11 — [Actions a escala de organización](../bootcamp/week-11-actions_a_escala_de_organizacion/README.md)
+
+- **Comprueba que un SHA fijado es el del tag que dice el comentario**:
+  `gh api repos/<tu-org>/actions-tablero/commits/v1.0.0 --jq .sha`. `commits/<tag>` resuelve tags
+  ligeros y anotados al commit, sin que tengas que distinguirlos.
+- **Lee un archivo de otro repo sin clonarlo ni pasar por base64**:
+  `gh api 'repos/<tu-org>/.github/contents/workflow-templates/ci-python.yml' -H 'Accept: application/vnd.github.raw'`.
+  Añade `?ref=v1.0.0` a la ruta para leerlo en un tag.
+- **`gh release verify v1.0.0 -R <tu-org>/actions-tablero`** comprueba la attestation que GitHub
+  firma al publicar una release inmutable: te dice a qué commit resolvió el tag y el digest de cada
+  asset.
+- **`{owner}` funciona también en rutas de organización**: con `GH_REPO` exportado,
+  `gh api orgs/{owner}/actions/permissions` lee la política de tu org sin escribir su nombre.
+- **Un reutilizable puede decir qué versión de sí mismo está corriendo**: `job.workflow_sha` y
+  `job.workflow_repository` apuntan al archivo del reutilizable, mientras que `github.sha` y
+  `github.workflow_sha` siguen siendo los del llamador.
+
 ---
 
 | ← Anterior | Siguiente → |

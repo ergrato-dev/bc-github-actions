@@ -40,11 +40,13 @@ raíz de un repo de GitHub. El laboratorio tiene que cumplir tres condiciones:
 Se valida en una org de pruebas antes de escribir la semana indicada. Si algo no está disponible en
 el plan gratuito con repo público, se ajusta esa semana antes de escribirla y se anota aquí.
 
+⏳ pendiente · 📄 comprobado en la documentación, sin probar en una org real · ❌ no disponible.
+
 | Qué | Antes de | Resultado |
 |---|:--:|---|
-| Scopes de `gh` necesarios para leer políticas de actions, runner groups y rulesets de la org | S11 | ⏳ |
-| Política "Require actions to be pinned to a full-length commit SHA" en una org gratuita | S11 | ⏳ |
-| Rulesets de organización que exigen workflows, en el plan gratuito | S11 | ⏳ |
+| Scopes de `gh` necesarios para leer políticas de actions, runner groups y rulesets de la org | S11 | 📄 `admin:org` con token clásico (referencia REST, 2026-11-03); sin él, HTTP 403. Sin probar en una org propia |
+| Política "Require actions to be pinned to a full-length commit SHA" en una org gratuita | S11 | 📄 El campo `sha_pinning_required` existe en la API de la org (2026-11-03). Sin probar en una org gratuita |
+| Rulesets de organización que exigen workflows, en el plan gratuito | S11 | ❌ La doc limita los rulesets de organización a GitHub Team y Enterprise (2026-11-03). La S11 los explica sin práctica; los rulesets de repo quedan en la S18 |
 | Revisores obligatorios en environments de un repo público de org gratuita | S13 | ⏳ |
 | Attestations (`actions/attest`) y `gh attestation verify` en un repo público | S14 | ⏳ |
 | Runner JIT en contenedor en WSL2 | S15 | ⏳ |
