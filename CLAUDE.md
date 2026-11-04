@@ -114,7 +114,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 | 07 ✅ | `week-07-disparadores_filtros_y_concurrencia` | Disparadores, filtros y concurrencia |
 | 08 ✅ | `week-08-probar_y_depurar_workflows` | Probar y depurar workflows |
 | 09 ✅ | `week-09-workflows_reutilizables` | Workflows reutilizables |
-| 10 | `week-10-actions_propias` | Actions propias: composite, JavaScript y Docker |
+| 10 ✅ | `week-10-actions_propias` | Actions propias: composite, JavaScript y Docker |
 | 11 | `week-11-actions_a_escala_de_organizacion` | Actions a escala de organización |
 | 12 | `week-12-modelo_de_amenazas_y_endurecimiento` | Modelo de amenazas y endurecimiento |
 | 13 | `week-13-secretos_entornos_y_oidc` | Secretos, entornos y OIDC |

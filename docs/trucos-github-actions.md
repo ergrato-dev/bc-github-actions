@@ -143,6 +143,22 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **`zizmor` caza `secrets: inherit`** con la auditoría `secrets-inherit`, sin red y con la
   persona por defecto: la puerta de la Semana 08 ya lo bloquea.
 
+## Semana 10 — [Actions propias: composite, JavaScript y Docker](../bootcamp/week-10-actions_propias/README.md)
+
+- **Lee los inputs reales de cualquier action en su SHA**:
+  `gh api 'repos/actions/setup-node/contents/action.yml?ref=<sha>' --jq .content | base64 -d | yq '.inputs | keys'`.
+  Es la única fuente fiable: el README puede ir por delante o por detrás del SHA que fijas.
+- **actionlint no valida un `action.yml`, pero sí la llamada**: si un workflow pasa `stak:` a
+  `./.github/actions/setup-tablero`, avisa con `input "stak" is not defined in action`. El
+  `action.yml` en sí lo revisa zizmor (`zizmor --offline .github/`).
+- **Un input con guion en una action Docker** llega como `INPUT_EXCLUDE-RULES`, que bash no puede
+  leer con `$`: usa `printenv 'INPUT_EXCLUDE-RULES'`, o nombra los inputs con guion bajo.
+- **`git diff --exit-code -- dist`** tras `pnpm build` convierte "se me olvidó reconstruir" en un
+  job rojo con la ruta exacta del archivo desfasado.
+- **Un `%` en un mensaje de `core.setFailed` sale como `%25`** en el log crudo: los comandos de
+  workflow codifican `%`, `\r` y `\n`. Si buscas el texto con `grep` en `gh run view --log`,
+  busca la forma codificada.
+
 ---
 
 | ← Anterior | Siguiente → |

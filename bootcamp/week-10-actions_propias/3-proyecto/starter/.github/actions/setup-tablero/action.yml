@@ -1,0 +1,59 @@
+# action.yml — capa 10 de tablero. Cópialo a .github/actions/setup-tablero/action.yml.
+name: setup-tablero
+description: Instala uv o pnpm con Node y las dependencias exactas del lockfile de un componente de tablero
+inputs:
+  stack:
+    description: Pila del componente, python o node
+  working-directory:
+    description: Carpeta del componente, la que contiene uv.lock o pnpm-lock.yaml
+  node-version:
+    description: Versión de Node, solo se usa con stack node
+  # TODO 1: marca stack y working-directory como obligatorios y da a node-version el valor
+  # por defecto "26".
+# TODO 3: declara el output tool-version con el output version del step tool.
+runs:
+  using: composite
+  steps:
+    - name: Comprobar el input stack
+      if: ${{ inputs.stack != 'python' && inputs.stack != 'node' }}
+      shell: bash
+      env:
+        STACK: ${{ inputs.stack }}
+      run: |
+        echo "::error title=setup-tablero::stack debe ser python o node y es '$STACK'"
+        exit 1
+
+    - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      if: ${{ inputs.stack == 'python' }}
+      with:
+        version: "0.13.6"
+        enable-cache: true
+        cache-dependency-glob: ${{ inputs.working-directory }}/uv.lock
+
+    - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      if: ${{ inputs.stack == 'node' }}
+      with:
+        package_json_file: ${{ inputs.working-directory }}/package.json
+
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      if: ${{ inputs.stack == 'node' }}
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+    # TODO 2: en una composite cada step run declara su shell; los dos de abajo no lo hacen.
+    - name: Dependencias exactas del lockfile
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        STACK: ${{ inputs.stack }}
+      run: |
+        if [ "$STACK" = python ]; then uv sync --locked; else pnpm install --frozen-lockfile; fi
+
+    - name: Versión de la herramienta
+      id: tool
+      env:
+        STACK: ${{ inputs.stack }}
+      run: |
+        if [ "$STACK" = python ]; then tool=uv; else tool=pnpm; fi
+        echo "version=$("$tool" --version)" >> "$GITHUB_OUTPUT"

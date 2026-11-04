@@ -1,0 +1,4 @@
+# pnpm-workspace.yaml — capa 10 de tablero. Cópialo a .github/actions/coverage-report/pnpm-workspace.yaml.
+# esbuild trae su binario como dependencia opcional: su postinstall no hace falta.
+allowBuilds:
+  esbuild: false

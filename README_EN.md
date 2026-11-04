@@ -76,7 +76,7 @@ Hardware: Linux or WSL2 with Docker, **8 GB RAM** (16 GB recommended from Week 1
 | [07](bootcamp/week-07-disparadores_filtros_y_concurrencia/README.md) | Triggers, filters and concurrency |
 | [08](bootcamp/week-08-probar_y_depurar_workflows/README.md) | Testing and debugging workflows |
 | [09](bootcamp/week-09-workflows_reutilizables/README.md) | Reusable workflows |
-| 10 | Custom actions: composite, JavaScript and Docker |
+| [10](bootcamp/week-10-actions_propias/README.md) | Custom actions: composite, JavaScript and Docker |
 | 11 | Actions at organization scale |
 | 12 | Threat model and hardening |
 | 13 | Secrets, environments and OIDC |

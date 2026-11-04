@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 860" xml:space="preserve" role="img" aria-labelledby="t10">
+  <title id="t10">Mapa del pipeline de tablero en la capa 10. Arriba, sin cambios desde la capa 09: smoke.yml, nightly.yml, lint-workflows.yml, images.yml, _image.yml y ci-api.yml, que solo añade setup-tablero a sus paths. A la izquierda, los workflows que usan las actions nuevas: _python.yml, cuyos jobs lint, test e integration usan setup-tablero con stack python; _node.yml, cuyos jobs lint, test y build usan setup-tablero con stack node; ci-web.yml, con el job web que llama a _node.yml, dist-report y el job nuevo coverage, que prepara la web con setup-tablero, ejecuta Vitest con el reporter json-summary y pasa el resumen a coverage-report con mínimo 60, y que añade a sus paths las dos actions; ci.yml, con el job nuevo sql, que usa sql-lint sobre api/migrations excluyendo la regla LT01, y el job summary, que ahora necesita también sql; y test-actions.yml, nuevo, que corre al cambiar .github/actions y prueba coverage-report con pnpm test, pnpm build y la comprobación de que dist coincide con src. A la derecha, las tres actions de .github/actions, nuevas en esta capa: setup-tablero, composite, con inputs stack y working-directory obligatorios y node-version 26 por defecto, y output tool-version; coverage-report, JavaScript con node24, main dist/index.cjs y post dist/post.cjs, inputs summary-file y minimum 60, output percent y estado started entre main y post; sql-lint, Docker con un Dockerfile de python 3.15.2 con sqlfluff 4.5.0, inputs path, dialect postgres y exclude-rules, y output files. Abajo, en gris, lo que llega después: el repo central actions-tablero con referencias por SHA en la Semana 11, permisos a fondo en la 12 y secretos y OIDC en la 13</title>
+  <rect width="960" height="860" fill="#0d1117"/>
+  <defs>
+    <marker id="a10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 10</text>
+
+    <!-- sin cambios -->
+    <rect x="30" y="58" width="900" height="56" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="80" fill="#8b949e" font-size="12" font-weight="600">capas 01-09, sin cambios salvo los paths</text>
+    <g font-size="13" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#f0f6fc">
+      <text x="46" y="102">smoke.yml</text><text x="176" y="102">nightly.yml</text><text x="316" y="102">lint-workflows.yml</text><text x="506" y="102">images.yml</text><text x="636" y="102">_image.yml</text>
+      <text x="766" y="102">ci-api.yml</text>
+    </g>
+    <text x="856" y="102" fill="#e3b341" font-size="11">+ paths</text>
+
+    <!-- columnas -->
+    <text x="30" y="144" fill="#f0f6fc" font-size="14" font-weight="600">Workflows: steps que pasan a ser una action</text>
+    <text x="930" y="144" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">.github/actions · nuevas en esta capa</text>
+
+    <!-- _python -->
+    <rect x="30" y="156" width="400" height="84" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="180" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">_python.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="202" fill="#8b949e">lint · test · integration</text>
+      <text x="46" y="222" fill="#79c0ff">cada job: setup-tablero · stack: python</text>
+    </g>
+
+    <!-- _node -->
+    <rect x="30" y="252" width="400" height="84" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="276" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">_node.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="298" fill="#8b949e">lint · test (Node 24, 26) · build</text>
+      <text x="46" y="318" fill="#79c0ff">cada job: setup-tablero · stack: node</text>
+    </g>
+
+    <!-- ci-web -->
+    <rect x="30" y="348" width="400" height="150" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="372" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci-web.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="392" fill="#e3b341">paths + setup-tablero/** · coverage-report/**</text>
+      <text x="46" y="410" fill="#8b949e">web → _node.yml · dist-report</text>
+      <rect x="46" y="420" width="368" height="66" rx="5" fill="#0d1117" stroke="#3fb950"/>
+      <text x="58" y="438" fill="#3fb950">coverage · nuevo</text>
+      <text x="58" y="456" fill="#f0f6fc">setup-tablero · pnpm test:coverage</text>
+      <text x="58" y="474" fill="#79c0ff">coverage-report · minimum: "60"</text>
+    </g>
+
+    <!-- ci -->
+    <rect x="30" y="510" width="400" height="104" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="534" fill="#f0f6fc" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci.yml</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="46" y="544" width="368" height="40" rx="5" fill="#0d1117" stroke="#3fb950"/>
+      <text x="58" y="561" fill="#3fb950">sql · nuevo</text>
+      <text x="58" y="576" fill="#79c0ff">sql-lint · api/migrations · exclude LT01</text>
+      <text x="46" y="602" fill="#8b949e">summary · needs: [..., version, sql]</text>
+    </g>
+
+    <!-- test-actions -->
+    <rect x="30" y="626" width="400" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="650" fill="#3fb950" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">test-actions.yml · nuevo</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="46" y="672" fill="#e3b341">paths: .github/actions/** · él mismo</text>
+      <text x="46" y="692" fill="#f0f6fc">coverage-report: setup-tablero · pnpm test</text>
+      <text x="46" y="712" fill="#f0f6fc">pnpm build · dist/ coincide con src/</text>
+    </g>
+
+    <!-- setup-tablero -->
+    <rect x="530" y="156" width="400" height="180" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="546" y="180" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">setup-tablero</text>
+    <text x="914" y="180" fill="#8b949e" font-size="11" text-anchor="end">composite</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="546" y="202" fill="#79c0ff">stack (python | node) · working-directory</text>
+      <text x="546" y="218" fill="#79c0ff">node-version (default "26")</text>
+      <text x="546" y="240" fill="#f0f6fc">valida stack · setup-uv o</text>
+      <text x="546" y="256" fill="#f0f6fc">action-setup + setup-node</text>
+      <text x="546" y="272" fill="#f0f6fc">lockfile exacto · shell: bash en cada run</text>
+      <text x="546" y="300" fill="#3fb950">output: tool-version</text>
+      <text x="546" y="318" fill="#8b949e">← steps.tool.outputs.version</text>
+    </g>
+
+    <!-- coverage-report -->
+    <rect x="530" y="348" width="400" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="546" y="372" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">coverage-report</text>
+    <text x="914" y="372" fill="#8b949e" font-size="11" text-anchor="end">node24</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="546" y="394" fill="#79c0ff">summary-file · minimum (default "60")</text>
+      <text x="546" y="414" fill="#f0f6fc">main: dist/index.cjs · post: dist/post.cjs</text>
+      <text x="546" y="432" fill="#8b949e">@actions/core 3.0.1 · esbuild · pnpm</text>
+      <text x="546" y="452" fill="#d2a8ff">estado: started (main → post)</text>
+      <text x="546" y="476" fill="#3fb950">output: percent</text>
+    </g>
+
+    <!-- sql-lint -->
+    <rect x="530" y="510" width="400" height="120" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="546" y="534" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">sql-lint</text>
+    <text x="914" y="534" fill="#8b949e" font-size="11" text-anchor="end">docker</text>
+    <g font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="546" y="556" fill="#79c0ff">path · dialect (postgres) · exclude-rules</text>
+      <text x="546" y="576" fill="#f0f6fc">Dockerfile: python 3.15.2 · sqlfluff 4.5.0</text>
+      <text x="546" y="594" fill="#8b949e">anota cada infracción en el diff</text>
+      <text x="546" y="616" fill="#3fb950">output: files</text>
+    </g>
+
+    <!-- usos -->
+    <path d="M430 198 L526 220" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a10)"/>
+    <path d="M430 294 L526 250" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a10)"/>
+    <path d="M414 456 L526 300" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a10)"/>
+    <path d="M414 470 L526 440" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a10)"/>
+    <path d="M414 572 L526 572" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a10)"/>
+    <path d="M430 690 L526 470" stroke="#3fb950" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#a10)"/>
+    <text x="478" y="186" fill="#2088ff" font-size="11" text-anchor="middle">uses: ./</text>
+
+    <!-- puerta -->
+    <rect x="530" y="642" width="400" height="88" rx="8" fill="#0d1117" stroke="#e3b341"/>
+    <text x="546" y="664" fill="#e3b341" font-size="12" font-weight="600">Antes del push</text>
+    <text x="546" y="684" fill="#f0f6fc" font-size="12">actionlint lee cada action.yml local:</text>
+    <text x="546" y="702" fill="#f0f6fc" font-size="12">inputs obligatorios, outputs y main</text>
+    <text x="546" y="720" fill="#f0f6fc" font-size="12">zizmor audita .github/actions/</text>
+
+    <!-- lo que llega después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="752" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="779"><tspan font-weight="600">Semana 11</tspan> · actions-tablero por SHA</text>
+      <rect x="340" y="752" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="779"><tspan font-weight="600">Semana 12</tspan> · permisos a fondo</text>
+      <rect x="650" y="752" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="779"><tspan font-weight="600">Semana 13</tspan> · secretos y OIDC</text>
+    </g>
+    <text x="480" y="830" fill="#8b949e" font-size="11" text-anchor="middle">Azul: uses de una action local. Verde: jobs y workflow nuevos (discontinuo: test-actions prueba coverage-report). Morado: estado.</text>
+    <text x="480" y="848" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: filtros y comprobaciones previas. Gris discontinuo: lo que añaden las siguientes.</text>
+  </g>
+</svg>

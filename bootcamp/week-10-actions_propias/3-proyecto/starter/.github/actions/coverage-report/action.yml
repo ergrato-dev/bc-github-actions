@@ -1,0 +1,17 @@
+# action.yml — capa 10 de tablero. Cópialo a .github/actions/coverage-report/action.yml.
+name: coverage-report
+description: Lee un coverage-summary.json, publica la cobertura en el resumen del job y falla si las líneas bajan del mínimo
+inputs:
+  summary-file:
+    description: Ruta al coverage-summary.json (reporter json-summary de Vitest o Istanbul)
+    required: true
+  minimum:
+    description: Cobertura de líneas mínima, en porcentaje
+    default: "60"
+outputs:
+  percent:
+    description: Cobertura de líneas leída, en porcentaje
+runs:
+  using: node24
+  main: dist/index.cjs
+  # TODO 4: añade el paso post, que ejecuta dist/post.cjs al final del job.

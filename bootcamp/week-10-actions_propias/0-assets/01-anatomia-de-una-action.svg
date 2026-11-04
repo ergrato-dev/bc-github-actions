@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" xml:space="preserve" role="img" aria-labelledby="t01">
+  <title id="t01">Anatomía de una action. A la izquierda, el archivo action.yml de una carpeta de .github/actions con sus partes: name y description, obligatorios; inputs, con description, required y default, que siempre son strings y cuyo required no hace cumplir el runner; outputs, con description y, solo en composite, value; runs, con los tres valores de using: composite con sus steps, node24 con main y post, y docker con image Dockerfile; y branding, en gris, que llega con el Marketplace en la Semana 11. A la derecha, el step del workflow que la usa: primero un checkout, porque la ruta ./ se lee del disco, y después un step con id, uses ./.github/actions/nombre y with. Una flecha azul lleva los valores de with a los inputs: en composite como el contexto inputs y en JavaScript y Docker como variables INPUT_ en mayúsculas. Una flecha verde devuelve los outputs, que el workflow lee como steps.id.outputs.nombre y lleva al shell por env</title>
+  <rect width="960" height="620" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="a01g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Anatomía de una action</text>
+
+    <!-- action.yml -->
+    <rect x="30" y="60" width="450" height="520" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="86" fill="#2088ff" font-size="14" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">.github/actions/&lt;nombre&gt;/action.yml</text>
+
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="46" y="100" width="418" height="52" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="58" y="122" fill="#f0f6fc">name · description</text>
+      <text x="58" y="140" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Obligatorios: lo que sale en el log y qué hace</text>
+
+      <rect x="46" y="164" width="418" height="92" rx="5" fill="#0d1117" stroke="#79c0ff"/>
+      <text x="58" y="186" fill="#79c0ff">inputs.&lt;id&gt;</text>
+      <text x="58" y="206" fill="#f0f6fc">description · required · default</text>
+      <text x="58" y="226" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Sin type: siempre llegan como string</text>
+      <text x="58" y="244" fill="#e3b341" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">required lo comprueba actionlint, no el runner</text>
+
+      <rect x="46" y="268" width="418" height="72" rx="5" fill="#0d1117" stroke="#3fb950"/>
+      <text x="58" y="290" fill="#3fb950">outputs.&lt;id&gt;</text>
+      <text x="58" y="310" fill="#f0f6fc">description · value (solo composite)</text>
+      <text x="58" y="328" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">JavaScript y Docker los escriben en $GITHUB_OUTPUT</text>
+
+      <rect x="46" y="352" width="418" height="152" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="58" y="374" fill="#2088ff">runs.using</text>
+      <rect x="58" y="386" width="124" height="104" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="70" y="408" fill="#f0f6fc">composite</text>
+      <text x="70" y="430" fill="#8b949e">steps:</text>
+      <text x="70" y="448" fill="#8b949e">run + shell</text>
+      <text x="70" y="466" fill="#8b949e">uses</text>
+      <rect x="194" y="386" width="124" height="104" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="206" y="408" fill="#f0f6fc">node24</text>
+      <text x="206" y="430" fill="#8b949e">main</text>
+      <text x="206" y="448" fill="#8b949e">pre · post</text>
+      <text x="206" y="466" fill="#8b949e">dist/*.cjs</text>
+      <rect x="330" y="386" width="122" height="104" rx="5" fill="#161b22" stroke="#30363d"/>
+      <text x="342" y="408" fill="#f0f6fc">docker</text>
+      <text x="342" y="430" fill="#8b949e">image:</text>
+      <text x="342" y="448" fill="#8b949e">Dockerfile</text>
+      <text x="342" y="466" fill="#8b949e">args · env</text>
+
+      <rect x="46" y="516" width="418" height="48" rx="5" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="58" y="538" fill="#8b949e">branding: icon · color</text>
+      <text x="58" y="554" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Para el Marketplace: Semana 11</text>
+    </g>
+
+    <!-- workflow -->
+    <rect x="560" y="60" width="370" height="400" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="576" y="86" fill="#f0f6fc" font-size="14" font-weight="600">El job que la usa</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="576" y="100" width="338" height="56" rx="5" fill="#0d1117" stroke="#e3b341"/>
+      <text x="588" y="122" fill="#f0f6fc">- uses: actions/checkout@&lt;sha&gt;</text>
+      <text x="588" y="142" fill="#e3b341" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Primero: ./ es una ruta en el disco del runner</text>
+
+      <rect x="576" y="170" width="338" height="104" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="588" y="192" fill="#f0f6fc">- id: x</text>
+      <text x="588" y="212" fill="#f0f6fc">  uses: ./.github/actions/&lt;nombre&gt;</text>
+      <text x="588" y="232" fill="#79c0ff">  with:</text>
+      <text x="588" y="252" fill="#79c0ff">    path: api/migrations</text>
+
+      <rect x="576" y="290" width="338" height="96" rx="5" fill="#0d1117" stroke="#3fb950"/>
+      <text x="588" y="312" fill="#f0f6fc">- env:</text>
+      <text x="588" y="332" fill="#3fb950">    N: ${{ steps.x.outputs.count }}</text>
+      <text x="588" y="352" fill="#f0f6fc">  run: echo "$N"</text>
+      <text x="588" y="374" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Al shell siempre por env:</text>
+
+      <text x="576" y="414" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Se lee igual sea cual sea el tipo:</text>
+      <text x="576" y="434" fill="#3fb950">steps.&lt;id&gt;.outputs.&lt;output&gt;</text>
+    </g>
+
+    <!-- flechas -->
+    <path d="M572 244 L520 244 L520 210 L468 210" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <text x="560" y="480" fill="#79c0ff" font-size="12">with → inputs</text>
+    <text x="560" y="500" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">composite: ${{ inputs.path }}</text>
+    <text x="560" y="518" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">node24 y docker: INPUT_PATH</text>
+    <path d="M468 304 L540 304 L540 330 L572 330" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a01g)"/>
+    <text x="560" y="548" fill="#3fb950" font-size="12">outputs → steps.x.outputs</text>
+    <text x="560" y="566" fill="#8b949e" font-size="12">El step necesita id para leerlos</text>
+
+    <text x="480" y="604" fill="#8b949e" font-size="11" text-anchor="middle">Azul claro: datos que entran. Verde: datos que vuelven. Amarillo: requisitos que el runner no comprueba por ti. Gris discontinuo: semanas siguientes.</text>
+  </g>
+</svg>

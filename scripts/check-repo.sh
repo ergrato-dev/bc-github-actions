@@ -142,6 +142,7 @@ while IFS= read -r file; do
   while IFS= read -r line; do
     ref=$(sed -E 's/^[[:space:]-]*image:[[:space:]]*//; s/[[:space:]]+#.*$//; s/["'\'']//g' <<<"$line")
     case "$ref" in *'<'*|*'$'*|*'{{'*|'['*) continue ;; esac   # placeholders, expresiones y listas de matriz
+    case "$ref" in Dockerfile|*/Dockerfile) continue ;; esac   # action Docker: se construye del Dockerfile
     last="${ref##*/}"
     if { [[ "$last" != *:* ]] && [[ "$ref" != *@sha256:* ]]; } || [[ "$last" == *:latest ]]; then
       echo "IMAGEN SIN VERSION: $file: $line"; fail=1

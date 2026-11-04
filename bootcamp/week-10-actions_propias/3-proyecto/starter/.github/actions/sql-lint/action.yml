@@ -1,0 +1,19 @@
+# action.yml — capa 10 de tablero. Cópialo a .github/actions/sql-lint/action.yml.
+name: sql-lint
+description: Revisa con sqlfluff los archivos .sql de una carpeta y anota cada infracción en el diff
+inputs:
+  path:
+    description: Carpeta (relativa al workspace) donde buscar archivos .sql
+    default: .
+  dialect:
+    description: Dialecto SQL que entiende sqlfluff
+    default: postgres
+  exclude-rules:
+    description: Reglas de sqlfluff a ignorar, separadas por comas (por ejemplo LT01)
+    default: ""
+outputs:
+  files:
+    description: Número de archivos .sql revisados
+runs:
+  using: docker
+  image: Dockerfile

@@ -1,0 +1,125 @@
+{
+  "week": "10",
+  "title": "Actions propias: composite, JavaScript y Docker",
+  "checks": [
+    {
+      "id": "action-types",
+      "description": "setup-tablero es una action composite, coverage-report una action JavaScript con node24 y sql-lint una action Docker",
+      "cmd": "for a in setup-tablero coverage-report sql-lint; do printf '%s=%s ' \"$a\" \"$(yq '.runs.using' .github/actions/$a/action.yml)\"; done",
+      "assert": "stdout~^setup-tablero=composite coverage-report=node24 sql-lint=docker $",
+      "hint": "2-practicas/01-primera-action-composite.md, paso 1"
+    },
+    {
+      "id": "setup-inputs",
+      "description": "setup-tablero declara los inputs stack y working-directory como obligatorios y node-version con valor por defecto",
+      "cmd": "yq '.inputs | to_entries | map(.key + \":\" + ((.value.required // false) | tostring) + \":\" + ((.value | has(\"default\")) | tostring)) | sort | join(\",\")' .github/actions/setup-tablero/action.yml",
+      "assert": "stdout~^node-version:false:true,stack:true:false,working-directory:true:false$",
+      "hint": "3-proyecto/starter/.github/actions/setup-tablero/action.yml, TODO 1"
+    },
+    {
+      "id": "setup-shell",
+      "description": "Todos los steps run de setup-tablero declaran shell",
+      "cmd": "yq '[.runs.steps[] | select(has(\"run\")) | .shell // \"falta\"] | unique | join(\",\")' .github/actions/setup-tablero/action.yml",
+      "assert": "stdout~^bash$",
+      "hint": "2-practicas/01-primera-action-composite.md, paso 2"
+    },
+    {
+      "id": "setup-output",
+      "description": "setup-tablero devuelve el output tool-version a partir del output version del step tool",
+      "cmd": "yq '.outputs[\"tool-version\"].value' .github/actions/setup-tablero/action.yml",
+      "assert": "stdout~^\\$\\{\\{ *steps\\.tool\\.outputs\\.version *\\}\\}$",
+      "hint": "3-proyecto/starter/.github/actions/setup-tablero/action.yml, TODO 3"
+    },
+    {
+      "id": "reusables-use-setup",
+      "description": "Todos los jobs de _python.yml y _node.yml preparan el entorno con setup-tablero y ninguno llama directamente a setup-uv, action-setup ni setup-node",
+      "cmd": "for f in _python _node; do printf '%s=%s ' \"$f\" \"$(yq '[.jobs[] | ([.steps[].uses // \"\" | select(test(\"setup-tablero\"))] | length) ] | join(\",\")' .github/workflows/$f.yml)\"; done; grep -lE 'setup-uv@|action-setup@|setup-node@' .github/workflows/_python.yml .github/workflows/_node.yml || true",
+      "assert": "stdout~^_python=1,1,1 _node=1,1,1 $",
+      "hint": "2-practicas/01-primera-action-composite.md, paso 4"
+    },
+    {
+      "id": "coverage-main-post",
+      "description": "coverage-report ejecuta dist/index.cjs como main y dist/post.cjs como post",
+      "cmd": "yq '.runs.main + \" \" + .runs.post' .github/actions/coverage-report/action.yml",
+      "assert": "stdout~^dist/index\\.cjs dist/post\\.cjs$",
+      "hint": "3-proyecto/starter/.github/actions/coverage-report/action.yml, TODO 4"
+    },
+    {
+      "id": "coverage-pnpm",
+      "description": "coverage-report fija @actions/core y pnpm, y trae su pnpm-lock.yaml",
+      "cmd": "cd .github/actions/coverage-report && jq -r '.packageManager + \" \" + .dependencies[\"@actions/core\"]' package.json && test -f pnpm-lock.yaml",
+      "assert": "stdout~^pnpm@[0-9]+\\.[0-9]+\\.[0-9]+ [0-9]+\\.[0-9]+\\.[0-9]+$",
+      "hint": "2-practicas/02-action-javascript.md, paso 1"
+    },
+    {
+      "id": "coverage-state",
+      "description": "El main de coverage-report guarda estado con saveState y el post lo lee con getState",
+      "cmd": "{ cd .github/actions/coverage-report/src && grep -c 'core.saveState(' index.js && grep -c 'core.getState(' post.js; } | paste -sd' '",
+      "assert": "stdout~^[1-9][0-9]* [1-9][0-9]*$",
+      "hint": "3-proyecto/starter/.github/actions/coverage-report/src/post.js, TODO 6"
+    },
+    {
+      "id": "coverage-dist-committed",
+      "description": "dist/index.cjs y dist/post.cjs de coverage-report están en el repo y node_modules no",
+      "cmd": "git ls-files .github/actions/coverage-report | grep -E '/(dist|node_modules)/' | sed -E 's#.*/(dist|node_modules)/.*#\\1#' | sort | uniq -c | awk '{print $2\"=\"$1}' | paste -sd' '; git ls-files --error-unmatch .github/actions/coverage-report/dist/index.cjs .github/actions/coverage-report/dist/post.cjs > /dev/null",
+      "assert": "stdout~^dist=2$",
+      "hint": "2-practicas/02-action-javascript.md, paso 4"
+    },
+    {
+      "id": "coverage-tests",
+      "description": "Los tests de coverage-report pasan con pnpm test",
+      "cmd": "cd .github/actions/coverage-report && pnpm install --frozen-lockfile --silent && pnpm --silent test",
+      "assert": "exit0",
+      "hint": "3-proyecto/starter/.github/actions/coverage-report/src/evaluate.js, TODO 5"
+    },
+    {
+      "id": "sql-lint-docker",
+      "description": "sql-lint se construye desde su Dockerfile, con una imagen base de tag completo y sqlfluff instalado con uv tool install a versión fijada",
+      "cmd": "{ cd .github/actions/sql-lint && yq '.runs.image' action.yml && grep -E '^FROM ' Dockerfile | head -1 && grep -oE 'uv tool install sqlfluff==[0-9.]+' Dockerfile; } | paste -sd' '",
+      "assert": "stdout~^Dockerfile FROM [a-z0-9./-]+:[0-9]+\\.[0-9]+\\.[0-9]+[a-z0-9.-]* uv tool install sqlfluff==[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "hint": "2-practicas/03-action-docker.md, paso 1"
+    },
+    {
+      "id": "sql-lint-inputs",
+      "description": "El entrypoint de sql-lint lee el input exclude-rules con printenv y escribe el output files en GITHUB_OUTPUT",
+      "cmd": "{ cd .github/actions/sql-lint && test -x entrypoint.sh && grep -c \"printenv 'INPUT_EXCLUDE-RULES'\" entrypoint.sh && grep -cE 'files=.*>> *\"\\$GITHUB_OUTPUT\"' entrypoint.sh; } | paste -sd' '",
+      "assert": "stdout~^[1-9][0-9]* [1-9][0-9]*$",
+      "hint": "3-proyecto/starter/.github/actions/sql-lint/entrypoint.sh, TODO 8"
+    },
+    {
+      "id": "workflows-use-actions",
+      "description": "ci-web.yml usa coverage-report en el job coverage y ci.yml usa sql-lint en el job sql",
+      "cmd": "{ yq '[.jobs.coverage.steps[].uses // \"\"] | map(select(test(\"coverage-report\"))) | length' .github/workflows/ci-web.yml; yq '[.jobs.sql.steps[].uses // \"\"] | map(select(test(\"sql-lint\"))) | length' .github/workflows/ci.yml; } | paste -sd' '",
+      "assert": "stdout~^1 1$",
+      "hint": "2-practicas/04-probar-y-mantener-actions.md, paso 1"
+    },
+    {
+      "id": "dist-freshness",
+      "description": "test-actions.yml reconstruye dist y falla si no coincide con lo comiteado",
+      "cmd": "yq '.jobs[].steps[].run // \"\"' .github/workflows/test-actions.yml | grep -cE 'git diff --exit-code'",
+      "assert": "stdout~^[1-9]",
+      "hint": "2-practicas/04-probar-y-mantener-actions.md, paso 2"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "Los workflows y las actions pasan actionlint y zizmor sin hallazgos",
+      "cmd": "actionlint && zizmor --offline -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/04-probar-y-mantener-actions.md, paso 3"
+    },
+    {
+      "id": "actions-pinned",
+      "description": "Toda uses remota de workflows y actions está fijada por SHA de 40 caracteres con el tag en comentario",
+      "cmd": "grep -rhE '^\\s*-?\\s*uses:' .github/workflows .github/actions --include='*.yml' | grep -vE 'uses: \\./|@[0-9a-f]{40} # v' || true",
+      "assert": "stdout!~.",
+      "hint": "docs/reglas-de-seguridad-de-workflows.md, regla 1"
+    },
+    {
+      "id": "test-actions-green-on-main",
+      "description": "test-actions, ci-web y ci terminan en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && sha=$(git rev-parse origin/main) && for w in test-actions ci-web ci; do printf '%s=%s ' \"$w\" \"$(gh run list --workflow $w.yml --commit \"$sha\" --json conclusion --jq '.[0].conclusion')\"; done",
+      "assert": "stdout~^test-actions=success ci-web=success ci=success $",
+      "hint": "2-practicas/04-probar-y-mantener-actions.md, paso 5"
+    }
+  ]
+}

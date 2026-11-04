@@ -1,6 +1,6 @@
 # Versiones del stack
 
-Última revisión: 2026-11-02. Regla: versión completa fijada, nunca `latest`. Toda action, además,
+Última revisión: 2026-11-03. Regla: versión completa fijada, nunca `latest`. Toda action, además,
 por SHA resuelto con `scripts/resolve-sha.sh`.
 
 Antes de fijar una versión hay que comprobar tres cosas: que el tag existe, que no tiene avisos de
@@ -60,6 +60,15 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | TypeScript | 6.0.3 | **No la 7**: typescript-eslint 8.72.1 exige `>=4.8.4 <6.1.0` (`pnpm peers check`, 2026-11-02) |
 | ESLint · typescript-eslint · jsdom | 10.14.0 · 8.72.1 · 30.1.3 | |
 
+### Dependencias de las actions propias (Semana 10)
+
+| Pieza | Versión | Verificación |
+|---|---|---|
+| Runtime de actions JavaScript | `node24` | `actions/runner` v2.338.2 trae `node20` y `node24` en `externals.sh`; las plantillas `actions/javascript-action` y `actions/typescript-action` usan `node24` (2026-11-03). `node20` no se enseña como vigente |
+| `@actions/core` | 3.0.1 | `pnpm view @actions/core version` (2026-11-03). Paquete solo ESM: se empaqueta con esbuild a CommonJS (`dist/*.cjs`), porque el ESM empaquetado rompe con `Dynamic require of "net"` |
+| esbuild | 0.28.2 | `pnpm view esbuild version` (2026-11-03). Su postinstall no hace falta: `allowBuilds: esbuild: false` en `pnpm-workspace.yaml` |
+| sqlfluff | 4.5.0 | PyPI (2026-11-03), `requires_python >=3.10`. Imagen de `sql-lint` construida con `python:3.15.2-slim-trixie` y `uv tool install sqlfluff==4.5.0`; `--format github-annotation-native` probado |
+
 ### Imágenes
 
 | Imagen | Tag | Desde | Verificación |
@@ -95,7 +104,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Qué | Semana | Por qué |
 |---|:--:|---|
-| Runtime vigente de las actions JavaScript (`node24`?) | 10 | `using:` en `action.yml` |
 | Estado de `ubuntu-24.04` frente a una imagen más nueva en los runners alojados | 01 | Si sale una nueva, se decide aquí y se cambia en todo el repo |
 | Límites de caché por repo y política de expulsión | 03, 19 | |
 | Retención por defecto de artefactos y logs | 04, 19 | |

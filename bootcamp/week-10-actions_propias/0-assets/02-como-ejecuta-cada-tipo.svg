@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" xml:space="preserve" role="img" aria-labelledby="t02">
+  <title id="t02">Cómo ejecuta el runner cada tipo de action, en tres columnas. Composite: sus steps se expanden dentro del job que la usa; en el ejemplo, checkout, después setup-tablero con setup-uv y uv sync dentro y después pytest. Comparte runner, workspace, GITHUB_ENV y GITHUB_PATH con el job, cada run necesita shell y los inputs se leen con el contexto inputs. JavaScript: el runner ejecuta el archivo de main, dist/index.cjs, con su propio Node 24, que no es el de setup-node; no instala dependencias, por eso dist va empaquetado y comiteado; los inputs llegan como variables INPUT_ y @actions/core las lee; arranca en milisegundos y corre en Linux, Windows y macOS. Docker: el runner construye la imagen con docker build en cada job, sin caché entre jobs, y la ejecuta con docker run montando el workspace en /github/workspace, que es también la carpeta de trabajo, HOME en /github/home y los archivos de comandos en /github/file_commands, con los inputs como variables INPUT_; solo corre en runners Linux. Abajo, el coste de arranque: casi nulo en composite y JavaScript, el build de la imagen en Docker</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cómo ejecuta el runner cada tipo</text>
+
+    <!-- composite -->
+    <rect x="30" y="60" width="290" height="460" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="86" fill="#2088ff" font-size="15" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">using: composite</text>
+    <text x="46" y="108" fill="#8b949e" font-size="12">Sus steps se expanden dentro del job</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="46" y="122" width="258" height="216" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="58" y="142" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">job lint · un runner</text>
+      <rect x="58" y="152" width="234" height="28" rx="4" fill="#161b22" stroke="#30363d"/>
+      <text x="70" y="171" fill="#f0f6fc">checkout</text>
+      <rect x="58" y="188" width="234" height="102" rx="4" fill="#161b22" stroke="#2088ff" stroke-dasharray="6 4"/>
+      <text x="70" y="206" fill="#2088ff">setup-tablero</text>
+      <rect x="70" y="216" width="210" height="28" rx="4" fill="#0d1117" stroke="#30363d"/>
+      <text x="82" y="235" fill="#f0f6fc">setup-uv</text>
+      <rect x="70" y="252" width="210" height="28" rx="4" fill="#0d1117" stroke="#30363d"/>
+      <text x="82" y="271" fill="#f0f6fc">uv sync --locked</text>
+      <rect x="58" y="298" width="234" height="28" rx="4" fill="#161b22" stroke="#30363d"/>
+      <text x="70" y="317" fill="#f0f6fc">uv run ruff check</text>
+    </g>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="46" y="366">Comparte con el job:</text>
+      <text x="46" y="386" fill="#8b949e">runner, workspace, permisos</text>
+      <text x="46" y="404" fill="#8b949e">$GITHUB_ENV y $GITHUB_PATH</text>
+      <text x="46" y="432">No hereda:</text>
+      <text x="46" y="452" fill="#8b949e">defaults.run ni secrets</text>
+      <text x="46" y="480" fill="#e3b341">Cada run: exige shell:</text>
+      <text x="46" y="500" fill="#79c0ff" font-family="ui-monospace, Menlo, Consolas, monospace">${{ inputs.x }} → env:</text>
+    </g>
+
+    <!-- javascript -->
+    <rect x="335" y="60" width="290" height="460" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="351" y="86" fill="#2088ff" font-size="15" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">using: node24</text>
+    <text x="351" y="108" fill="#8b949e" font-size="12">El runner ejecuta main con su Node</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="351" y="122" width="258" height="56" rx="5" fill="#0d1117" stroke="#30363d"/>
+      <text x="363" y="144" fill="#f0f6fc">Node 24 del runner</text>
+      <text x="363" y="164" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">No es el de setup-node</text>
+      <path d="M480 178 L480 202" stroke="#2088ff" stroke-width="2" marker-end="url(#a02)"/>
+      <rect x="351" y="206" width="258" height="56" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="363" y="228" fill="#f0f6fc">node dist/index.cjs</text>
+      <text x="363" y="248" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Bundle comiteado, con sus dependencias</text>
+      <rect x="351" y="276" width="258" height="62" rx="5" fill="#0d1117" stroke="#f85149" stroke-dasharray="6 4"/>
+      <text x="363" y="298" fill="#f85149">sin pnpm install</text>
+      <text x="363" y="318" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">Sin dist/: Cannot find package</text>
+    </g>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="351" y="366">Inputs y outputs:</text>
+      <text x="351" y="386" fill="#79c0ff" font-family="ui-monospace, Menlo, Consolas, monospace">INPUT_&lt;ID&gt; → core.getInput</text>
+      <text x="351" y="404" fill="#3fb950" font-family="ui-monospace, Menlo, Consolas, monospace">core.setOutput → $GITHUB_OUTPUT</text>
+      <text x="351" y="432">Fases:</text>
+      <text x="351" y="452" fill="#8b949e">pre · main · post, con $GITHUB_STATE</text>
+      <text x="351" y="480">Sistemas:</text>
+      <text x="351" y="500" fill="#8b949e">Linux, Windows y macOS</text>
+    </g>
+
+    <!-- docker -->
+    <rect x="640" y="60" width="290" height="460" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="656" y="86" fill="#2088ff" font-size="15" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">using: docker</text>
+    <text x="656" y="108" fill="#8b949e" font-size="12">Una imagen que se construye y se ejecuta</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="656" y="122" width="258" height="56" rx="5" fill="#0d1117" stroke="#e3b341"/>
+      <text x="668" y="144" fill="#f0f6fc">docker build Dockerfile</text>
+      <text x="668" y="164" fill="#e3b341" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">En cada job, sin caché entre jobs</text>
+      <path d="M785 178 L785 202" stroke="#2088ff" stroke-width="2" marker-end="url(#a02)"/>
+      <rect x="656" y="206" width="258" height="132" rx="5" fill="#0d1117" stroke="#2088ff"/>
+      <text x="668" y="228" fill="#f0f6fc">docker run, con:</text>
+      <text x="668" y="250" fill="#79c0ff">/github/workspace</text>
+      <text x="668" y="268" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">checkout y carpeta de trabajo</text>
+      <text x="668" y="290" fill="#79c0ff">/github/home</text>
+      <text x="668" y="308" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">HOME: lo de /root no está</text>
+      <text x="668" y="328" fill="#79c0ff">/github/file_commands</text>
+    </g>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="656" y="366">Inputs y outputs:</text>
+      <text x="656" y="386" fill="#79c0ff" font-family="ui-monospace, Menlo, Consolas, monospace">INPUT_&lt;ID&gt;; con guion, printenv</text>
+      <text x="656" y="404" fill="#3fb950" font-family="ui-monospace, Menlo, Consolas, monospace">echo k=v &gt;&gt; $GITHUB_OUTPUT</text>
+      <text x="656" y="432">Fases:</text>
+      <text x="656" y="452" fill="#8b949e">pre-entrypoint · post-entrypoint</text>
+      <text x="656" y="480">Sistemas:</text>
+      <text x="656" y="500" fill="#f85149">Solo runners Linux</text>
+    </g>
+
+    <!-- coste -->
+    <rect x="30" y="536" width="900" height="40" rx="8" fill="#0d1117" stroke="#30363d"/>
+    <text x="46" y="561" fill="#f0f6fc" font-size="12" font-weight="600">Arranque</text>
+    <text x="205" y="561" fill="#3fb950" font-size="12" text-anchor="middle">casi nulo: son steps del job</text>
+    <text x="480" y="561" fill="#3fb950" font-size="12" text-anchor="middle">milisegundos: un proceso de Node</text>
+    <text x="785" y="561" fill="#e3b341" font-size="12" text-anchor="middle">el build de la imagen, cada job</text>
+    <text x="480" y="594" fill="#8b949e" font-size="11" text-anchor="middle">Azul: ejecución. Azul claro: lo que entra. Verde: lo que vuelve. Amarillo: coste o requisito. Rojo: lo que falla si lo olvidas.</text>
+  </g>
+</svg>

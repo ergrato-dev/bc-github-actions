@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" xml:space="preserve" role="img" aria-labelledby="t03">
+  <title id="t03">El ciclo de un job con fases pre, main y post, sobre el job coverage de ci-web. Arriba, de izquierda a derecha, Set up job y las fases pre, que corren al principio del job en el orden de uso y que ninguna action de este job declara; con una action local no se cuenta con el pre porque el workspace aún está vacío. En el centro, los steps en orden: checkout, setup-tablero, que dentro usa pnpm/action-setup y setup-node, Vitest con cobertura y coverage-report, cuyo main guarda el estado started con core.saveState. Abajo, las fases post en orden inverso, como una pila: primero el post de coverage-report, que recibe started como variable STATE_started y escribe los milisegundos transcurridos; después el post de setup-node, que guarda la caché solo si el job va bien porque su post-if es success(); después el de pnpm/action-setup y por último el de checkout, que borra las credenciales con post-if always() por defecto. Una flecha morada une el main de coverage-report con su post a través del archivo GITHUB_STATE. Al final, Complete job. Un post solo se programa si su main llegó a ejecutarse</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2088ff"/></marker>
+    <marker id="a03p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d2a8ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">pre, main y post en el job coverage</text>
+
+    <!-- fase pre -->
+    <text x="30" y="78" fill="#f0f6fc" font-size="14" font-weight="600">1 · Al empezar</text>
+    <rect x="30" y="90" width="160" height="48" rx="6" fill="#161b22" stroke="#30363d"/>
+    <text x="110" y="119" fill="#f0f6fc" font-size="12" text-anchor="middle">Set up job</text>
+    <rect x="210" y="90" width="720" height="48" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+    <text x="226" y="111" fill="#8b949e" font-size="12">pre de cada action, en orden de uso · aquí ninguna lo declara</text>
+    <text x="226" y="128" fill="#e3b341" font-size="12">No cuentes con el pre de una action local: el workspace todavía está vacío</text>
+
+    <!-- steps -->
+    <text x="30" y="176" fill="#f0f6fc" font-size="14" font-weight="600">2 · Los steps, cada uno con su main</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="30" y="188" width="180" height="76" rx="6" fill="#161b22" stroke="#2088ff"/>
+      <text x="44" y="212" fill="#f0f6fc">checkout</text>
+      <text x="44" y="232" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">deja credenciales</text>
+      <text x="44" y="250" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">en .git</text>
+      <rect x="230" y="188" width="240" height="76" rx="6" fill="#161b22" stroke="#2088ff"/>
+      <text x="244" y="212" fill="#f0f6fc">setup-tablero</text>
+      <text x="244" y="232" fill="#8b949e">pnpm/action-setup</text>
+      <text x="244" y="250" fill="#8b949e">setup-node · cache pnpm</text>
+      <rect x="490" y="188" width="180" height="76" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="504" y="212" fill="#f0f6fc">Vitest</text>
+      <text x="504" y="232" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">coverage-summary</text>
+      <text x="504" y="250" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">.json</text>
+      <rect x="690" y="188" width="240" height="76" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="704" y="212" fill="#f0f6fc">coverage-report · main</text>
+      <text x="704" y="232" fill="#d2a8ff">saveState("started")</text>
+      <text x="704" y="250" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">resumen, output, setFailed</text>
+    </g>
+    <path d="M210 226 L226 226" stroke="#2088ff" stroke-width="2" marker-end="url(#a03)"/>
+    <path d="M470 226 L486 226" stroke="#2088ff" stroke-width="2" marker-end="url(#a03)"/>
+    <path d="M670 226 L686 226" stroke="#2088ff" stroke-width="2" marker-end="url(#a03)"/>
+
+    <!-- estado -->
+    <rect x="690" y="290" width="240" height="56" rx="6" fill="#0d1117" stroke="#d2a8ff"/>
+    <text x="704" y="312" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">$GITHUB_STATE</text>
+    <text x="704" y="332" fill="#8b949e" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">started&lt;&lt;ghadelimiter_…</text>
+    <path d="M810 264 L810 286" stroke="#d2a8ff" stroke-width="2" marker-end="url(#a03p)"/>
+    <path d="M810 346 L810 410" stroke="#d2a8ff" stroke-width="2" marker-end="url(#a03p)"/>
+    <text x="822" y="384" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">STATE_started</text>
+
+    <!-- posts -->
+    <text x="30" y="388" fill="#f0f6fc" font-size="14" font-weight="600">3 · Al terminar: post en orden inverso, como una pila</text>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <rect x="690" y="414" width="240" height="76" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="704" y="438" fill="#f0f6fc">coverage-report · post</text>
+      <text x="704" y="458" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">getState: ms desde main</text>
+      <text x="704" y="476" fill="#3fb950">post-if: always()</text>
+      <rect x="450" y="414" width="220" height="76" rx="6" fill="#161b22" stroke="#e3b341"/>
+      <text x="464" y="438" fill="#f0f6fc">setup-node · post</text>
+      <text x="464" y="458" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">guarda la caché de pnpm</text>
+      <text x="464" y="476" fill="#e3b341">post-if: success()</text>
+      <rect x="250" y="414" width="180" height="76" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="264" y="438" fill="#f0f6fc">action-setup</text>
+      <text x="264" y="458" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">su post</text>
+      <rect x="30" y="414" width="200" height="76" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="44" y="438" fill="#f0f6fc">checkout · post</text>
+      <text x="44" y="458" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">borra las credenciales</text>
+      <text x="44" y="476" fill="#3fb950">post-if: always()</text>
+    </g>
+    <path d="M690 452 L674 452" stroke="#2088ff" stroke-width="2" marker-end="url(#a03)"/>
+    <path d="M450 452 L434 452" stroke="#2088ff" stroke-width="2" marker-end="url(#a03)"/>
+    <path d="M250 452 L234 452" stroke="#2088ff" stroke-width="2" marker-end="url(#a03)"/>
+
+    <rect x="30" y="504" width="900" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="46" y="524" fill="#f0f6fc" font-size="12">Complete job · Un post solo se programa si su main llegó a ejecutarse</text>
+    <text x="480" y="552" fill="#8b949e" font-size="11" text-anchor="middle">Azul: orden de ejecución. Morado: estado privado de la action. Verde: corre siempre. Amarillo: solo si el job va bien.</text>
+  </g>
+</svg>

@@ -34,7 +34,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 | Semana | Tema | Estado |
 |:--:|---|:--:|
 | [09](week-09-workflows_reutilizables/README.md) | Workflows reutilizables | ✅ |
-| 10 | Actions propias: composite, JavaScript y Docker | ⬜ |
+| [10](week-10-actions_propias/README.md) | Actions propias: composite, JavaScript y Docker | ✅ |
 | 11 | Actions a escala de organización | ⬜ |
 
 ### Fase 4 — Seguridad (S12-14, 30 h)

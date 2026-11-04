@@ -1,0 +1,47 @@
+# test-actions.yml — capa 10 de tablero. Cópialo a .github/workflows/test-actions.yml.
+name: test-actions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/actions/**"
+      - ".github/workflows/test-actions.yml"
+  pull_request:
+    paths:
+      - ".github/actions/**"
+      - ".github/workflows/test-actions.yml"
+  workflow_dispatch:
+
+# Un run por workflow y ref: en un PR, el push nuevo cancela el run anterior;
+# en main cada commit termina su run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Mínimo privilegio: lo verás a fondo en la Semana 12.
+permissions:
+  contents: read
+
+jobs:
+  coverage-report:
+    name: coverage-report (tests y dist)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: .github/actions/coverage-report
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-tablero # zizmor: ignore[self-repository] actionlint 1.7.12 no admite $/
+        with:
+          stack: node
+          working-directory: .github/actions/coverage-report
+      - name: Tests de la lógica
+        run: pnpm test
+      - name: Reconstruir dist
+        # TODO 9: después del build, falla con un ::error:: si dist/ no coincide con lo comiteado.
+        run: pnpm build
