@@ -134,6 +134,14 @@ gratuito sin coste y lo que facilita el autograding. Qué se puede ejecutar dent
 organización no lo decide la visibilidad del repo central, sino las políticas de la org
 (archivo 06).
 
+Si el repo central fuera **privado o interno**, nadie fuera de él podría usarlo hasta abrirlo en
+Settings → Actions → General → Access: "Accessible from repositories in the '<tu-org>'
+organization" (o del enterprise, o de tu cuenta). Se lee con
+`gh api repos/<tu-org>/actions-tablero/actions/permissions/access --jq .access_level`
+(`none`, `user`, `organization` o `enterprise`). Sobre un repo público la API responde HTTP 422
+con `Access policy only applies to internal and private repositories.`: aquí es solo teoría,
+pero es pregunta habitual del examen.
+
 ### El repo central se prueba a sí mismo
 
 En la Semana 10, `test-actions.yml` probaba `coverage-report` dentro de `tablero`. Esa prueba se

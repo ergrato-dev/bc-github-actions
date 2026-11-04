@@ -465,7 +465,7 @@ y el CI propio. Versión para el alumno, con ejemplo malo y bueno de cada una:
 | `::set-output` / `::save-state` | `$GITHUB_OUTPUT` / `$GITHUB_STATE` | Deshabilitados por inyección |
 | `ubuntu-latest` | `ubuntu-24.04` | La etiqueta cambia de imagen sin aviso |
 | `actions/upload-artifact@v3` y anteriores | La versión de `docs/stack-versions.md` | v3 retirado |
-| Runtime `node16` / `node20` en actions JS | El runtime vigente de `docs/stack-versions.md` | Retirados en los runners |
+| Runtime `node16` / `node20` en actions JS | El runtime vigente de `docs/stack-versions.md` | `node16` retirado; `node20` deprecado (el runner aún lo trae) |
 | PAT clásico para ARC o para automatizar | GitHub App o `GITHUB_TOKEN` | Alcance excesivo y sin caducidad |
 | `secrets: inherit` como costumbre | Secretos declarados uno a uno | Pasa todos los secretos a código ajeno |
 | `docker-compose` (v1) | `docker compose` (plugin) | v1 retirado |

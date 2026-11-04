@@ -177,8 +177,8 @@ por las columnas alineadas a mano. Verificado con sqlfluff 4.5.0 y ubuntu-24.04,
 
 La construcción de la imagen de `sql-lint` es el grueso del step: descargar la imagen base e
 instalar sqlfluff, en cada job. Si eso molesta, la salida es publicar la imagen una vez y usar
-`image: docker://ghcr.io/<tu-org>/sql-lint@sha256:<digest>`; publicar y versionar actions lo
-verás en la Semana 11.
+`image: docker://ghcr.io/<tu-org>/sql-lint@sha256:<digest>`. `tablero` no lo hace (la imagen
+tarda poco), y fijar imágenes por digest lo verás en la Semana 14.
 
 ### Qué tipo elegir
 

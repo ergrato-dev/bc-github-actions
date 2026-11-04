@@ -60,8 +60,9 @@ llama tiene `uses:` y, si el reutilizable los pide, `with:` y `secrets:`.
 - **`./`** resuelve el archivo en el mismo commit que disparó el run. En un PR que cambia
   `_python.yml`, el run del PR usa el `_python.yml` del PR: pruebas el cambio antes de fusionarlo.
 - **`$/`** es la sintaxis "self-repository" que GitHub admite desde julio de 2026 (no está
-  disponible en GitHub Enterprise Server). Apunta al mismo repo y commit que `./`, pero no
-  depende del sistema de archivos del runner en tiempo de ejecución y las políticas de la
+  disponible en GitHub Enterprise Server). En una llamada a un reutilizable del mismo repo
+  apunta al mismo repo y commit que `./`; en un step, `./` lee el workspace y `$/` no (la
+  diferencia importa en la Semana 11) y las políticas de la
   organización que exigen referencias fijadas la cuentan como fijada.
 - **`owner/repo/...@ref`** apunta a otro repo. El `@ref` es obligatorio y, con las reglas de
   este bootcamp, es un SHA de 40 caracteres con el tag en comentario, como cualquier action. Una

@@ -74,7 +74,7 @@ SHA=$(gh api "repos/$ORG/actions-tablero/commits/$TAG" --jq .sha)
 Semana 09, solo cambia de dónde se lee. Y como `_python.yml` y `_node.yml` usan `$/`, su
 `setup-tablero` sale de `actions-tablero` en el commit `$SHA`, no del workspace de `tablero`.
 
-**Comando**: una sustitución por línea, con el comentario `# zizmor: ignore[...]` de la Semana 10
+**Comando**: una sustitución por línea, con el comentario `# zizmor: ignore[...]` de la Semana 09
 incluido (ya no hace falta: no hay `./`). El separador es `|` porque el texto nuevo lleva `#`:
 
 ```bash

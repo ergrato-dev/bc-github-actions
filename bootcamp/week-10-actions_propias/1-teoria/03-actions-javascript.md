@@ -44,9 +44,9 @@ runs:
 | `pre`, `pre-if` | Un script antes de todos los steps del job: archivo 05 |
 | `post`, `post-if` | Un script al final del job: archivo 05 |
 
-Verificado con actionlint 1.7.12 y ubuntu-24.04, noviembre 2026. `node16` y `node20` son
-runtimes retirados: los verás en actions antiguas y en guías de 2023-2025, pero el runner ya no
-los admite y una action que los declare hay que migrarla.
+Verificado con actionlint 1.7.12 y ubuntu-24.04, noviembre 2026. `node16` está
+retirado y `node20` deprecado: el runner v2.338.2 aún trae `node20`, pero no es vigente. Los
+verás en actions antiguas y en guías de 2023-2025; una action que los declare hay que migrarla.
 
 ### Qué Node la ejecuta
 

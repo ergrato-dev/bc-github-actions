@@ -27,7 +27,6 @@ Al terminar la semana eres capaz de:
 | Pinning por SHA, `scripts/resolve-sha.sh` y ajustes de Actions del repo | [Semana 01](../week-01-primer_workflow_y_modelo_de_ejecucion/README.md) |
 | Referencias `./`, `$/` y `owner/repo/...@sha` a un reutilizable | [Semana 09](../week-09-workflows_reutilizables/README.md) |
 | `setup-tablero`, `coverage-report` y `sql-lint` | [Semana 10](../week-10-actions_propias/README.md) |
-| Scope `admin:org` en `gh` (`gh auth refresh -s admin:org`) | [Autograding](../../docs/autograding.md) |
 
 ## 🗂️ Estructura de la Semana
 
@@ -97,7 +96,7 @@ sus políticas solo dejan ejecutar lo que has decidido.
 
 Con esta semana termina la Fase 3 (Reutilización). La [rúbrica](rubrica-evaluacion.md) incluye un
 minisimulacro cronometrado de 60 minutos sobre las semanas 09-11: preguntas tipo GH-200 de los
-dominios que cubre la fase (D1, D3 y D4) y una tarea práctica sobre tu repo central.
+dominios que cubre la fase (D1 a D4) y una tarea práctica sobre tu repo central.
 
 ## 🎩 Trucos y atajos
 

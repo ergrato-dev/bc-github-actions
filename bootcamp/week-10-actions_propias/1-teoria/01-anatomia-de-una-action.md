@@ -59,7 +59,7 @@ El runner busca `action.yml` (o `action.yaml`) en la raíz de la carpeta que apu
 | `inputs.<id>` | No | Parámetros: `description`, `required`, `default`, `deprecationMessage` |
 | `outputs.<id>` | No | Valores de vuelta: `description` y, solo en composite, `value` |
 | `runs` | Sí | Cómo se ejecuta: `using` y lo que pida cada tipo |
-| `branding` | No | `icon` y `color` para el Marketplace; lo verás en la Semana 11 |
+| `branding` | No | `icon` y `color` para el Marketplace; publicar allí lo verás en la Semana 11 |
 
 ### Los inputs no tienen tipo
 
@@ -164,11 +164,13 @@ Fíjate en tres cosas:
 |---|---|---|
 | Ruta local | `./.github/actions/setup-tablero` | Actions del propio repo: esta semana |
 | Repo remoto | `actions/checkout@<sha> # v7.0.1` | Actions de terceros, fijadas por SHA |
-| Subcarpeta de un repo | `<tu-org>/actions-tablero/setup@<sha>` | Un repo con varias actions: Semana 11 |
+| Mismo repo, en el commit del run | `$/setup-tablero` | Sintaxis self-repository: Semanas 09 y 11 |
+| Subcarpeta de un repo | `<tu-org>/actions-tablero/setup-tablero@<sha>` | Un repo con varias actions: Semana 11 |
 | Imagen Docker | `docker://imagen@sha256:<digest>` | Ejecutar una imagen sin `action.yml` |
 
-Una action local se versiona con el propio commit: el job usa la versión que hay en el SHA que
-dispara el run. No hay que fijar nada, y por eso la regla del SHA no aplica a `./`.
+Una action `./` se lee del workspace del job: coincide con el commit del run solo porque
+`actions/checkout` descargó ese commit. No hay que fijar nada, y por eso la regla del SHA no
+aplica a `./`. En la Semana 11 verás el caso en que deja de coincidir, y `$/` (Semana 09).
 
 ### Las tres actions de `tablero` en esta capa
 

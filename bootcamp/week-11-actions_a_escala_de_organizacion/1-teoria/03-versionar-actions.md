@@ -161,6 +161,23 @@ que necesita, en este orden:
 release anterior. Es un buen punto de partida, pero no dice qué tiene que cambiar el
 consumidor: esa parte la escribes tú.
 
+### Publicar en el Marketplace
+
+`actions-tablero` no se puede publicar en el Marketplace, y es a propósito. Los requisitos
+(docs "Publishing actions in GitHub Marketplace", noviembre 2026):
+
+- Repo **público** con **un solo** `action.yml` en la **raíz**: el que esté en subcarpetas no se
+  lista. Una action para el Marketplace vive en su propio repo y se versiona sola.
+- El `name` del `action.yml` es único: no puede coincidir con otra action publicada, con un
+  usuario u organización ajenos ni con una categoría.
+- `branding` (`icon` y `color`) da el icono de la ficha.
+- Se publica desde una release: en el borrador, la casilla "Publish this Action to the GitHub
+  Marketplace" (exige aceptar el acuerdo de desarrollador y 2FA), una categoría y el tag.
+  No hay revisión previa de GitHub.
+
+Para la org, un repo central con varias actions es más práctico; para la comunidad, un repo por
+action.
+
 ## 4. Antipatrones
 
 | Antipatrón | Por qué duele | Qué hacer en su lugar |
