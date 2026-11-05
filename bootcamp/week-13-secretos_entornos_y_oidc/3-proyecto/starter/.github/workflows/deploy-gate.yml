@@ -1,0 +1,96 @@
+# Ensayo de despliegue: cada environment migra una base con su propia contraseña y demuestra con
+# OIDC quién es. Se copia en <tu-org>/tablero como .github/workflows/deploy-gate.yml.
+name: deploy-gate
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+# TODO 1: concurrency en la raíz para que dos despliegues no se pisen, sin cancelar el que
+# ya está en marcha.
+permissions: {}
+defaults:
+  run:
+    shell: bash
+jobs:
+  staging:
+    name: Staging
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # TODO 2: el job despliega en el environment staging.
+    # TODO 3: permiso para pedir el token OIDC, además de leer el código.
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: tablero
+          # TODO 4: la contraseña sale del secreto DATABASE_PASSWORD del environment.
+          POSTGRES_PASSWORD: cambiame
+          POSTGRES_DB: tablero
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tablero -d tablero"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://tablero:cambiame@localhost:5432/tablero
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: <tu-org>/actions-tablero/setup-tablero@<sha-de-v1.0.0> # v1.0.0
+        with:
+          stack: python
+          working-directory: api
+      - name: Migraciones con la contraseña de staging
+        working-directory: api
+        run: uv run --no-sync python -m tablero.migrate
+      # TODO 5: pide el token OIDC con la audiencia tablero-verifier y pásalo por stdin a
+      # oidc-verifier con el sub de vars.OIDC_SUB; los claims van al resumen del job.
+      - name: Token OIDC verificado como lo haría la nube
+        working-directory: tools/oidc-verifier
+        run: uv sync --locked
+
+  production:
+    name: Production
+    # TODO 6: production solo corre si staging terminó bien, en el environment production.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # TODO 7: los mismos permisos que staging.
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: tablero
+          # TODO 8: el mismo nombre de secreto; el valor es el de production.
+          POSTGRES_PASSWORD: cambiame
+          POSTGRES_DB: tablero
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tablero -d tablero"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://tablero:cambiame@localhost:5432/tablero
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: <tu-org>/actions-tablero/setup-tablero@<sha-de-v1.0.0> # v1.0.0
+        with:
+          stack: python
+          working-directory: api
+      - name: Migraciones con la contraseña de production
+        working-directory: api
+        run: uv run --no-sync python -m tablero.migrate
+      # TODO 9: el mismo paso que TODO 5; el sub esperado es el de production.
+      - name: Token OIDC verificado como lo haría la nube
+        working-directory: tools/oidc-verifier
+        run: uv sync --locked

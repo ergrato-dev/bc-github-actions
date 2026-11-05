@@ -50,7 +50,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | Nodo de kind | `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5` | 16 | Imagen por defecto de kind v0.33.0; el mismo digest que fija bc-kubernetes (2026-10-30) |
 | kubectl | v1.37.2 | 16 | Último patch de 1.37 (2026-10-28) |
 
-### Dependencias de `app/` (fijadas en `api/uv.lock` y `web/pnpm-lock.yaml`)
+### Dependencias de `app/` (fijadas en `api/uv.lock`, `web/pnpm-lock.yaml` y `tools/oidc-verifier/uv.lock`)
 
 | Pieza | Versión | Nota |
 |---|---|---|
@@ -61,6 +61,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | React · Vite · Vitest | 19.3.1 · 8.3.5 · 5.0.5 | |
 | TypeScript | 6.0.3 | **No la 7**: typescript-eslint 8.72.1 exige `>=4.8.4 <6.1.0` (`pnpm peers check`, 2026-11-02) |
 | ESLint · typescript-eslint · jsdom | 10.14.0 · 8.72.1 · 30.1.3 | |
+| PyJWT (`crypto`) · cryptography | 2.15.1 · 50.0.2 | Solo `tools/oidc-verifier` (S13). PyPI (2026-11-04). `PyJWKSet` y `jwt.decode` con `algorithms=["RS256"]` probados contra un emisor falso en los tests; el discovery real de `token.actions.githubusercontent.com` publica solo `RS256` y `jwks_uri` bajo el emisor (2026-11-04) |
 
 ### Dependencias de las actions propias (Semana 10)
 

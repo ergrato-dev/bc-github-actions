@@ -79,7 +79,7 @@ Hardware: Linux or WSL2 with Docker, **8 GB RAM** (16 GB recommended from Week 1
 | [10](bootcamp/week-10-actions_propias/README.md) | Custom actions: composite, JavaScript and Docker |
 | [11](bootcamp/week-11-actions_a_escala_de_organizacion/README.md) | Actions at organization scale |
 | [12](bootcamp/week-12-modelo_de_amenazas_y_endurecimiento/README.md) | Threat model and hardening |
-| 13 | Secrets, environments and OIDC |
+| [13](bootcamp/week-13-secretos_entornos_y_oidc/README.md) | Secrets, environments and OIDC |
 | 14 | Releases, supply chain and attestations |
 | 15 | Self-hosted runners |
 | 16 | Actions Runner Controller on kind |

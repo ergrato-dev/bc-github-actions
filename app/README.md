@@ -9,6 +9,7 @@ bootcamp no la programas: escribes todo lo que la rodea, empezando por sus workf
 | `web/` | React + Vite + TypeScript, con **pnpm** | Interfaz servida por nginx sin privilegios, que hace de proxy a `/api` |
 | `compose.yaml` | Docker Compose | PostgreSQL 17, API y web, puertos solo en `127.0.0.1` |
 | `scripts/` | bash | `check.sh` (todo lo que tiene que pasar) y `smoke-test.sh` |
+| `tools/oidc-verifier/` | Python 3.15 + PyJWT, con **uv** | Verifica un token OIDC de GitHub Actions como lo haría la nube; llega en la Semana 13 |
 
 Las versiones exactas están en `api/uv.lock`, `web/pnpm-lock.yaml` y
 [`docs/stack-versions.md`](../docs/stack-versions.md). **No hay carpeta `.github/`**: es tu trabajo.

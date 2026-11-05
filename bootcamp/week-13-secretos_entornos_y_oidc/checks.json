@@ -1,0 +1,125 @@
+{
+  "week": "13",
+  "title": "Secretos, entornos y OIDC",
+  "checks": [
+    {
+      "id": "verifier-present",
+      "description": "tools/oidc-verifier está en tablero con su pyproject.toml y su uv.lock",
+      "cmd": "test -f tools/oidc-verifier/pyproject.toml && test -f tools/oidc-verifier/uv.lock && test -f tools/oidc-verifier/src/oidc_verifier/core.py",
+      "assert": "exit0",
+      "hint": "2-practicas/04-verificador-oidc-y-deploy-gate.md, paso 1"
+    },
+    {
+      "id": "verifier-tests",
+      "description": "Los tests unitarios de oidc-verifier pasan en local",
+      "cmd": "cd tools/oidc-verifier && uv sync --locked -q && uv run --no-sync pytest tests/unit -q",
+      "assert": "exit0",
+      "hint": "2-practicas/04-verificador-oidc-y-deploy-gate.md, paso 1"
+    },
+    {
+      "id": "ci-tools-reusable",
+      "description": "ci-tools.yml prueba tools/oidc-verifier llamando al _python.yml del repo central, sin integración",
+      "cmd": "yq '.jobs[] | select(.uses // \"\" | test(\"/actions-tablero/.github/workflows/_python.yml@[0-9a-f]{40}$\")) | .with.\"working-directory\" + \" integration=\" + (.with.integration | tostring)' .github/workflows/ci-tools.yml",
+      "assert": "stdout~^tools/oidc-verifier integration=false$",
+      "hint": "2-practicas/04-verificador-oidc-y-deploy-gate.md, paso 2"
+    },
+    {
+      "id": "gate-environments",
+      "description": "deploy-gate.yml tiene un job staging con environment staging y un job production con environment production que necesita a staging",
+      "cmd": "yq '\"staging=\" + (.jobs.staging.environment | .name // .) + \" production=\" + (.jobs.production.environment | .name // .) + \" needs=\" + ([.jobs.production.needs] | flatten | join(\",\"))' .github/workflows/deploy-gate.yml",
+      "assert": "stdout~^staging=staging production=production needs=staging$",
+      "hint": "2-practicas/02-environments-y-reglas-de-proteccion.md, paso 4"
+    },
+    {
+      "id": "gate-concurrency",
+      "description": "deploy-gate.yml declara concurrency en la raíz sin cancel-in-progress",
+      "cmd": "yq '\"group=\" + ((.concurrency.group // \"\") != \"\" | tostring) + \" cancel=\" + (.concurrency.\"cancel-in-progress\" // false | tostring)' .github/workflows/deploy-gate.yml",
+      "assert": "stdout~^group=true cancel=false$",
+      "hint": "2-practicas/02-environments-y-reglas-de-proteccion.md, paso 4"
+    },
+    {
+      "id": "id-token-scoped",
+      "description": "Solo los jobs staging y production de deploy-gate.yml piden id-token: write",
+      "cmd": "yq -N '(select(.permissions.\"id-token\" == \"write\") | filename + \":raíz\"), (.jobs | to_entries | .[] | select(.value.permissions.\"id-token\" == \"write\") | filename + \":\" + .key)' .github/workflows/*.yml | sed 's#.*/##' | sort | tr '\\n' ' '",
+      "assert": "stdout~^deploy-gate.yml:production deploy-gate.yml:staging $",
+      "hint": "2-practicas/03-token-oidc-y-sus-claims.md, paso 2"
+    },
+    {
+      "id": "writes-only-where-needed",
+      "description": "Solo escriben codeql (security-events), deploy-gate (id-token), images (packages), labeler y pr-report (pull-requests) y nightly (actions); ningún write-all ni read-all",
+      "cmd": "grep -rlE 'permissions: *(write|read)-all' .github/workflows; yq -N '.jobs | to_entries | .[] | .value.permissions // {} | to_entries | .[] | select(.value == \"write\") | (filename | sub(\".*/\"; \"\")) + \":\" + .key' .github/workflows/*.yml | sort -u | tr '\\n' ' '",
+      "assert": "stdout~^codeql.yml:security-events deploy-gate.yml:id-token images.yml:packages labeler.yml:pull-requests nightly.yml:actions pr-report.yml:pull-requests $",
+      "hint": "2-practicas/03-token-oidc-y-sus-claims.md, paso 2"
+    },
+    {
+      "id": "gate-env-secret",
+      "description": "Los dos jobs de deploy-gate.yml dan a PostgreSQL el secreto DATABASE_PASSWORD de su environment",
+      "cmd": "yq '[.jobs.staging, .jobs.production] | .[] | .services.postgres.env.POSTGRES_PASSWORD' .github/workflows/deploy-gate.yml | sort -u",
+      "assert": "stdout~^\\$\\{\\{ *secrets\\.DATABASE_PASSWORD *\\}\\}$",
+      "hint": "2-practicas/01-secretos-de-repo-environment-y-org.md, paso 5"
+    },
+    {
+      "id": "gate-verifier",
+      "description": "Los dos jobs de deploy-gate.yml pasan su token OIDC por stdin a oidc-verifier con el sub esperado de vars.OIDC_SUB",
+      "cmd": "yq '[.jobs[].steps[] | select((.run // \"\" | test(\"ACTIONS_ID_TOKEN_REQUEST_URL\")) and (.run | test(\"\\|\\s*uv run --no-sync oidc-verifier\")) and (.env.EXPECTED_SUB // \"\" | test(\"vars\\.OIDC_SUB\")))] | length' .github/workflows/deploy-gate.yml",
+      "assert": "stdout~^2$",
+      "hint": "2-practicas/04-verificador-oidc-y-deploy-gate.md, paso 3"
+    },
+    {
+      "id": "no-expressions-in-run",
+      "description": "Ningún run ni script de github-script contiene una expresión ${{ }}: secretos, variables y datos llegan por env",
+      "cmd": "yq '.jobs[].steps[]? | (.run // \"\") + (.with.script // \"\")' .github/workflows/*.yml | grep -E '\\$\\{\\{' || true",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/01-secretos-de-repo-environment-y-org.md, paso 5"
+    },
+    {
+      "id": "environments-protected",
+      "description": "Los environments staging y production solo admiten despliegues desde la rama main",
+      "cmd": "for e in staging production; do printf '%s=%s:%s ' \"$e\" \"$(gh api \"repos/{owner}/{repo}/environments/$e\" --jq '.deployment_branch_policy.custom_branch_policies')\" \"$(gh api \"repos/{owner}/{repo}/environments/$e/deployment-branch-policies\" --jq '[.branch_policies[] | .type + \"/\" + .name] | join(\",\")')\"; done",
+      "assert": "stdout~^staging=true:branch/main production=true:branch/main $",
+      "hint": "2-practicas/02-environments-y-reglas-de-proteccion.md, paso 2"
+    },
+    {
+      "id": "production-reviewers",
+      "description": "production exige la aprobación de un revisor antes de ejecutar su job",
+      "cmd": "gh api 'repos/{owner}/{repo}/environments/production' --jq '[.protection_rules[] | select(.type == \"required_reviewers\") | .reviewers | length] | add // 0'",
+      "assert": "stdout~^[1-6]$",
+      "hint": "2-practicas/02-environments-y-reglas-de-proteccion.md, paso 3"
+    },
+    {
+      "id": "env-secrets",
+      "description": "DATABASE_PASSWORD existe como secreto de staging y de production, y no como secreto del repositorio",
+      "cmd": "printf 'repo=%s staging=%s production=%s' \"$(gh secret list --json name --jq '[.[] | select(.name == \"DATABASE_PASSWORD\")] | length')\" \"$(gh secret list --env staging --json name --jq '[.[] | select(.name == \"DATABASE_PASSWORD\")] | length')\" \"$(gh secret list --env production --json name --jq '[.[] | select(.name == \"DATABASE_PASSWORD\")] | length')\"",
+      "assert": "stdout~^repo=0 staging=1 production=1$",
+      "hint": "2-practicas/01-secretos-de-repo-environment-y-org.md, paso 3"
+    },
+    {
+      "id": "oidc-sub-template",
+      "description": "El sub del token OIDC de tablero usa la plantilla repo, context y job_workflow_ref",
+      "cmd": "gh api 'repos/{owner}/{repo}/actions/oidc/customization/sub' --jq '\"default=\" + (.use_default | tostring) + \" keys=\" + ((.include_claim_keys // []) | join(\",\"))'",
+      "assert": "stdout~^default=false keys=repo,context,job_workflow_ref$",
+      "hint": "2-practicas/03-token-oidc-y-sus-claims.md, paso 5"
+    },
+    {
+      "id": "oidc-sub-vars",
+      "description": "Cada environment guarda en la variable OIDC_SUB el sub exacto que acepta: su environment y deploy-gate.yml en main",
+      "cmd": "for e in staging production; do v=$(gh variable list --env \"$e\" --json name,value --jq '.[] | select(.name == \"OIDC_SUB\") | .value'); grep -qE \"^repo:[^:]+/tablero[^:]*:environment:$e:job_workflow_ref:[^:]+/tablero/\\.github/workflows/deploy-gate\\.yml@refs/heads/main$\" <<<\"$v\" && printf '%s=ok ' \"$e\" || printf '%s=mal ' \"$e\"; done",
+      "assert": "stdout~^staging=ok production=ok $",
+      "hint": "2-practicas/03-token-oidc-y-sus-claims.md, paso 6"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "Los workflows de tablero pasan actionlint y zizmor con las auditorías online sin hallazgos",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/04-verificador-oidc-y-deploy-gate.md, paso 5"
+    },
+    {
+      "id": "green-on-main",
+      "description": "ci-tools y deploy-gate, con la aprobación de production, terminan en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && sha=$(git rev-parse origin/main) && for w in ci-tools deploy-gate; do printf '%s=%s ' \"$w\" \"$(gh run list --workflow $w.yml --commit \"$sha\" --json conclusion --jq '.[0].conclusion')\"; done",
+      "assert": "stdout~^ci-tools=success deploy-gate=success $",
+      "hint": "2-practicas/04-verificador-oidc-y-deploy-gate.md, paso 6"
+    }
+  ]
+}

@@ -196,6 +196,24 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   experimental: aplica por defecto solo los arreglos seguros, y siempre revisas el diff antes de
   hacer commit.
 
+## Semana 13 — [Secretos, entornos y OIDC](../bootcamp/week-13-secretos_entornos_y_oidc/README.md)
+
+- **Genera un secreto sin que pase por tu historial ni por la pantalla**:
+  `openssl rand -hex 24 | gh secret set DATABASE_PASSWORD --env staging`. `gh secret set` lee el
+  valor de stdin si no le das `--body`, y el valor no queda en `~/.zsh_history`.
+- **Aprueba un despliegue desde la terminal**:
+  `gh api "repos/{owner}/{repo}/actions/runs/<run-id>/pending_deployments"` lista lo que espera;
+  un `POST` al mismo endpoint con `environment_ids[]`, `state=approved` y `comment` lo aprueba.
+  Útil cuando el revisor eres tú y estás en la terminal.
+- **Mira el `sub` real de un job sin tocar el token**: si `oidc-verifier` lo rechaza, el mensaje
+  `rechazado: sub '...' no es el esperado` trae el `sub` que GitHub firmó. Los claims no son
+  secretos; el token sí.
+- **Lista qué environments existen y qué protegen en una línea**:
+  `gh api 'repos/{owner}/{repo}/environments' --jq '.environments[] | [.name, ([.protection_rules[].type] | join(","))] | @tsv'`.
+- **Comprueba qué ve un secreto de org**: `gh secret list --org <tu-org>` muestra la columna de
+  visibilidad; un secreto `private` no llega a `tablero`, que es público. Necesita el scope
+  `admin:org` (`gh auth refresh -h github.com -s admin:org`).
+
 ---
 
 | ← Anterior | Siguiente → |

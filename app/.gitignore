@@ -6,3 +6,7 @@ web/coverage/
 api/.coverage
 api/.pytest_cache/
 api/.ruff_cache/
+tools/oidc-verifier/.venv/
+tools/oidc-verifier/.coverage
+tools/oidc-verifier/.pytest_cache/
+tools/oidc-verifier/.ruff_cache/

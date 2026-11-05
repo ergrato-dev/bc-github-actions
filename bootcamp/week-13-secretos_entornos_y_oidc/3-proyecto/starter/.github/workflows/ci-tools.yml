@@ -1,0 +1,29 @@
+# Prueba las herramientas de tools/ con el reutilizable de Python del repo central.
+# Se copia en <tu-org>/tablero como .github/workflows/ci-tools.yml.
+name: ci-tools
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/**"
+      - ".github/workflows/ci-tools.yml"
+  pull_request:
+    paths:
+      - "tools/**"
+      - ".github/workflows/ci-tools.yml"
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+permissions: {}
+jobs:
+  oidc-verifier:
+    name: oidc-verifier
+    uses: <tu-org>/actions-tablero/.github/workflows/_python.yml@<sha-de-v1.0.0> # v1.0.0
+    # TODO 10: pasa working-directory, package e integration para tools/oidc-verifier. No tiene
+    # base de datos: sin integración.
+    with:
+      working-directory: api
+      package: tablero
+    permissions:
+      contents: read

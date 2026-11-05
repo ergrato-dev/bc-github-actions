@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t04">
+  <title id="t04">Anatomía del claim sub de un token OIDC de GitHub, en tres formatos para un job con environment staging. Formato clásico por defecto: repo:ORG/REPO:environment:staging, con el segmento repo y el contexto; el contexto puede ser environment, ref de rama o tag, o pull_request, y el environment sustituye a la rama. Formato inmutable, obligatorio en repos creados desde el 15 de julio de 2026: el segmento repo añade el ID numérico del propietario y del repo, repo:ORG@ID/REPO@ID, que no se pueden quitar; impide que otro repo con el mismo nombre herede la confianza. Plantilla personalizada de tablero con include_claim_keys repo, context y job_workflow_ref: repo con IDs, environment staging y job_workflow_ref con la ruta de deploy-gate.yml en refs/heads/main; es lo que se espera ver y la práctica 03 lo confirma con el token real. Abajo, qué aceptan las condiciones con comodín: repo:org/* cualquier repo de la org, repo:org/tablero:* cualquier rama o PR, y el sub exacto solo deploy-gate desde main hacia staging.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Anatomía del sub: el mismo job de staging, tres formatos</text>
+
+    <!-- clásico -->
+    <text x="30" y="80" fill="#f0f6fc" font-size="14" font-weight="600">Por defecto, formato clásico</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">
+      <rect x="30" y="92" width="270" height="36" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="165" y="115" fill="#2088ff" text-anchor="middle">repo:&lt;tu-org&gt;/tablero</text>
+      <rect x="310" y="92" width="250" height="36" rx="6" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="435" y="115" fill="#79c0ff" text-anchor="middle">:environment:staging</text>
+    </g>
+    <text x="580" y="106" fill="#8b949e" font-size="11">contexto: environment:NAME · ref:refs/heads/…</text>
+    <text x="580" y="122" fill="#8b949e" font-size="11">ref:refs/tags/… · pull_request · el environment tapa la rama</text>
+
+    <!-- inmutable -->
+    <text x="30" y="176" fill="#f0f6fc" font-size="14" font-weight="600">Inmutable · repos creados desde el 15 de julio de 2026</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">
+      <rect x="30" y="188" width="420" height="36" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="240" y="211" fill="#2088ff" text-anchor="middle">repo:&lt;tu-org&gt;<tspan fill="#d2a8ff">@&lt;id-org&gt;</tspan>/tablero<tspan fill="#d2a8ff">@&lt;id-repo&gt;</tspan></text>
+      <rect x="460" y="188" width="250" height="36" rx="6" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="585" y="211" fill="#79c0ff" text-anchor="middle">:environment:staging</text>
+    </g>
+    <text x="730" y="202" fill="#8b949e" font-size="11">IDs numéricos: no se quitan</text>
+    <text x="730" y="218" fill="#8b949e" font-size="11">un repo nuevo con el mismo</text>
+    <text x="730" y="234" fill="#8b949e" font-size="11">nombre no hereda la confianza</text>
+
+    <!-- personalizado -->
+    <text x="30" y="282" fill="#f0f6fc" font-size="14" font-weight="600">tablero · include_claim_keys: [repo, context, job_workflow_ref]</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <rect x="30" y="294" width="380" height="36" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="220" y="317" fill="#2088ff" text-anchor="middle">repo:&lt;tu-org&gt;@&lt;id-org&gt;/tablero@&lt;id-repo&gt;</text>
+      <rect x="420" y="294" width="200" height="36" rx="6" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="520" y="317" fill="#79c0ff" text-anchor="middle">:environment:staging</text>
+      <rect x="30" y="340" width="900" height="36" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="480" y="363" fill="#3fb950" text-anchor="middle">:job_workflow_ref:&lt;tu-org&gt;/tablero/.github/workflows/deploy-gate.yml@refs/heads/main</text>
+    </g>
+    <text x="640" y="310" fill="#8b949e" font-size="11">repo · context · job_workflow_ref,</text>
+    <text x="640" y="326" fill="#e3b341" font-size="11">esperado: lo confirma la práctica 03</text>
+
+    <!-- comodines -->
+    <text x="30" y="420" fill="#f0f6fc" font-size="14" font-weight="600">Qué acepta cada condición sobre el sub</text>
+    <g font-size="12">
+      <rect x="30" y="432" width="290" height="80" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="46" y="456" fill="#f85149" font-family="ui-monospace, Menlo, Consolas, monospace">repo:&lt;tu-org&gt;/*</text>
+      <text x="46" y="480" fill="#f0f6fc">cualquier repo de la org</text>
+      <text x="46" y="498" fill="#8b949e">con id-token: write</text>
+
+      <rect x="335" y="432" width="290" height="80" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="351" y="456" fill="#f85149" font-family="ui-monospace, Menlo, Consolas, monospace">repo:&lt;tu-org&gt;/tablero:*</text>
+      <text x="351" y="480" fill="#f0f6fc">cualquier rama, tag, PR</text>
+      <text x="351" y="498" fill="#8b949e">o environment del repo</text>
+
+      <rect x="640" y="432" width="290" height="80" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="656" y="456" fill="#3fb950" font-family="ui-monospace, Menlo, Consolas, monospace">sub exacto (igualdad)</text>
+      <text x="656" y="480" fill="#f0f6fc">solo deploy-gate.yml desde</text>
+      <text x="656" y="498" fill="#8b949e">main hacia staging</text>
+    </g>
+
+    <text x="480" y="552" fill="#8b949e" font-size="11" text-anchor="middle">Azul: segmento repo. Morado: IDs del formato inmutable. Azul claro: contexto. Verde: job_workflow_ref y la condición segura.</text>
+    <text x="480" y="570" fill="#8b949e" font-size="11" text-anchor="middle">Rojo: comodines que dan production a quien no debe. Los : dentro de un valor se codifican como %3A.</text>
+  </g>
+</svg>

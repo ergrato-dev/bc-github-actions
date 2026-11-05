@@ -42,7 +42,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 | Semana | Tema | Estado |
 |:--:|---|:--:|
 | [12](week-12-modelo_de_amenazas_y_endurecimiento/README.md) | Modelo de amenazas y endurecimiento | ✅ |
-| 13 | Secretos, entornos y OIDC | ⬜ |
+| [13](week-13-secretos_entornos_y_oidc/README.md) | Secretos, entornos y OIDC | ✅ |
 | 14 | Releases, cadena de suministro y attestations | ⬜ |
 
 ### Fase 5 — Runners y Despliegue (S15-17, 30 h)

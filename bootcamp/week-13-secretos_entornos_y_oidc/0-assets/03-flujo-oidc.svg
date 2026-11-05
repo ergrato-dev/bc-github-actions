@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="t03">
+  <title id="t03">Flujo OIDC en cinco pasos entre tres participantes: el job en el runner, el servicio de tokens de GitHub con emisor token.actions.githubusercontent.com, y quien verifica, que en tablero es oidc-verifier y en el mundo real es AWS STS, Entra ID, Google Cloud o PyPI. Paso 1: el job declara id-token write y el runner le da ACTIONS_ID_TOKEN_REQUEST_URL y ACTIONS_ID_TOKEN_REQUEST_TOKEN; sin el permiso no existen. Paso 2: el job pide el token con curl a esa URL con audience tablero-verifier. Paso 3: GitHub firma un JWT RS256 con su clave privada, con los claims del job y caducidad de minutos, y lo devuelve en el campo value. Paso 4: el job pasa el token por un pipe al verificador, que descarga el documento de descubrimiento y el JWKS del emisor, busca el kid de la cabecera y comprueba firma, iss, aud, exp y sub exacto. Paso 5: si todo casa, la nube entrega una credencial corta; el verificador de tablero escribe los claims aceptados en el resumen del job. Ningún secreto de larga duración se guarda en GitHub.</title>
+  <rect width="960" height="640" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="g03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Flujo OIDC: identidad firmada en lugar de una clave guardada</text>
+
+    <!-- participantes -->
+    <rect x="30" y="62" width="240" height="64" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="150" y="88" fill="#2088ff" font-size="14" font-weight="600" text-anchor="middle">Job en el runner</text>
+    <text x="150" y="110" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">deploy-gate · staging</text>
+
+    <rect x="360" y="62" width="240" height="64" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="480" y="88" fill="#d2a8ff" font-size="14" font-weight="600" text-anchor="middle">Servicio de tokens de GitHub</text>
+    <text x="480" y="110" fill="#8b949e" font-size="10.5" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">token.actions.githubusercontent.com</text>
+
+    <rect x="690" y="62" width="240" height="64" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="810" y="88" fill="#3fb950" font-size="14" font-weight="600" text-anchor="middle">Quien verifica</text>
+    <text x="810" y="110" fill="#8b949e" font-size="11" text-anchor="middle">oidc-verifier · STS · Entra · GCP · PyPI</text>
+
+    <!-- líneas de vida -->
+    <g stroke="#30363d" stroke-width="2" stroke-dasharray="4 6">
+      <path d="M150 126 L150 560"/>
+      <path d="M480 126 L480 560"/>
+      <path d="M810 126 L810 560"/>
+    </g>
+
+    <!-- paso 1 -->
+    <rect x="40" y="146" width="220" height="80" rx="8" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="56" y="168" fill="#f0f6fc" font-size="12" font-weight="600">1 · permissions:</text>
+    <text x="72" y="186" fill="#d2a8ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">id-token: write</text>
+    <text x="56" y="206" fill="#8b949e" font-size="10.5" font-family="ui-monospace, Menlo, Consolas, monospace">ACTIONS_ID_TOKEN_REQUEST_URL</text>
+    <text x="56" y="220" fill="#8b949e" font-size="10.5" font-family="ui-monospace, Menlo, Consolas, monospace">ACTIONS_ID_TOKEN_REQUEST_TOKEN</text>
+
+    <!-- paso 2 -->
+    <path d="M150 256 L476 256" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <text x="313" y="246" fill="#f0f6fc" font-size="12" font-weight="600" text-anchor="middle">2 · curl ...&amp;audience=tablero-verifier</text>
+    <text x="313" y="274" fill="#8b949e" font-size="11" text-anchor="middle">bearer ACTIONS_ID_TOKEN_REQUEST_TOKEN</text>
+
+    <!-- paso 3 -->
+    <rect x="370" y="290" width="220" height="80" rx="8" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="386" y="312" fill="#f0f6fc" font-size="12" font-weight="600">3 · Firma un JWT RS256</text>
+    <text x="386" y="332" fill="#8b949e" font-size="11">con su clave privada</text>
+    <text x="386" y="350" fill="#8b949e" font-size="11">claims del job · caduca en minutos</text>
+    <path d="M476 384 L154 384" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <text x="262" y="376" fill="#79c0ff" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">{"count": ..., "value": "&lt;jwt&gt;"}</text>
+
+    <!-- paso 4 -->
+    <path d="M150 424 L806 424" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <text x="478" y="414" fill="#f0f6fc" font-size="12" font-weight="600" text-anchor="middle">4 · jq -r .value | oidc-verifier   (por stdin, nunca impreso)</text>
+
+    <rect x="680" y="440" width="260" height="104" rx="8" fill="#161b22" stroke="#3fb950"/>
+    <text x="696" y="462" fill="#f0f6fc" font-size="12" font-weight="600">Comprueba</text>
+    <g font-size="11" fill="#8b949e">
+      <text x="696" y="482">kid de la cabecera en el JWKS</text>
+      <text x="696" y="500">firma RS256 · iss · aud · exp</text>
+      <text x="696" y="518">sub exacto · claims exigidos</text>
+      <text x="696" y="536">ref=refs/heads/main · github-hosted</text>
+    </g>
+
+    <!-- JWKS -->
+    <path d="M680 470 L486 470" stroke="#d2a8ff" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#a03)"/>
+    <text x="583" y="462" fill="#d2a8ff" font-size="10.5" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">GET jwks_uri</text>
+    <text x="583" y="490" fill="#8b949e" font-size="10.5" text-anchor="middle">claves públicas</text>
+
+    <!-- paso 5 -->
+    <path d="M806 570 L154 570" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g03)"/>
+    <text x="478" y="562" fill="#3fb950" font-size="12" font-weight="600" text-anchor="middle">5 · nube: credencial corta · tablero: tabla de claims al resumen</text>
+
+    <text x="480" y="608" fill="#8b949e" font-size="11" text-anchor="middle">Morado: lo que da o firma GitHub. Azul claro: el token en tránsito. Verde: la verificación y su resultado.</text>
+    <text x="480" y="626" fill="#8b949e" font-size="11" text-anchor="middle">En GitHub no se guarda ninguna credencial de la nube: no hay nada que rotar ni que filtrar a largo plazo.</text>
+  </g>
+</svg>

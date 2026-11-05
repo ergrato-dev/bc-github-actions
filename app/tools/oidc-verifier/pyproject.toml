@@ -1,0 +1,31 @@
+[project]
+name = "oidc-verifier"
+version = "1.0.0"
+description = "Verifica un token OIDC de GitHub Actions como lo haría la nube que lo recibe"
+requires-python = ">=3.15"
+dependencies = [
+    "pyjwt[crypto]>=2.15.1",
+]
+
+[project.scripts]
+oidc-verifier = "oidc_verifier.cli:main"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.3",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
