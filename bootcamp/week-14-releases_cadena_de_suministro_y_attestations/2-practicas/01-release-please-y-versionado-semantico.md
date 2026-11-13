@@ -73,6 +73,33 @@ done
 # read approve_prs=true
 ```
 
+> A partir de aquí `check-week.sh 11` marca `org-default-token-read` en rojo: es lo esperado. La
+> capa 14 sustituye esa política y la Semana 18 cierra el riesgo
+> ([comprobaciones superadas por capas posteriores](../../../docs/autograding.md#comprobaciones-superadas-por-capas-posteriores)).
+
+Falta otra política de la Semana 11: la org solo admite actions de GitHub y los patrones que
+listaste, y `googleapis/release-please-action` no está entre ellos. Sin añadirla, el job
+`release-please` ni arranca. El `PUT` **sustituye** la lista entera, así que partes de la
+guardada y le sumas un patrón:
+
+```bash
+gh api orgs/{owner}/actions/permissions/selected-actions > ~/code/org-policy-backup/selected-actions-s14.json
+jq '.patterns_allowed += ["googleapis/release-please-action@*"]' \
+  ~/code/org-policy-backup/selected-actions-s14.json |
+  gh api -X PUT orgs/{owner}/actions/permissions/selected-actions --input -
+gh api orgs/{owner}/actions/permissions/selected-actions --jq '.patterns_allowed | sort | .[]'
+# astral-sh/setup-uv@*
+# docker/build-push-action@*
+# docker/login-action@*
+# docker/metadata-action@*
+# docker/setup-buildx-action@*
+# googleapis/release-please-action@*
+# pnpm/action-setup@*
+```
+
+`actions/attest` y `actions/dependency-review-action` son de GitHub: ya entran por
+`github_owned_allowed`.
+
 ---
 
 ## Paso 2: El config y el manifest
@@ -311,6 +338,7 @@ Las comprobaciones de imágenes, attestations y digests siguen en rojo: son las 
 | Síntoma | Causa | Solución |
 |---|---|---|
 | `GitHub Actions is not permitted to create or approve pull requests.` en el log | El ajuste no está activo en el repo o la org lo prohíbe | Paso 1, primero la org y luego el repo |
+| El run falla al empezar con `The action googleapis/release-please-action@... is not allowed in <tu-org>` | La lista de actions permitidas de la Semana 11 no la incluye | Paso 1, añade el patrón partiendo de la lista guardada |
 | `HTTP 403` en `gh api orgs/{owner}/actions/permissions/workflow` | La sesión de `gh` no tiene `admin:org` | `gh auth refresh -h github.com -s admin:org` |
 | El run acaba en verde pero no hay PR | Ningún commit desde la última release sube versión | Comprueba los tipos con `git log --oneline`; el `feat` del paso 4 basta |
 | El PR propone otra versión que `0.2.0` | Había tags `v*` o el manifest no dice `0.1.0` | "Antes de empezar" y paso 2 |

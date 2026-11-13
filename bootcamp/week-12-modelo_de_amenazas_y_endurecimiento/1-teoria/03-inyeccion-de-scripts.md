@@ -39,7 +39,7 @@ corre el job.
 Un step vulnerable:
 
 ```yaml
-      - run: echo "Título: ${{ github.event.pull_request.title }}"
+      - run: echo "Título: ${{ github.event.pull_request.title }}"  # antipatron
 ```
 
 Con un PR titulado `Arreglo del login`, el runner escribe en el script:
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - run: echo "Gracias por el PR ${{ github.event.pull_request.title }}"
+      - run: echo "Gracias por el PR ${{ github.event.pull_request.title }}"  # antipatron
 ```
 
 Fíjate en lo que limita el daño aunque la inyección funcione: `pull_request` desde un fork da
@@ -161,7 +161,7 @@ dentro, el título se convierte en código JavaScript.
       # ❌ El título se pega dentro del código JavaScript
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
-          script: console.log("${{ github.event.pull_request.title }}")
+          script: console.log("${{ github.event.pull_request.title }}")  # antipatron
 ```
 
 ```yaml

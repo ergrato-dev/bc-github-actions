@@ -158,7 +158,7 @@ name: images
 on:
   push:
     branches: [main]
-permissions: write-all
+permissions: write-all  # antipatron
 jobs:
   build:
     runs-on: ubuntu-24.04

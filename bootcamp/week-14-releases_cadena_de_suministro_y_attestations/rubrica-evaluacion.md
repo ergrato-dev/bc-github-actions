@@ -264,7 +264,7 @@ resta la parte proporcional (12/18 de punto).
 | Runner propio al alcance de PRs de forks | Grave: −10 |
 | `uses:` remota sin SHA, o con un SHA copiado que no pertenece al repo oficial | Grave: −10 |
 | Workflow sin `permissions:` o con `write-all` | Grave: −10 |
-| `${{ github.event.* }}`, `github.head_ref`, `inputs.*`, `secrets.*` o `vars.*` interpolado dentro de `run:` | Grave: −10 |
+| `${{ github.event.* }}`, `github.head_ref`, `inputs.*`, `secrets.*` o `vars.*` interpolado dentro de `run:` o de `script:` | Grave: −10 |
 | Imagen sin tag o con `latest` | Grave: −10 |
 | Trivy `0.69.4`, `trivy-action` por tag, o una herramienta instalada con `curl \| bash` | Grave: −10 |
 | syft o Trivy descargados sin comprobar el checksum | −5 |

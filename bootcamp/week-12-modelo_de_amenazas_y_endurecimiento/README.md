@@ -26,7 +26,8 @@ Al terminar la semana eres capaz de:
 | `check-week.sh 11` en 17/17 | [Semana 11](../week-11-actions_a_escala_de_organizacion/README.md) |
 | Pinning por SHA y releases inmutables | [Semana 01](../week-01-primer_workflow_y_modelo_de_ejecucion/README.md) y [Semana 11](../week-11-actions_a_escala_de_organizacion/README.md) |
 | Artefactos entre jobs y entre runs | [Semana 04](../week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md) |
-| `workflow_run`, caché y concurrencia | [Semana 07](../week-07-disparadores_filtros_y_concurrencia/README.md) |
+| `workflow_run` y concurrencia | [Semana 07](../week-07-disparadores_filtros_y_concurrencia/README.md) |
+| `actions/cache` y `cache-mode` | [Semana 03](../week-03-ci_de_python_con_uv/README.md) y [Semana 09](../week-09-workflows_reutilizables/README.md) |
 | actionlint y zizmor en local | [Semana 08](../week-08-probar_y_depurar_workflows/README.md) |
 | Permisos de un job que llama a un reutilizable | [Semana 09](../week-09-workflows_reutilizables/README.md) |
 

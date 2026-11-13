@@ -78,7 +78,7 @@ jobs:
       # ❌ Trae el código del PR a un job con escritura
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}  # antipatron
           persist-credentials: false
       - run: make preview
 ```

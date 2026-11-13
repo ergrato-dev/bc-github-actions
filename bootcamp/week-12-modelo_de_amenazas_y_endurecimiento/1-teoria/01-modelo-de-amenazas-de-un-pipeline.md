@@ -131,15 +131,15 @@ Este job de un repo cualquiera mezcla las cuatro fronteras:
 name: preview
 on:
   pull_request_target:
-permissions: write-all
+permissions: write-all  # antipatron
 jobs:
   preview:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - run: echo "Preview de ${{ github.event.pull_request.title }}"
+          ref: ${{ github.event.pull_request.head.sha }}  # antipatron
+      - run: echo "Preview de ${{ github.event.pull_request.title }}"  # antipatron
       - run: make preview
 ```
 

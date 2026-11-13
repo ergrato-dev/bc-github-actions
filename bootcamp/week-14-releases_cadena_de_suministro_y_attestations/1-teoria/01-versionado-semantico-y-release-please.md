@@ -196,7 +196,10 @@ gh api -X PUT repos/<tu-org>/tablero/actions/permissions/workflow \
 ```
 
 `default_workflow_permissions=read` se mantiene tal como lo dejaste en la Semana 11: solo abres la
-creación de PR, no subes los permisos por defecto.
+creación de PR, no subes los permisos por defecto. A partir de aquí `check-week.sh 11` marca
+`org-default-token-read` en rojo: es lo esperado, porque la capa 14 sustituye esa política, y la
+Semana 18 cierra el riesgo. Otra política de la Semana 11 también se toca: la lista de actions
+permitidas de la org necesita el patrón `googleapis/release-please-action@*`.
 
 ## 4. Antipatrones
 

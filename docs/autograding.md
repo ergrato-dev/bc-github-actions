@@ -144,6 +144,19 @@ Campo opcional de primer nivel: `"context": "kind-gha"` en las semanas con clús
 - **Cero lógica bash por semana en `check-week.sh`.** Si una comprobación necesita código
   imperativo, el entregable no es verificable y va a rúbrica manual.
 
+## Comprobaciones superadas por capas posteriores
+
+`check-week.sh NN` valida la capa NN tal como se entrega. Una capa posterior puede cambiar a
+propósito lo que una anterior fijó, y entonces el check antiguo pasa a rojo. Es lo esperado:
+lo que cuenta es la semana en curso.
+
+| Check | Semana | Lo pone en rojo | Por qué |
+|---|:--:|:--:|---|
+| `writes-only-where-needed` | 12 | 13 | `deploy-gate.yml` pide `id-token: write` para OIDC |
+| `writes-only-where-needed` | 13 | 14 | `release.yml` y `dependency-review.yml` escriben |
+| `dependabot-ecosystems` | 12 | 14 | Se añade el ecosistema `docker` en `/api` y `/web` |
+| `org-default-token-read` | 11 | 14 | release-please necesita `can_approve_pull_request_reviews=true`; la Semana 18 cierra el riesgo con revisión obligatoria |
+
 ## Permisos de `gh` por semana
 
 | Semanas | Scopes del token de `gh` | Por qué |
