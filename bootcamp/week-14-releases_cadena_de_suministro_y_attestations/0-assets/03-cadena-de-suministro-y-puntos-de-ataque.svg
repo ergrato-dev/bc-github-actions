@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t03">
+  <title id="t03">La cadena de suministro de tablero en ocho eslabones, del commit al despliegue, con el ataque típico de cada uno en rojo y la pieza que lo frena en verde. Código fuente: cuenta robada o push sin revisión; lo frenan las reglas de rama y la revisión. Dependencias: paquete malicioso o con aviso; lo frena dependency-review con el snapshot de syft. Actions: tag movido, como tj-actions en marzo de 2025; lo frena uses por SHA con cooldown. Herramientas: release comprometida, como Trivy 0.69.4 en marzo de 2026; lo frena versión fijada con sha256sum. Imágenes base: tag reconstruido, o una librería con puerta trasera como xz-utils; lo frena tag más digest con Dependabot docker, y el SBOM dice dónde está la librería. Build: caché envenenada o script inyectado; lo frenan las defensas de la Semana 12 y Trivy antes de firmar. Publicación: otra imagen con el mismo tag; lo frena la attestation de procedencia firmada. Consumo: desplegar lo que diga el tag; lo frena gh attestation verify, que hará la Semana 17. Abajo, la procedencia y SLSA: una attestation firmada en un runner de GitHub es SLSA Build L2; firmar desde un reutilizable de otro repo lleva a L3. La procedencia demuestra el origen, no que el código sea bueno.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cadena de suministro de tablero: dónde atacan y qué lo frena</text>
+
+    <!-- fila de etiquetas -->
+    <text x="20" y="96" fill="#8b949e" font-size="11" transform="rotate(-90 20 96)" text-anchor="middle">eslabón</text>
+    <text x="20" y="196" fill="#f85149" font-size="11" transform="rotate(-90 20 196)" text-anchor="middle">ataque</text>
+    <text x="20" y="320" fill="#3fb950" font-size="11" transform="rotate(-90 20 320)" text-anchor="middle">defensa</text>
+
+    <!-- eslabones: 8 columnas de 104 px desde x=34 -->
+    <g font-size="12" font-weight="600" fill="#f0f6fc" text-anchor="middle">
+      <rect x="34" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="82" y="93">Código</text><text x="82" y="110">fuente</text>
+      <rect x="146" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="194" y="101">Dependencias</text>
+      <rect x="258" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="306" y="101">Actions</text>
+      <rect x="370" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="418" y="101">Herramientas</text>
+      <rect x="482" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="530" y="93">Imágenes</text><text x="530" y="110">base</text>
+      <rect x="594" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="642" y="101">Build</text>
+      <rect x="706" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="754" y="101">Publicación</text>
+      <rect x="818" y="70" width="96" height="52" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="866" y="101">Consumo</text>
+    </g>
+    <g stroke="#79c0ff" stroke-width="2" fill="none">
+      <path d="M130 96 L144 96" marker-end="url(#a03)"/>
+      <path d="M242 96 L256 96" marker-end="url(#a03)"/>
+      <path d="M354 96 L368 96" marker-end="url(#a03)"/>
+      <path d="M466 96 L480 96" marker-end="url(#a03)"/>
+      <path d="M578 96 L592 96" marker-end="url(#a03)"/>
+      <path d="M690 96 L704 96" marker-end="url(#a03)"/>
+      <path d="M802 96 L816 96" marker-end="url(#a03)"/>
+    </g>
+
+    <!-- ataques -->
+    <g font-size="10.5" fill="#f0f6fc" text-anchor="middle">
+      <rect x="34" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="82" y="162">cuenta robada</text><text x="82" y="178">push sin</text><text x="82" y="194">revisión</text>
+      <rect x="146" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="194" y="162">paquete</text><text x="194" y="178">malicioso o</text><text x="194" y="194">con aviso</text><text x="194" y="216" fill="#8b949e">lodash 4.17.20</text>
+      <rect x="258" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="306" y="162">tag movido</text><text x="306" y="178">a otro commit</text><text x="306" y="216" fill="#8b949e">tj-actions</text><text x="306" y="232" fill="#8b949e">marzo 2025</text>
+      <rect x="370" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="418" y="162">release</text><text x="418" y="178">comprometida</text><text x="418" y="216" fill="#8b949e">Trivy 0.69.4</text><text x="418" y="232" fill="#8b949e">marzo 2026</text>
+      <rect x="482" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="530" y="162">tag</text><text x="530" y="178">reconstruido</text><text x="530" y="194">sin diff</text><text x="530" y="216" fill="#8b949e">xz-utils, en</text><text x="530" y="232" fill="#8b949e">una librería</text>
+      <rect x="594" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="642" y="162">caché</text><text x="642" y="178">envenenada,</text><text x="642" y="194">script</text><text x="642" y="210">inyectado</text>
+      <rect x="706" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="754" y="162">otra imagen</text><text x="754" y="178">con tu tag</text>
+      <rect x="818" y="140" width="96" height="112" rx="8" fill="#161b22" stroke="#f85149"/>
+      <text x="866" y="162">desplegar</text><text x="866" y="178">lo que diga</text><text x="866" y="194">el tag</text>
+    </g>
+
+    <!-- defensas -->
+    <g font-size="10.5" fill="#f0f6fc" text-anchor="middle">
+      <rect x="34" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="82" y="292">reglas de</text><text x="82" y="308">rama y</text><text x="82" y="324">revisión</text><text x="82" y="356" fill="#8b949e">S18</text>
+      <rect x="146" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="194" y="292">dependency-</text><text x="194" y="308">review +</text><text x="194" y="324">snapshot syft</text><text x="194" y="356" fill="#8b949e">archivo 07</text>
+      <rect x="258" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="306" y="292">uses: por SHA</text><text x="306" y="308">+ cooldown</text><text x="306" y="356" fill="#8b949e">S12</text>
+      <rect x="370" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="418" y="292">versión fijada</text><text x="418" y="308">+ sha256sum</text><text x="418" y="356" fill="#8b949e">archivos 04, 06</text>
+      <rect x="482" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="530" y="292">tag@sha256</text><text x="530" y="308">+ Dependabot</text><text x="530" y="324">docker · SBOM</text><text x="530" y="356" fill="#8b949e">archivos 02, 04</text>
+      <rect x="594" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="642" y="292">defensas S12</text><text x="642" y="308">+ Trivy antes</text><text x="642" y="324">de firmar</text><text x="642" y="356" fill="#8b949e">archivo 06</text>
+      <rect x="706" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="754" y="292">procedencia</text><text x="754" y="308">firmada</text><text x="754" y="356" fill="#8b949e">archivo 05</text>
+      <rect x="818" y="270" width="96" height="104" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="866" y="292">gh attestation</text><text x="866" y="308">verify</text><text x="866" y="356" fill="#8b949e">S17</text>
+    </g>
+
+    <!-- SLSA -->
+    <text x="34" y="414" fill="#f0f6fc" font-size="14" font-weight="600">SLSA, track de build</text>
+    <g font-size="11.5">
+      <rect x="34" y="426" width="210" height="76" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="50" y="450" fill="#8b949e" font-weight="600">L1</text>
+      <text x="50" y="470" fill="#8b949e">existe procedencia</text>
+      <text x="50" y="488" fill="#8b949e">que describe el build</text>
+      <rect x="258" y="426" width="210" height="76" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="274" y="450" fill="#3fb950" font-weight="600">L2 · tablero</text>
+      <text x="274" y="470" fill="#f0f6fc">plataforma alojada que firma</text>
+      <text x="274" y="488" fill="#f0f6fc">actions/attest en runner de GitHub</text>
+      <rect x="482" y="426" width="210" height="76" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="498" y="450" fill="#8b949e" font-weight="600">L3 · mejora opcional</text>
+      <text x="498" y="470" fill="#8b949e">firma un reutilizable de otro</text>
+      <text x="498" y="488" fill="#8b949e">repo: --signer-repo</text>
+      <rect x="706" y="426" width="208" height="76" rx="8" fill="#161b22" stroke="#e3b341"/>
+      <text x="722" y="450" fill="#e3b341" font-weight="600">Lo que no demuestra</text>
+      <text x="722" y="470" fill="#f0f6fc">que el código sea bueno:</text>
+      <text x="722" y="488" fill="#f0f6fc">demuestra el origen</text>
+    </g>
+
+    <text x="480" y="548" fill="#8b949e" font-size="11" text-anchor="middle">Azul: los eslabones, en el orden en que el código llega a producción. Rojo: ataques, con casos reales en gris.</text>
+    <text x="480" y="566" fill="#8b949e" font-size="11" text-anchor="middle">Verde: la pieza que lo frena y dónde se explica. Ninguno de estos ataques necesita tocar tu repo.</text>
+  </g>
+</svg>

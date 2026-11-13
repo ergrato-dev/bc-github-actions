@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 900" role="img" aria-labelledby="t14">
+  <title id="t14">Mapa del pipeline de tablero en la capa 14. Arriba, la regla que siguen todos los workflows desde la capa 12: permissions vacío en la raíz, permisos por job y ninguna expresión dentro de run. A la izquierda, los workflows que ya existían: ci-api, ci y ci-web con contents read, images con packages write, que sigue publicando por SHA en cada push con el reutilizable central, nightly, smoke y lint-workflows, labeler y pr-report, codeql, ci-tools, y deploy-gate, cuyo PostgreSQL de servicio pasa a estar fijado por digest. A la derecha, lo nuevo: release.yml en push a main, con concurrency sin cancelación; el job release-please con contents, pull-requests e issues en write, que abre el PR de release o crea el tag y la release; y, si created es la cadena true, el job images con la matriz api y web y fail-fast false, con packages, id-token, attestations y artifact-metadata en write, que construye y publica la imagen con la versión como tag, la escanea con Trivy 0.76.2 por digest rompiendo con CRITICAL corregible, genera el SBOM SPDX con syft 1.57.0 y firma dos attestations con actions/attest, procedencia y SBOM, empujadas a GHCR. dependency-review.yml en push a main y pull_request: el job snapshot con contents write, saltado en forks, envía el snapshot de syft, y el job review con contents read ejecuta dependency-review-action con fail-on-severity high. En configuración: release-please-config.json y el manifest en 0.1.0, los Dockerfiles de api y web con bases fijadas por tag y digest y el parche de brotli-libs en web, dependabot.yml con el ecosistema docker en api y web con cooldown de 7 días, y en la org y el repo el ajuste que permite a GitHub Actions crear pull requests, con permisos por defecto en read. En gris, lo que llega después: runners propios en la Semana 15, ARC en kind en la 16 y en la 17 el despliegue a Kubernetes solo de lo que verifica gh attestation verify, por digest.</title>
+  <rect width="960" height="900" fill="#0d1117"/>
+  <defs>
+    <marker id="a14" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 14</text>
+
+    <!-- regla común -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="85" fill="#3fb950" font-size="12" font-weight="600">en todos los workflows</text>
+    <text x="210" y="85" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · permisos por job · nada de ${{ }} en run:</text>
+
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">Ya existían</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Nuevos en la capa 14</text>
+
+    <!-- existentes -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="146" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="169" fill="#f0f6fc" font-size="12" font-weight="600">ci-api · ci · ci-web</text>
+      <text x="304" y="169" fill="#8b949e" text-anchor="end">contents: read</text>
+
+      <rect x="30" y="190" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="213" fill="#f0f6fc" font-size="12" font-weight="600">images</text>
+      <text x="304" y="213" fill="#8b949e" text-anchor="end">por SHA · _image.yml</text>
+
+      <rect x="30" y="234" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="257" fill="#f0f6fc" font-size="12" font-weight="600">nightly · smoke</text>
+      <text x="304" y="257" fill="#8b949e" text-anchor="end">lint-workflows</text>
+
+      <rect x="30" y="278" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="301" fill="#f0f6fc" font-size="12" font-weight="600">labeler · pr-report</text>
+      <text x="304" y="301" fill="#8b949e" text-anchor="end">codeql · ci-tools</text>
+
+      <rect x="30" y="322" width="290" height="58" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="345" fill="#f0f6fc" font-size="12" font-weight="600">deploy-gate</text>
+      <text x="304" y="345" fill="#8b949e" text-anchor="end">staging → production</text>
+      <text x="46" y="368" fill="#3fb950">postgres:17.11-alpine@sha256:…</text>
+    </g>
+
+    <!-- release.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="146" width="580" height="290" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="170" fill="#2088ff" font-size="13" font-weight="600">release.yml</text>
+      <text x="914" y="170" fill="#79c0ff" text-anchor="end">push: main · concurrency: release</text>
+
+      <rect x="366" y="184" width="200" height="236" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="378" y="204" fill="#f0f6fc" font-size="12" font-weight="600">release-please</text>
+      <text x="378" y="224" fill="#e3b341">contents: write</text>
+      <text x="378" y="240" fill="#e3b341">pull-requests: write</text>
+      <text x="378" y="256" fill="#e3b341">issues: write</text>
+      <text x="378" y="282" fill="#f0f6fc">PR de release</text>
+      <text x="378" y="298" fill="#8b949e">  o tag + release</text>
+      <text x="378" y="324" fill="#79c0ff">outputs:</text>
+      <text x="378" y="340" fill="#79c0ff">  created · version</text>
+      <text x="378" y="356" fill="#79c0ff">  tag</text>
+      <text x="378" y="404" fill="#8b949e">sin checkout</text>
+
+      <rect x="596" y="184" width="318" height="236" rx="6" fill="#0d1117" stroke="#3fb950"/>
+      <text x="608" y="204" fill="#f0f6fc" font-size="12" font-weight="600">images · [api, web]</text>
+      <text x="902" y="204" fill="#79c0ff" text-anchor="end">if: created == 'true'</text>
+      <text x="608" y="224" fill="#e3b341">packages · id-token · attestations</text>
+      <text x="608" y="240" fill="#e3b341">artifact-metadata: write</text>
+      <text x="608" y="264" fill="#f0f6fc">build-push → :&lt;versión&gt;</text>
+      <text x="608" y="284" fill="#f85149">trivy 0.76.2 · imagen@digest</text>
+      <text x="620" y="300" fill="#8b949e">CRITICAL · --ignore-unfixed</text>
+      <text x="608" y="320" fill="#f0f6fc">syft 1.57.0 → sbom.spdx.json</text>
+      <text x="608" y="340" fill="#3fb950">actions/attest · procedencia</text>
+      <text x="608" y="358" fill="#3fb950">actions/attest · SBOM</text>
+      <text x="620" y="374" fill="#8b949e">push-to-registry: true</text>
+      <text x="608" y="398" fill="#8b949e">syft y trivy con sha256sum -c</text>
+    </g>
+    <path d="M566 302 L592 302" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a14)"/>
+
+    <!-- dependency-review.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="452" width="580" height="134" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="476" fill="#2088ff" font-size="13" font-weight="600">dependency-review.yml</text>
+      <text x="914" y="476" fill="#79c0ff" text-anchor="end">push: main · pull_request</text>
+
+      <rect x="366" y="488" width="260" height="84" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="378" y="508" fill="#f0f6fc" font-size="12" font-weight="600">snapshot</text>
+      <text x="614" y="508" fill="#8b949e" text-anchor="end">se salta en forks</text>
+      <text x="378" y="528" fill="#e3b341">contents: write</text>
+      <text x="378" y="546" fill="#f0f6fc">syft dir:. → github-json</text>
+      <text x="378" y="562" fill="#79c0ff">POST dependency-graph/snapshots</text>
+
+      <rect x="654" y="488" width="260" height="84" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="666" y="508" fill="#f0f6fc" font-size="12" font-weight="600">review</text>
+      <text x="902" y="508" fill="#8b949e" text-anchor="end">needs: snapshot</text>
+      <text x="666" y="528" fill="#8b949e">contents: read</text>
+      <text x="666" y="546" fill="#f0f6fc">dependency-review-action</text>
+      <text x="666" y="562" fill="#f85149">fail-on-severity: high</text>
+    </g>
+    <path d="M626 530 L650 530" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a14)"/>
+
+    <!-- dependabot (existente ampliado) -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="396" width="290" height="92" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="420" fill="#2088ff" font-size="13" font-weight="600">dependabot.yml</text>
+      <text x="46" y="442" fill="#8b949e">actions · uv · npm (pnpm)</text>
+      <text x="46" y="460" fill="#f0f6fc">+ docker: /api · /web</text>
+      <text x="46" y="478" fill="#8b949e">cooldown: 7 días</text>
+
+      <rect x="30" y="498" width="290" height="88" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="522" fill="#2088ff" font-size="13" font-weight="600">api/ y web/Dockerfile</text>
+      <text x="46" y="544" fill="#f0f6fc">FROM y COPY --from: tag@sha256</text>
+      <text x="46" y="562" fill="#8b949e">web: apk upgrade brotli-libs</text>
+      <text x="46" y="578" fill="#8b949e">  y de vuelta a USER nginx</text>
+    </g>
+
+    <!-- configuración -->
+    <text x="30" y="626" fill="#d2a8ff" font-size="14" font-weight="600">Configuración de &lt;tu-org&gt;/tablero</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="638" width="430" height="84" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="46" y="662" fill="#d2a8ff" font-size="13" font-weight="600">release-please-config.json</text>
+      <text x="46" y="684" fill="#f0f6fc">"." · simple · tablero · tag v0.2.0</text>
+      <text x="46" y="702" fill="#f0f6fc">bump-minor-pre-major · manifest 0.1.0</text>
+
+      <rect x="500" y="638" width="430" height="84" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="516" y="662" fill="#d2a8ff" font-size="13" font-weight="600">org y repo · Actions</text>
+      <text x="516" y="684" fill="#f0f6fc">Allow GitHub Actions to create PR</text>
+      <text x="516" y="702" fill="#8b949e">default_workflow_permissions: read</text>
+    </g>
+
+    <!-- después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="746" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="773"><tspan font-weight="600">Semana 15</tspan> · runners propios</text>
+      <rect x="340" y="746" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="773"><tspan font-weight="600">Semana 16</tspan> · ARC en kind</text>
+      <rect x="650" y="746" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="773"><tspan font-weight="600">Semana 17</tspan> · despliega lo verificado</text>
+    </g>
+    <text x="480" y="830" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y piezas nuevas o ampliadas. Verde: lo fijado por digest y lo firmado. Morado: configuración del repo y de la org.</text>
+    <text x="480" y="848" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: permisos de escritura. Rojo: las puertas que paran la release o el PR.</text>
+    <text x="480" y="866" fill="#8b949e" font-size="11" text-anchor="middle">Gris discontinuo: lo que añaden las siguientes semanas.</text>
+  </g>
+</svg>

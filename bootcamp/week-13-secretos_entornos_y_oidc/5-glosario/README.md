@@ -156,4 +156,4 @@ cuando se usa en la documentación. Glosario de todas las semanas:
 
 | ← Anterior | Siguiente → |
 |:---|---:|
-| [Webgrafía](../4-recursos/webgrafia/README.md) | [Índice del bootcamp](../../README.md) |
+| [Webgrafía](../4-recursos/webgrafia/README.md) | [Semana 14 — Releases, cadena de suministro y attestations](../../week-14-releases_cadena_de_suministro_y_attestations/README.md) |

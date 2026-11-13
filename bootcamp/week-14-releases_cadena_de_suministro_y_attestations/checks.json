@@ -1,0 +1,132 @@
+{
+  "week": "14",
+  "title": "Releases, cadena de suministro y attestations",
+  "checks": [
+    {
+      "id": "release-please-config",
+      "description": "release-please-config.json declara un único paquete en la raíz de tipo simple, con tags sin componente, y .release-please-manifest.json existe",
+      "cmd": "jq -r '\"type=\" + .packages[\".\"][\"release-type\"] + \" component=\" + (.[\"include-component-in-tag\"] | tostring) + \" packages=\" + (.packages | length | tostring)' release-please-config.json && jq -e 'has(\".\")' .release-please-manifest.json >/dev/null",
+      "assert": "stdout~^type=simple component=false packages=1$",
+      "hint": "2-practicas/01-release-please-y-versionado-semantico.md, paso 2"
+    },
+    {
+      "id": "release-please-job",
+      "description": "release.yml corre en push a main y su job release-please usa release-please-action fijada por SHA con el config y el manifest",
+      "cmd": "yq '\"push=\" + (.on.push.branches | join(\",\")) + \" \" + (.jobs.\"release-please\".steps[] | select(.uses // \"\" | test(\"^googleapis/release-please-action@[0-9a-f]{40}$\")) | .with.\"config-file\" + \" \" + .with.\"manifest-file\")' .github/workflows/release.yml",
+      "assert": "stdout~^push=main release-please-config.json \\.release-please-manifest\\.json$",
+      "hint": "2-practicas/01-release-please-y-versionado-semantico.md, paso 3"
+    },
+    {
+      "id": "release-please-permissions",
+      "description": "El job release-please escribe solo en contents, pull-requests e issues",
+      "cmd": "yq '.jobs.\"release-please\".permissions | to_entries | map(.key + \"=\" + .value) | sort | join(\" \")' .github/workflows/release.yml",
+      "assert": "stdout~^contents=write issues=write pull-requests=write$",
+      "hint": "2-practicas/01-release-please-y-versionado-semantico.md, paso 3"
+    },
+    {
+      "id": "images-gated-by-release",
+      "description": "El job images de release.yml necesita a release-please y solo corre si se creó una release",
+      "cmd": "yq '\"needs=\" + ([.jobs.images.needs] | flatten | join(\",\")) + \" if=\" + .jobs.images.if' .github/workflows/release.yml",
+      "assert": "stdout~^needs=release-please if=.*needs\\.release-please\\.outputs\\.[a-z_]+ *== *'true'",
+      "hint": "2-practicas/02-imagenes-versionadas-y-escaneo.md, paso 1"
+    },
+    {
+      "id": "images-versioned",
+      "description": "El job images publica api y web con la versión de la release como tag",
+      "cmd": "yq '\"matrix=\" + (.jobs.images.strategy.matrix.component | join(\",\")) + \" \" + (.jobs.images.steps[] | select(.uses // \"\" | test(\"^docker/build-push-action@[0-9a-f]{40}$\")) | \"push=\" + (.with.push | tostring) + \" tags=\" + .with.tags)' .github/workflows/release.yml",
+      "assert": "stdout~^matrix=api,web push=true tags=.*:\\$\\{\\{ *(env\\.VERSION|needs\\.release-please\\.outputs\\.version) *\\}\\}$",
+      "hint": "2-practicas/02-imagenes-versionadas-y-escaneo.md, paso 2"
+    },
+    {
+      "id": "tools-with-checksum",
+      "description": "release.yml instala Trivy y syft como binario de su release comprobado con sha256sum, sin trivy-action ni la versión comprometida 0.69.4",
+      "cmd": "f=.github/workflows/release.yml; printf 'checksum=%s trivy-action=%s bad=%s trivy=%s syft=%s' \"$(grep -c 'sha256sum -c' $f)\" \"$(grep -c 'trivy-action' $f)\" \"$(grep -c '0\\.69\\.4' $f)\" \"$(yq '.jobs.images.env.TRIVY_VERSION' $f)\" \"$(yq '.jobs.images.env.SYFT_VERSION' $f)\"",
+      "assert": "stdout~^checksum=[1-9][0-9]* trivy-action=0 bad=0 trivy=v[0-9]+\\.[0-9]+\\.[0-9]+ syft=v[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "hint": "2-practicas/02-imagenes-versionadas-y-escaneo.md, paso 3"
+    },
+    {
+      "id": "trivy-gate",
+      "description": "Un step de images escanea la imagen publicada por digest con Trivy y falla con --exit-code 1",
+      "cmd": "yq '[.jobs.images.steps[] | select((.run // \"\" | test(\"trivy image .*--exit-code 1\")) and (.env.REF // \"\" | test(\"steps\\.build\\.outputs\\.digest\")))] | length' .github/workflows/release.yml",
+      "assert": "stdout~^1$",
+      "hint": "2-practicas/02-imagenes-versionadas-y-escaneo.md, paso 4"
+    },
+    {
+      "id": "attest-steps",
+      "description": "El job images firma dos attestations con actions/attest fijada por SHA sobre el digest publicado: procedencia y SBOM, las dos guardadas en el registro",
+      "cmd": "yq '.jobs.images.steps[] | select(.uses // \"\" | test(\"^actions/attest@[0-9a-f]{40}$\")) | \"sbom=\" + (.with | has(\"sbom-path\") | tostring) + \":\" + (.with.\"subject-digest\" | test(\"steps\\.build\\.outputs\\.digest\") | tostring) + \":\" + (.with.\"push-to-registry\" | tostring)' .github/workflows/release.yml | sort | tr '\\n' ' '",
+      "assert": "stdout~^sbom=false:true:true sbom=true:true:true $",
+      "hint": "2-practicas/03-sbom-y-attestations.md, pasos 1 y 2"
+    },
+    {
+      "id": "attest-permissions",
+      "description": "El job images pide id-token, attestations, artifact-metadata y packages en escritura y contents en lectura, nada más",
+      "cmd": "yq '.jobs.images.permissions | to_entries | map(.key + \"=\" + .value) | sort | join(\" \")' .github/workflows/release.yml",
+      "assert": "stdout~^artifact-metadata=write attestations=write contents=read id-token=write packages=write$",
+      "hint": "2-practicas/03-sbom-y-attestations.md, paso 1"
+    },
+    {
+      "id": "base-images-by-digest",
+      "description": "Todas las imágenes externas de api/Dockerfile y web/Dockerfile (FROM y COPY --from) van fijadas por tag y digest",
+      "cmd": "grep -hE '^(FROM |COPY --from=[^ ]*[:/])' api/Dockerfile web/Dockerfile | grep -vE '^(FROM |COPY --from=)[^ ]+:[^ @]+@sha256:[0-9a-f]{64}( |$)' || true",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/04-digests-y-revision-de-dependencias.md, paso 1"
+    },
+    {
+      "id": "services-by-digest",
+      "description": "Las imágenes de services de los workflows de tablero van fijadas por tag y digest",
+      "cmd": "yq -N '.jobs[].services[]?.image' .github/workflows/*.yml | grep -vE '^[^ ]+:[^ @]+@sha256:[0-9a-f]{64}$' || true",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/04-digests-y-revision-de-dependencias.md, paso 2"
+    },
+    {
+      "id": "dependabot-docker",
+      "description": "dependabot.yml vigila el ecosistema docker en /api y /web con cooldown",
+      "cmd": "yq '.updates[] | select(.\"package-ecosystem\" == \"docker\") | (.directories // [.directory] | sort | join(\",\")) + \" cooldown=\" + (.cooldown.\"default-days\" // 0 | tostring)' .github/dependabot.yml",
+      "assert": "stdout~^/api,/web cooldown=([7-9]|[1-9][0-9])$",
+      "hint": "2-practicas/04-digests-y-revision-de-dependencias.md, paso 3"
+    },
+    {
+      "id": "dependency-snapshot",
+      "description": "dependency-review.yml envía el snapshot de syft a la API de dependency submission desde un job con contents: write",
+      "cmd": "yq '.jobs[] | select([.steps[]?.run // \"\"] | join(\" \") | test(\"syft scan .*github-json\")) | select([.steps[]?.run // \"\"] | join(\" \") | test(\"dependency-graph/snapshots\")) | \"contents=\" + .permissions.contents' .github/workflows/dependency-review.yml",
+      "assert": "stdout~^contents=write$",
+      "hint": "2-practicas/04-digests-y-revision-de-dependencias.md, paso 4"
+    },
+    {
+      "id": "dependency-review-gate",
+      "description": "En los PR a main, dependency-review-action fijada por SHA falla con avisos de gravedad high o superior, desde un job de solo lectura",
+      "cmd": "yq '\"pr=\" + (.on.pull_request.branches | join(\",\")) + \" \" + (.jobs[] | select([.steps[]?.uses // \"\"] | join(\" \") | test(\"actions/dependency-review-action@[0-9a-f]{40}\")) | \"contents=\" + .permissions.contents + \" severity=\" + (.steps[] | select(.uses // \"\" | test(\"dependency-review-action\")) | .with.\"fail-on-severity\"))' .github/workflows/dependency-review.yml",
+      "assert": "stdout~^pr=main contents=read severity=(high|critical)$",
+      "hint": "2-practicas/04-digests-y-revision-de-dependencias.md, paso 5"
+    },
+    {
+      "id": "writes-only-where-needed",
+      "description": "Solo escriben codeql, deploy-gate, images, labeler, nightly, pr-report, release (release-please e images) y dependency-review (snapshot); ningún write-all ni read-all",
+      "cmd": "grep -rlE 'permissions: *(write|read)-all' .github/workflows; yq -N '.jobs | to_entries | .[] | .value.permissions // {} | to_entries | .[] | select(.value == \"write\") | (filename | sub(\".*/\"; \"\")) + \":\" + .key' .github/workflows/*.yml | sort -u | tr '\\n' ' '",
+      "assert": "stdout~^codeql.yml:security-events dependency-review.yml:contents deploy-gate.yml:id-token images.yml:packages labeler.yml:pull-requests nightly.yml:actions pr-report.yml:pull-requests release.yml:artifact-metadata release.yml:attestations release.yml:contents release.yml:id-token release.yml:issues release.yml:packages release.yml:pull-requests $",
+      "hint": "2-practicas/03-sbom-y-attestations.md, paso 1"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "actionlint y zizmor pasan sin hallazgos sobre los workflows de tablero",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/04-digests-y-revision-de-dependencias.md, paso 6"
+    },
+    {
+      "id": "release-published",
+      "description": "tablero tiene una release vX.Y.Z publicada por release-please y release.yml está en verde en el último commit de main",
+      "cmd": "git fetch -q origin main && sha=$(git rev-parse origin/main) && printf 'tag=%s release=%s' \"$(gh release view --json tagName --jq .tagName)\" \"$(gh run list --workflow release.yml --commit \"$sha\" --json conclusion --jq '.[0].conclusion')\"",
+      "assert": "stdout~^tag=v[0-9]+\\.[0-9]+\\.[0-9]+ release=success$",
+      "hint": "2-practicas/01-release-please-y-versionado-semantico.md, paso 5"
+    },
+    {
+      "id": "attestations-verify",
+      "description": "gh attestation verify acepta la procedencia y el SBOM de tablero-api en la última versión, firmados por release.yml de tablero",
+      "cmd": "owner=${GH_REPO%%/*}; v=$(gh release view --json tagName --jq .tagName); img=\"oci://ghcr.io/${owner,,}/tablero-api:${v#v}\"; for p in https://slsa.dev/provenance/v1 https://spdx.dev/Document/v2.3; do gh attestation verify \"$img\" --repo \"$GH_REPO\" --signer-workflow \"$GH_REPO/.github/workflows/release.yml\" --predicate-type \"$p\" >/dev/null 2>&1 && printf 'ok ' || printf 'mal '; done",
+      "assert": "stdout~^ok ok $",
+      "hint": "2-practicas/03-sbom-y-attestations.md, paso 4"
+    }
+  ]
+}

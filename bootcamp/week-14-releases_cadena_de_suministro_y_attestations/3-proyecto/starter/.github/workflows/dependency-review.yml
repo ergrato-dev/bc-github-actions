@@ -1,0 +1,70 @@
+# Revisión de dependencias: el dependency graph de GitHub no lee uv.lock ni el pnpm-lock.yaml de
+# dos documentos de pnpm 11+, así que syft se los lee y envía el resultado como snapshot. En un PR,
+# dependency-review compara los snapshots de la base y de la cabeza y falla si entra una
+# dependencia con un aviso grave.
+# Se copia en <tu-org>/tablero como .github/workflows/dependency-review.yml.
+name: dependency-review
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+permissions: {}
+jobs:
+  snapshot:
+    name: Snapshot de dependencias
+    # El token de un PR desde un fork es de solo lectura: el envío fallaría. Ese PR se revisa
+    # solo con lo que el grafo ve por su cuenta.
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # TODO 11: el permiso que exige la API de dependency submission.
+    permissions:
+      contents: read
+    env:
+      SYFT_VERSION: v1.57.0
+      # En un PR el snapshot va al commit de cabeza, que es el que mira dependency-review.
+      SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ env.SHA }}
+
+      - name: Instalar syft desde su release, con checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          file="syft_${SYFT_VERSION#v}_linux_amd64.tar.gz"
+          expected=$(gh api "repos/anchore/syft/releases/tags/$SYFT_VERSION" \
+            --jq ".assets[] | select(.name == \"$file\") | .digest" | sed 's/^sha256://')
+          gh release download "$SYFT_VERSION" --repo anchore/syft --pattern "$file" --dir "$RUNNER_TEMP"
+          echo "$expected  $RUNNER_TEMP/$file" | sha256sum -c
+          tar -xzf "$RUNNER_TEMP/$file" -C "$RUNNER_TEMP" syft
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Enviar el snapshot al dependency graph
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # TODO 12: syft escribe el snapshot en formato github-json; jq le pone sha, ref y job,
+          # y gh api lo envía a repos/$GITHUB_REPOSITORY/dependency-graph/snapshots.
+          echo "Snapshot sin enviar para $SHA"
+
+  review:
+    name: Revisión de dependencias
+    needs: snapshot
+    # Corre aunque snapshot se salte (PR desde un fork); no si se canceló el run.
+    if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      # TODO 13: dependency-review-action v5.0.0 fijada por SHA; falla desde gravedad high y
+      # reintenta mientras el snapshot de la cabeza no ha llegado.
+      - name: Comparar dependencias entre base y cabeza
+        run: echo "Revisión pendiente"

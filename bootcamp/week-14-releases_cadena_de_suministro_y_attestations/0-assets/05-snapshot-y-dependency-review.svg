@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t05">
+  <title id="t05">Snapshot de syft y dependency review en un PR de tablero. Arriba, lo que ve el dependency graph por su cuenta: lee package.json, pero no uv.lock, que no está soportado, ni el pnpm-lock.yaml de dos documentos de pnpm 11. El job snapshot de dependency-review.yml, con contents write y saltado en PR desde forks, hace checkout del SHA de cabeza del PR, ejecuta syft scan dir:. con salida github-json, rellena con jq sha, ref y job con correlator e id, y lo envía con POST a dependency-graph/snapshots. En main, el mismo job envía el snapshot de cada push, que es la base. El dependency graph tiene así snapshots de la base y de la cabeza. El job review, con contents read, needs snapshot e if not cancelled y pull_request, usa dependency-review-action, que compara base y cabeza, cruza las dependencias añadidas o cambiadas con la GitHub Advisory Database y falla con fail-on-severity high; retry-on-snapshot-warnings espera al snapshot. Ejemplo: añadir lodash 4.17.20 trae GHSA-35jh-r3h4-6jhm y GHSA-r5fr-rjxr-66jc, ambos high, y el PR queda en rojo.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="r05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">El snapshot de syft completa el grafo; dependency-review frena el PR</text>
+
+    <!-- lo que ve el grafo -->
+    <rect x="30" y="60" width="900" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="87" fill="#f0f6fc" font-size="12" font-weight="600">Análisis estático del grafo</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">
+      <text x="250" y="87" fill="#3fb950">package.json ✓</text>
+      <text x="400" y="87" fill="#f85149">uv.lock ✗ no soportado</text>
+      <text x="620" y="87" fill="#f85149">pnpm-lock.yaml (2 docs, pnpm 11) ✗</text>
+    </g>
+
+    <!-- job snapshot -->
+    <rect x="30" y="130" width="400" height="200" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="156" fill="#2088ff" font-size="14" font-weight="600">dependency-review.yml · snapshot</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="46" y="178" fill="#e3b341">contents: write · se salta en forks</text>
+      <text x="46" y="202" fill="#f0f6fc">checkout del SHA de cabeza del PR</text>
+      <text x="46" y="224" fill="#f0f6fc">syft scan dir:. -o github-json</text>
+      <text x="46" y="246" fill="#f0f6fc">jq: .sha .ref .job{correlator, id}</text>
+      <text x="62" y="264" fill="#8b949e">syft los deja null y {}</text>
+      <text x="46" y="288" fill="#79c0ff">gh api .../dependency-graph/snapshots</text>
+      <text x="46" y="306" fill="#8b949e">--input -</text>
+    </g>
+
+    <!-- grafo -->
+    <rect x="530" y="130" width="400" height="200" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="546" y="156" fill="#d2a8ff" font-size="14" font-weight="600">Dependency graph de tablero</text>
+    <rect x="546" y="172" width="168" height="74" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="558" y="194" fill="#f0f6fc" font-size="12" font-weight="600">base · main</text>
+    <text x="558" y="214" fill="#8b949e" font-size="11">snapshot del push</text>
+    <text x="558" y="232" fill="#8b949e" font-size="11">267 npm · 45 python</text>
+    <rect x="746" y="172" width="168" height="74" rx="6" fill="#0d1117" stroke="#30363d"/>
+    <text x="758" y="194" fill="#f0f6fc" font-size="12" font-weight="600">cabeza · PR</text>
+    <text x="758" y="214" fill="#8b949e" font-size="11">snapshot del PR</text>
+    <text x="758" y="232" fill="#f85149" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">+ lodash 4.17.20</text>
+    <text x="546" y="272" fill="#8b949e" font-size="11">Mismo correlator: el snapshot nuevo</text>
+    <text x="546" y="290" fill="#8b949e" font-size="11">sustituye al anterior de esa fuente.</text>
+    <text x="546" y="312" fill="#8b949e" font-size="11">Cuenta: gh api .../dependency-graph/sbom</text>
+
+    <path d="M430 230 L526 230" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a05)"/>
+    <text x="478" y="222" fill="#79c0ff" font-size="11" text-anchor="middle">POST</text>
+
+    <!-- job review -->
+    <rect x="30" y="370" width="400" height="160" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="396" fill="#2088ff" font-size="14" font-weight="600">dependency-review.yml · review</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="46" y="418" fill="#8b949e">contents: read · needs: snapshot</text>
+      <text x="46" y="436" fill="#8b949e">if: !cancelled() &amp;&amp; pull_request</text>
+      <text x="46" y="460" fill="#f0f6fc">dependency-review-action</text>
+      <text x="62" y="480" fill="#f0f6fc">fail-on-severity: high</text>
+      <text x="62" y="498" fill="#f0f6fc">retry-on-snapshot-warnings: true</text>
+      <text x="46" y="518" fill="#8b949e">sin checkout: trabaja con la API</text>
+    </g>
+
+    <path d="M640 330 L640 350 L230 350 L230 366" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a05)"/>
+    <text x="480" y="344" fill="#79c0ff" font-size="11" text-anchor="middle">compare base...cabeza</text>
+
+    <path d="M430 450 L526 450" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#r05)"/>
+    <text x="478" y="442" fill="#f85149" font-size="11" text-anchor="middle">falla</text>
+    <!-- resultado -->
+    <rect x="530" y="370" width="400" height="160" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="546" y="396" fill="#f85149" font-size="14" font-weight="600">El PR queda en rojo</text>
+    <text x="546" y="420" fill="#f0f6fc" font-size="11.5">Solo cuenta lo añadido o cambiado, cruzado</text>
+    <text x="546" y="438" fill="#f0f6fc" font-size="11.5">con la GitHub Advisory Database:</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="562" y="466" fill="#f85149">GHSA-35jh-r3h4-6jhm · high</text>
+      <text x="562" y="486" fill="#f85149">GHSA-r5fr-rjxr-66jc · high</text>
+    </g>
+    <text x="546" y="514" fill="#8b949e" font-size="11">Lo que ya estaba en main es trabajo de Dependabot.</text>
+
+    <text x="480" y="566" fill="#8b949e" font-size="11" text-anchor="middle">Azul: los dos jobs y sus llamadas. Morado: lo que guarda GitHub. Amarillo: el único permiso de escritura. Rojo: lo que el grafo no ve y lo que se frena.</text>
+  </g>
+</svg>

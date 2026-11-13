@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t02">
+  <title id="t02">Tag frente a digest. Un tag como postgres:17.11-alpine es un nombre que apunta a un índice; el día 1 apunta al índice sha256:e5d2, y si el publicador reconstruye la imagen el mismo tag pasa a apuntar a otro índice, sha256:9f1c, sin que cambie nada en tu repo. El digest es el SHA-256 de los bytes del índice y no se puede mover. El índice OCI apunta a un manifiesto por plataforma, linux/amd64 y linux/arm64, y cada manifiesto a sus capas, todo por hash. Abajo, cuatro formas de referenciar la imagen: sin tag, que es latest y se mueve a cualquier versión; con tag, que se mueve si se reconstruye; solo con digest, que no se mueve pero nadie sabe qué es; y tag más digest, que es lo que usa tablero: Docker ignora el tag y resuelve por digest, el tag queda para las personas y para Dependabot.</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="r02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Un tag se mueve; un digest es el contenido</text>
+
+    <!-- tag -->
+    <rect x="30" y="120" width="220" height="64" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="140" y="146" fill="#e3b341" font-size="13" font-weight="600" text-anchor="middle">tag (nombre mutable)</text>
+    <text x="140" y="168" fill="#f0f6fc" font-size="12" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">postgres:17.11-alpine</text>
+
+    <path d="M250 140 L346 104" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+    <text x="292" y="106" fill="#79c0ff" font-size="11" text-anchor="middle">día 1</text>
+    <path d="M250 166 L346 214" stroke="#f85149" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#r02)"/>
+    <text x="292" y="222" fill="#f85149" font-size="11" text-anchor="middle">reconstruida</text>
+
+    <!-- índices -->
+    <rect x="350" y="76" width="250" height="60" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="366" y="100" fill="#2088ff" font-size="13" font-weight="600">índice OCI</text>
+    <text x="366" y="122" fill="#f0f6fc" font-size="11.5" font-family="ui-monospace, Menlo, Consolas, monospace">sha256:e5d2edd28b1f…</text>
+
+    <rect x="350" y="186" width="250" height="60" rx="8" fill="#161b22" stroke="#f85149"/>
+    <text x="366" y="210" fill="#f85149" font-size="13" font-weight="600">otro índice</text>
+    <text x="366" y="232" fill="#8b949e" font-size="11.5" font-family="ui-monospace, Menlo, Consolas, monospace">sha256:9f1c… (ejemplo)</text>
+
+    <!-- árbol -->
+    <path d="M600 106 L676 82" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+    <path d="M600 106 L676 150" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+    <rect x="680" y="60" width="250" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="696" y="80" fill="#f0f6fc" font-size="12" font-weight="600">manifiesto linux/amd64</text>
+    <text x="696" y="96" fill="#8b949e" font-size="11">→ capas, cada una por su hash</text>
+    <rect x="680" y="128" width="250" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="696" y="148" fill="#f0f6fc" font-size="12" font-weight="600">manifiesto linux/arm64</text>
+    <text x="696" y="164" fill="#8b949e" font-size="11">→ capas, cada una por su hash</text>
+    <text x="680" y="204" fill="#8b949e" font-size="11">Un byte distinto en una capa cambia su hash,</text>
+    <text x="680" y="220" fill="#8b949e" font-size="11">el del manifiesto y el del índice.</text>
+    <text x="680" y="240" fill="#3fb950" font-size="11" font-weight="600">Fija el digest del índice, no el de una plataforma.</text>
+
+    <!-- tabla de referencias -->
+    <text x="30" y="300" fill="#f0f6fc" font-size="14" font-weight="600">Cuatro formas de referenciar la misma imagen</text>
+    <g font-size="12">
+      <rect x="30" y="314" width="900" height="40" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="46" y="339" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">postgres</text>
+      <text x="914" y="339" fill="#f85149" text-anchor="end">latest implícito · se mueve a cualquier versión</text>
+
+      <rect x="30" y="362" width="900" height="40" rx="6" fill="#161b22" stroke="#e3b341"/>
+      <text x="46" y="387" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">postgres:17.11-alpine</text>
+      <text x="914" y="387" fill="#e3b341" text-anchor="end">legible · se mueve si se reconstruye</text>
+
+      <rect x="30" y="410" width="900" height="40" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="435" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">postgres@sha256:e5d2…</text>
+      <text x="914" y="435" fill="#8b949e" text-anchor="end">no se mueve · nadie sabe qué versión es</text>
+
+      <rect x="30" y="458" width="900" height="40" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="46" y="483" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace">postgres:17.11-alpine@sha256:e5d2…</text>
+      <text x="914" y="483" fill="#3fb950" text-anchor="end">tablero · Docker resuelve por digest; el tag, para ti y Dependabot</text>
+    </g>
+
+    <text x="480" y="530" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: lo que puede cambiar sin aviso. Rojo: lo que te cambia el build sin diff. Verde: lo que usa tablero en FROM y services.</text>
+  </g>
+</svg>

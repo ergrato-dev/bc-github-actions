@@ -118,7 +118,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 | 11 ✅ | `week-11-actions_a_escala_de_organizacion` | Actions a escala de organización |
 | 12 ✅ | `week-12-modelo_de_amenazas_y_endurecimiento` | Modelo de amenazas y endurecimiento |
 | 13 ✅ | `week-13-secretos_entornos_y_oidc` | Secretos, entornos y OIDC |
-| 14 | `week-14-releases_cadena_de_suministro_y_attestations` | Releases, cadena de suministro y attestations |
+| 14 ✅ | `week-14-releases_cadena_de_suministro_y_attestations` | Releases, cadena de suministro y attestations |
 | 15 | `week-15-runners_self_hosted` | Runners propios |
 | 16 | `week-16-actions_runner_controller_en_kind` | Actions Runner Controller en kind |
 | 17 | `week-17-despliegue_continuo_a_kubernetes` | Despliegue continuo a Kubernetes |

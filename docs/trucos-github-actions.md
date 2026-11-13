@@ -214,6 +214,23 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   visibilidad; un secreto `private` no llega a `tablero`, que es público. Necesita el scope
   `admin:org` (`gh auth refresh -h github.com -s admin:org`).
 
+## Semana 14 — [Releases, cadena de suministro y attestations](../bootcamp/week-14-releases_cadena_de_suministro_y_attestations/README.md)
+
+- **Mira qué attestations tiene una imagen sin verificar nada todavía**:
+  `gh attestation verify oci://ghcr.io/<tu-org>/tablero-api:0.2.0 --repo <tu-org>/tablero --format json --jq '.[].verificationResult.statement.predicateType'`
+  lista los tipos de predicado firmados. Con `--predicate-type` exiges uno concreto.
+- **El digest de un tag sin bajarte la imagen**:
+  `docker buildx imagetools inspect postgres:17.11-alpine --format '{{json .Manifest}}' | jq -r .digest`
+  da el digest del índice multiarquitectura, que es el que va en `FROM` y en `services:`.
+- **Fuerza la siguiente versión sin inventarte un commit**: un commit vacío con el pie
+  `Release-As: 1.0.0` (`git commit --allow-empty -m "chore: release 1.0.0" -m "Release-As: 1.0.0"`)
+  hace que release-please proponga exactamente esa versión.
+- **Pregunta al dependency graph qué ve de verdad**:
+  `gh api 'repos/{owner}/{repo}/dependency-graph/sbom' --jq '.sbom.packages | length'` devuelve
+  cuántos paquetes conoce; compáralo antes y después de enviar el snapshot de syft.
+- **Prueba la puerta de Trivy en local antes del push**: `trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed tablero-web:local`
+  sobre la imagen construida con `docker build` te dice si la release va a fallar.
+
 ---
 
 | ← Anterior | Siguiente → |

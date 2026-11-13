@@ -1,0 +1,125 @@
+# Release de tablero: release-please mantiene un PR de release con la próxima versión y el
+# CHANGELOG; al fusionarlo crea el tag y la release, y en el mismo run se publican las imágenes
+# versionadas, escaneadas, con SBOM y con attestations de procedencia.
+# Se copia en <tu-org>/tablero como .github/workflows/release.yml.
+name: release
+on:
+  push:
+    branches: [main]
+# Dos releases a la vez se pisarían el PR y el tag: el segundo run espera al primero.
+concurrency:
+  group: release
+  cancel-in-progress: false
+permissions: {}
+jobs:
+  release-please:
+    name: Release PR o release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # TODO 1: release-please escribe en el código (CHANGELOG, tag), abre su PR y lo etiqueta.
+    permissions:
+      contents: read
+    outputs:
+      created: ${{ steps.release.outputs.release_created }}
+      version: ${{ steps.release.outputs.version }}
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+      # TODO 2: release-please-action v5.0.0 fijada por SHA (scripts/resolve-sha.sh), con tu
+      # release-please-config.json y tu .release-please-manifest.json.
+      - name: Preparar PR de release o publicar la release
+        id: release
+        run: echo "release-please todavía no está configurado"
+
+  images:
+    name: Imagen tablero-${{ matrix.component }}
+    needs: release-please
+    # TODO 3: solo cuando release-please acaba de crear una release.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # TODO 4: además de publicar en GHCR, firmar y guardar attestations.
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [api, web]
+    env:
+      VERSION: ${{ needs.release-please.outputs.version }}
+      # TODO 5: versiones fijadas de syft y Trivy (docs/stack-versions.md), nunca la de Trivy comprometida.
+      SYFT_VERSION: ""
+      TRIVY_VERSION: ""
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Nombre de la imagen en minúsculas
+        id: name
+        env:
+          OWNER: ${{ github.repository_owner }}
+          COMPONENT: ${{ matrix.component }}
+        run: echo "image=ghcr.io/${OWNER,,}/tablero-${COMPONENT}" >> "$GITHUB_OUTPUT"
+
+      - name: Instalar syft y trivy desde su release, con checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          download_verified() {
+            local repo="$1" tag="$2" file="$3" expected
+            expected=$(gh api "repos/$repo/releases/tags/$tag" \
+              --jq ".assets[] | select(.name == \"$file\") | .digest" | sed 's/^sha256://')
+            [[ -n "$expected" ]] || { echo "Sin digest para $file" >&2; return 1; }
+            gh release download "$tag" --repo "$repo" --pattern "$file"
+            echo "$expected  $file" | sha256sum -c
+          }
+          mkdir -p "$RUNNER_TEMP/bin" && cd "$RUNNER_TEMP"
+          # TODO 6: descarga y comprueba syft_<v>_linux_amd64.tar.gz y
+          # trivy_<v>_Linux-64bit.tar.gz, y extrae los dos binarios en bin/.
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y publicar la versión
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ matrix.component }}
+          push: true
+          # TODO 7: el tag es la versión de la release, sin la v.
+          tags: ${{ steps.name.outputs.image }}:release
+
+      - name: Escanear la imagen publicada
+        env:
+          REF: ${{ steps.name.outputs.image }}@${{ steps.build.outputs.digest }}
+        # TODO 8: trivy image sobre $REF que falle con vulnerabilidades CRITICAL que ya tengan arreglo.
+        run: echo "Sin escanear $REF"
+
+      - name: SBOM de la imagen
+        env:
+          REF: ${{ steps.name.outputs.image }}@${{ steps.build.outputs.digest }}
+          COMPONENT: ${{ matrix.component }}
+        run: syft scan "registry:$REF" -q -o "spdx-json=sbom-$COMPONENT.spdx.json"
+
+      # TODO 9: attestation de procedencia con actions/attest v4.2.2 fijada por SHA, sobre el
+      # nombre y el digest de la imagen, guardada también en el registro.
+      # TODO 10: segunda attestation con actions/attest para el SBOM del paso anterior.
+
+      - name: Digest en el resumen
+        env:
+          IMAGE: ${{ steps.name.outputs.image }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          {
+            echo "### ${IMAGE##*/} $VERSION"
+            echo
+            echo "\`$IMAGE@$DIGEST\`"
+            echo
+            echo "\`gh attestation verify oci://$IMAGE@$DIGEST --repo $GITHUB_REPOSITORY\`"
+          } >> "$GITHUB_STEP_SUMMARY"

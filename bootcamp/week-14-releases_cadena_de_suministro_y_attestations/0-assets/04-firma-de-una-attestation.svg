@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="t04">
+  <title id="t04">Firma de una attestation sin clave guardada. Paso 1: el job images de release.yml, con id-token, attestations, packages y artifact-metadata en write, pide un token OIDC a GitHub. Paso 2: actions/attest genera un par de claves efímero y manda la clave pública y el token a Fulcio, la autoridad de certificación de Sigstore. Paso 3: Fulcio devuelve un certificado de vida corta cuya identidad es el workflow, tablero/.github/workflows/release.yml en refs/heads/main, con repo, commit y tipo de runner. Paso 4: el job firma el statement in-toto, con el sujeto ghcr.io/org/tablero-api y su digest, el tipo de predicado y el predicado, y tira la clave. Paso 5: la firma se anota en Rekor, el log de transparencia público. Paso 6: el bundle de Sigstore se guarda en la API de attestations del repo con attestations write y en GHCR junto a la imagen con push-to-registry y packages write. Abajo, gh attestation verify sobre la imagen comprueba la firma contra la raíz de Sigstore, que el sujeto sea el digest de la imagen, el repo con --repo, el workflow firmante con --signer-workflow y el tipo con --predicate-type.</title>
+  <rect width="960" height="640" fill="#0d1117"/>
+  <defs>
+    <marker id="a04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="p04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d2a8ff"/></marker>
+    <marker id="g04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Firmar una attestation con la identidad del job, sin clave guardada</text>
+
+    <!-- job -->
+    <rect x="330" y="64" width="300" height="168" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="346" y="90" fill="#2088ff" font-size="14" font-weight="600">release.yml · job images</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="346" y="110" fill="#e3b341">write: id-token · attestations</text>
+      <text x="346" y="124" fill="#e3b341">       packages · artifact-metadata</text>
+      <text x="346" y="144" fill="#f0f6fc">actions/attest · statement in-toto</text>
+      <text x="362" y="162" fill="#8b949e">subject: ghcr.io/&lt;org&gt;/tablero-api</text>
+      <text x="362" y="176" fill="#8b949e">         sha256:… (digest)</text>
+      <text x="362" y="192" fill="#8b949e">predicateType: slsa.dev/provenance/v1</text>
+      <text x="362" y="206" fill="#8b949e">predicate: repo, commit, workflow…</text>
+      <text x="346" y="224" fill="#d2a8ff">clave efímera: se tira al firmar</text>
+    </g>
+
+    <!-- GitHub OIDC -->
+    <rect x="30" y="64" width="240" height="80" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="46" y="90" fill="#d2a8ff" font-size="14" font-weight="600">OIDC de GitHub</text>
+    <text x="46" y="112" fill="#8b949e" font-size="11">token del job con sus claims</text>
+    <text x="46" y="130" fill="#8b949e" font-size="11">(Semana 13)</text>
+    <path d="M326 100 L274 100" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M274 124 L326 124" stroke="#d2a8ff" stroke-width="2" fill="none" marker-end="url(#p04)"/>
+    <text x="300" y="92" fill="#79c0ff" font-size="11" text-anchor="middle">1</text>
+
+    <!-- Fulcio -->
+    <rect x="690" y="64" width="240" height="168" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="706" y="90" fill="#d2a8ff" font-size="14" font-weight="600">Fulcio (CA de Sigstore)</text>
+    <text x="706" y="112" fill="#f0f6fc" font-size="11">comprueba el token y emite</text>
+    <text x="706" y="128" fill="#f0f6fc" font-size="11">un certificado de vida corta</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10.5">
+      <text x="706" y="152" fill="#8b949e">identidad:</text>
+      <text x="706" y="168" fill="#d2a8ff">&lt;org&gt;/tablero/.github/</text>
+      <text x="706" y="184" fill="#d2a8ff">workflows/release.yml</text>
+      <text x="706" y="200" fill="#d2a8ff">@refs/heads/main</text>
+      <text x="706" y="218" fill="#8b949e">+ repo · commit · runner</text>
+    </g>
+    <path d="M630 110 L686 110" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M686 180 L634 180" stroke="#d2a8ff" stroke-width="2" fill="none" marker-end="url(#p04)"/>
+    <text x="658" y="102" fill="#79c0ff" font-size="11" text-anchor="middle">2</text>
+    <text x="658" y="172" fill="#d2a8ff" font-size="11" text-anchor="middle">3</text>
+
+    <!-- firma (4) -->
+    <text x="480" y="258" fill="#f0f6fc" font-size="12" font-weight="600" text-anchor="middle">4 · firma el statement con la clave efímera y la descarta</text>
+    <path d="M480 266 L480 300" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g04)"/>
+
+    <!-- bundle -->
+    <rect x="330" y="304" width="300" height="72" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="346" y="330" fill="#3fb950" font-size="14" font-weight="600">Bundle de Sigstore</text>
+    <text x="346" y="352" fill="#f0f6fc" font-size="11">statement · firma · certificado</text>
+    <text x="346" y="368" fill="#f0f6fc" font-size="11">· prueba de inclusión en Rekor</text>
+
+    <!-- Rekor -->
+    <rect x="690" y="304" width="240" height="72" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="706" y="330" fill="#d2a8ff" font-size="14" font-weight="600">Rekor</text>
+    <text x="706" y="352" fill="#8b949e" font-size="11">log de transparencia público</text>
+    <text x="706" y="368" fill="#8b949e" font-size="11">solo en repos públicos</text>
+    <path d="M630 340 L686 340" stroke="#d2a8ff" stroke-width="2" fill="none" marker-end="url(#p04)"/>
+    <text x="658" y="332" fill="#d2a8ff" font-size="11" text-anchor="middle">5</text>
+
+    <!-- almacenes -->
+    <path d="M400 376 L400 420 L270 420" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g04)"/>
+    <path d="M560 376 L560 420 L686 420" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g04)"/>
+    <text x="480" y="424" fill="#3fb950" font-size="11" text-anchor="middle">6</text>
+    <rect x="30" y="392" width="240" height="64" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="416" fill="#f0f6fc" font-size="13" font-weight="600">API de attestations</text>
+    <text x="46" y="438" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">attestations: write</text>
+    <rect x="690" y="392" width="240" height="64" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="706" y="416" fill="#f0f6fc" font-size="13" font-weight="600">GHCR, junto a la imagen</text>
+    <text x="706" y="438" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">push-to-registry · packages</text>
+
+    <!-- verify -->
+    <rect x="30" y="482" width="900" height="100" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="506" fill="#3fb950" font-size="14" font-weight="600">gh attestation verify oci://ghcr.io/&lt;org&gt;/tablero-api:0.2.0</text>
+    <g font-size="11.5" fill="#f0f6fc">
+      <text x="46" y="530">firma válida contra la raíz de Sigstore</text>
+      <text x="46" y="550">sujeto = digest de la imagen</text>
+      <text x="340" y="530" font-family="ui-monospace, Menlo, Consolas, monospace">--repo &lt;org&gt;/tablero</text>
+      <text x="340" y="550" font-family="ui-monospace, Menlo, Consolas, monospace">--signer-workflow &lt;org&gt;/tablero/.github/workflows/release.yml</text>
+      <text x="340" y="570" font-family="ui-monospace, Menlo, Consolas, monospace">--predicate-type https://spdx.dev/Document/v2.3</text>
+    </g>
+
+    <text x="480" y="612" fill="#8b949e" font-size="11" text-anchor="middle">Morado: lo que pone Sigstore o GitHub. Azul claro: peticiones del job. Verde: lo firmado y su verificación. Amarillo: permisos de escritura.</text>
+  </g>
+</svg>

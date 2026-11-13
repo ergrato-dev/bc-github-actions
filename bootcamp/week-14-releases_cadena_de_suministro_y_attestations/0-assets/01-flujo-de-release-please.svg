@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t01">
+  <title id="t01">Flujo de release-please en tablero. Los commits convencionales llegan a main: feat sube el minor, fix y deps el patch, docs, ci y chore no suben versión. Cada push a main ejecuta release.yml y el job release-please decide entre dos caminos. Si el commit no es la fusión del PR de release, abre o actualiza el PR de release con CHANGELOG.md, version.txt y .release-please-manifest.json, etiquetado autorelease pending; ese PR lo abre GITHUB_TOKEN y no dispara el CI. Si el commit es la fusión del PR de release, crea el tag v0.2.0 y la release de GitHub con las notas del CHANGELOG, y sus outputs dicen created igual a la cadena true y version 0.2.0. Con eso corre, en el mismo run, el job images con la matriz api y web. Un workflow aparte con on release no serviría: lo que crea GITHUB_TOKEN no dispara otros workflows.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="g01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">release-please: de commits a una versión publicada</text>
+
+    <!-- commits -->
+    <rect x="30" y="64" width="250" height="210" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="90" fill="#f0f6fc" font-size="14" font-weight="600">Commits en main</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <text x="46" y="120" fill="#79c0ff">feat(web): ...</text>
+      <text x="264" y="120" fill="#3fb950" text-anchor="end">minor</text>
+      <text x="46" y="146" fill="#79c0ff">fix(api): ...</text>
+      <text x="264" y="146" fill="#3fb950" text-anchor="end">patch</text>
+      <text x="46" y="172" fill="#79c0ff">deps: ...</text>
+      <text x="264" y="172" fill="#3fb950" text-anchor="end">patch</text>
+      <text x="46" y="198" fill="#79c0ff">feat!: ...</text>
+      <text x="264" y="198" fill="#e3b341" text-anchor="end">minor en 0.x</text>
+      <text x="46" y="224" fill="#8b949e">docs: · ci: · chore:</text>
+      <text x="264" y="224" fill="#8b949e" text-anchor="end">nada</text>
+    </g>
+    <text x="46" y="256" fill="#8b949e" font-size="11">Gana el de más peso · Release-As fuerza</text>
+
+    <path d="M280 170 L346 170" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <text x="313" y="160" fill="#79c0ff" font-size="11" text-anchor="middle">push</text>
+
+    <!-- job release-please -->
+    <rect x="350" y="100" width="270" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="366" y="126" fill="#2088ff" font-size="14" font-weight="600">release.yml · release-please</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="366" y="150" fill="#e3b341">write: contents · pull-requests</text>
+      <text x="366" y="168" fill="#e3b341">       · issues</text>
+      <text x="366" y="190" fill="#8b949e">sin checkout: trabaja con la API</text>
+      <text x="366" y="214" fill="#d2a8ff">release-please-config.json</text>
+      <text x="366" y="232" fill="#d2a8ff">.release-please-manifest.json</text>
+    </g>
+
+    <!-- decision -->
+    <path d="M620 140 L680 92" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M620 220 L680 320" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g01)"/>
+    <text x="640" y="72" fill="#8b949e" font-size="11" text-anchor="end">commit normal</text>
+    <text x="650" y="288" fill="#8b949e" font-size="11" text-anchor="end">fusión del PR</text>
+    <text x="650" y="304" fill="#8b949e" font-size="11" text-anchor="end">de release</text>
+
+    <!-- PR de release -->
+    <rect x="684" y="56" width="246" height="190" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="700" y="82" fill="#e3b341" font-size="14" font-weight="600">PR de release</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="700" y="106" fill="#f0f6fc">CHANGELOG.md</text>
+      <text x="700" y="124" fill="#f0f6fc">version.txt → 0.2.0</text>
+      <text x="700" y="142" fill="#f0f6fc">.release-please-manifest.json</text>
+      <text x="700" y="166" fill="#e3b341">autorelease: pending</text>
+    </g>
+    <text x="700" y="192" fill="#8b949e" font-size="11">Se actualiza con cada feat o fix</text>
+    <text x="700" y="210" fill="#8b949e" font-size="11">Tú decides cuándo fusionarlo</text>
+    <text x="700" y="232" fill="#f85149" font-size="11">Lo abre GITHUB_TOKEN: no corre CI</text>
+
+    <!-- tag y release -->
+    <rect x="684" y="290" width="246" height="150" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="700" y="316" fill="#3fb950" font-size="14" font-weight="600">Tag y release</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="700" y="340" fill="#f0f6fc">tag v0.2.0 en ese commit</text>
+      <text x="700" y="358" fill="#f0f6fc">release con notas del CHANGELOG</text>
+      <text x="700" y="380" fill="#3fb950">autorelease: tagged</text>
+      <text x="700" y="404" fill="#79c0ff">created == 'true'</text>
+      <text x="700" y="424" fill="#79c0ff">version = 0.2.0</text>
+    </g>
+
+    <!-- images -->
+    <path d="M806 440 L806 480 L614 480" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g01)"/>
+    <rect x="350" y="420" width="260" height="110" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="366" y="446" fill="#2088ff" font-size="14" font-weight="600">mismo run · job images</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="366" y="470" fill="#f0f6fc">needs: release-please</text>
+      <text x="366" y="488" fill="#79c0ff">if: created == 'true'</text>
+      <text x="366" y="508" fill="#f0f6fc">matrix: [api, web] → :0.2.0</text>
+    </g>
+
+    <!-- lo que no funciona -->
+    <rect x="30" y="420" width="290" height="110" rx="8" fill="#0d1117" stroke="#f85149" stroke-dasharray="6 4"/>
+    <text x="46" y="446" fill="#f85149" font-size="13" font-weight="600">No sirve: otro workflow</text>
+    <text x="46" y="468" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">on: release · on: push: tags</text>
+    <text x="46" y="490" fill="#8b949e" font-size="11">Lo que crea GITHUB_TOKEN no dispara</text>
+    <text x="46" y="508" fill="#8b949e" font-size="11">otros workflows (evita bucles)</text>
+
+    <text x="480" y="566" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflow y jobs. Amarillo: lo que espera tu decisión. Verde: lo publicado. Morado: configuración versionada.</text>
+    <text x="480" y="584" fill="#8b949e" font-size="11" text-anchor="middle">Los outputs de un job son cadenas: se compara con 'true', entre comillas.</text>
+  </g>
+</svg>
