@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 900" role="img" aria-labelledby="t15">
+  <title id="t15">Mapa del pipeline de tablero en la capa 15. Arriba, la regla que siguen todos los workflows desde la capa 12: permissions vacío en la raíz, permisos por job y ninguna expresión dentro de run. A la izquierda, lo que ya existía y sigue igual, todo en runners de GitHub con ubuntu-24.04: ci-api, ci y ci-web; images; nightly, smoke y lint-workflows; labeler, pr-report, codeql y ci-tools; deploy-gate; release.yml con release-please, Trivy, syft y attestations; y dependency-review.yml. A la derecha, lo nuevo. lab.yml, el único workflow que pide el runner propio: solo workflow_dispatch, concurrency por workflow sin cancelación, el job unit con runs-on self-hosted y tablero-lab, timeout de 15 minutos y contents read, que hace checkout sin credenciales persistidas, instala uv con setup-uv, ejecuta uv sync --locked y los tests unitarios de la API. En el host, ops/runner/jit-runner.sh: en bucle pide a la API generate-jitconfig una configuración para un runner con las etiquetas self-hosted y tablero-lab en el grupo 1, se la pasa al contenedor por ACTIONS_RUNNER_INPUT_JITCONFIG y lo arranca con --rm, --cap-drop ALL, no-new-privileges, límites de procesos, memoria y CPU y sin el socket de Docker. ops/runner/Dockerfile parte de ghcr.io/actions/actions-runner 2.338.2 fijada por digest. .github/actionlint.yaml declara la etiqueta tablero-lab, y dependabot.yml vigila con el ecosistema docker también /ops/runner. En configuración: la política de la org limita los runners de repositorio a tablero y la aprobación de PR de forks exige aprobar a todos los contribuidores externos. En gris, lo que llega después: ARC en kind en la Semana 16, el despliegue continuo a Kubernetes en la 17 y merge queue y rulesets en la 18.</title>
+  <rect width="960" height="900" fill="#0d1117"/>
+  <defs>
+    <marker id="a15" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 15</text>
+
+    <!-- regla común -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="85" fill="#3fb950" font-size="12" font-weight="600">en todos los workflows</text>
+    <text x="210" y="85" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · permisos por job · nada de ${{ }} en run:</text>
+
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">Ya existían · ubuntu-24.04</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Nuevos en la capa 15 · runner propio</text>
+
+    <!-- existentes -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="146" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="169" fill="#f0f6fc" font-size="12" font-weight="600">ci-api · ci · ci-web</text>
+      <text x="304" y="169" fill="#8b949e" text-anchor="end">contents: read</text>
+
+      <rect x="30" y="190" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="213" fill="#f0f6fc" font-size="12" font-weight="600">images</text>
+      <text x="304" y="213" fill="#8b949e" text-anchor="end">por SHA · _image.yml</text>
+
+      <rect x="30" y="234" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="257" fill="#f0f6fc" font-size="12" font-weight="600">nightly · smoke</text>
+      <text x="304" y="257" fill="#8b949e" text-anchor="end">lint-workflows</text>
+
+      <rect x="30" y="278" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="301" fill="#f0f6fc" font-size="12" font-weight="600">labeler · pr-report</text>
+      <text x="304" y="301" fill="#8b949e" text-anchor="end">codeql · ci-tools</text>
+
+      <rect x="30" y="322" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="345" fill="#f0f6fc" font-size="12" font-weight="600">deploy-gate</text>
+      <text x="304" y="345" fill="#8b949e" text-anchor="end">staging → production</text>
+
+      <rect x="30" y="366" width="290" height="58" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="389" fill="#f0f6fc" font-size="12" font-weight="600">release.yml</text>
+      <text x="304" y="389" fill="#8b949e" text-anchor="end">release-please</text>
+      <text x="46" y="410" fill="#3fb950">trivy · syft · attestations</text>
+
+      <rect x="30" y="432" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="455" fill="#f0f6fc" font-size="12" font-weight="600">dependency-review.yml</text>
+      <text x="304" y="455" fill="#8b949e" text-anchor="end">high</text>
+
+      <rect x="30" y="476" width="290" height="110" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="500" fill="#2088ff" font-size="13" font-weight="600">dependabot.yml</text>
+      <text x="46" y="522" fill="#8b949e">actions · uv · npm (pnpm)</text>
+      <text x="46" y="540" fill="#f0f6fc">docker: /api · /web</text>
+      <text x="46" y="558" fill="#2088ff">  + /ops/runner</text>
+      <text x="46" y="576" fill="#8b949e">cooldown: 7 días</text>
+    </g>
+
+    <!-- lab.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="146" width="580" height="206" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="170" fill="#2088ff" font-size="13" font-weight="600">lab.yml</text>
+      <text x="914" y="170" fill="#79c0ff" text-anchor="end">workflow_dispatch · concurrency sin cancelar</text>
+
+      <rect x="366" y="184" width="548" height="152" rx="6" fill="#0d1117" stroke="#3fb950"/>
+      <text x="378" y="204" fill="#f0f6fc" font-size="12" font-weight="600">unit</text>
+      <text x="902" y="204" fill="#3fb950" text-anchor="end">runs-on: [self-hosted, tablero-lab]</text>
+      <text x="378" y="224" fill="#8b949e">timeout-minutes: 15 · contents: read · working-directory: api</text>
+      <text x="378" y="250" fill="#f0f6fc">echo $RUNNER_NAME</text>
+      <text x="378" y="268" fill="#f0f6fc">checkout · persist-credentials: false</text>
+      <text x="378" y="286" fill="#f0f6fc">setup-uv → uv sync --locked</text>
+      <text x="378" y="304" fill="#f0f6fc">uv run --no-sync pytest tests/unit</text>
+      <text x="378" y="326" fill="#8b949e">el único job que pide el runner propio</text>
+    </g>
+
+    <!-- host: runner -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="368" width="580" height="218" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="392" fill="#2088ff" font-size="13" font-weight="600">ops/runner/ · en tu máquina</text>
+      <text x="914" y="392" fill="#79c0ff" text-anchor="end">Ctrl-C para parar</text>
+
+      <rect x="366" y="406" width="300" height="164" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="378" y="426" fill="#f0f6fc" font-size="12" font-weight="600">jit-runner.sh · en bucle</text>
+      <text x="378" y="448" fill="#79c0ff">POST …/generate-jitconfig</text>
+      <text x="378" y="464" fill="#8b949e">  grupo 1 · self-hosted, tablero-lab</text>
+      <text x="378" y="486" fill="#d2a8ff">-e ACTIONS_RUNNER_INPUT_JITCONFIG</text>
+      <text x="378" y="508" fill="#3fb950">docker run --rm --cap-drop ALL</text>
+      <text x="378" y="524" fill="#3fb950">  no-new-privileges</text>
+      <text x="378" y="540" fill="#3fb950">  --pids-limit · --memory · --cpus</text>
+      <text x="378" y="558" fill="#f85149">  sin docker.sock · sin -p</text>
+
+      <rect x="686" y="406" width="228" height="76" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="698" y="426" fill="#f0f6fc" font-size="12" font-weight="600">Dockerfile</text>
+      <text x="698" y="448" fill="#3fb950">actions-runner:2.338.2</text>
+      <text x="698" y="466" fill="#3fb950">  @sha256:6d0b…1300</text>
+
+      <rect x="686" y="494" width="228" height="76" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="698" y="514" fill="#f0f6fc" font-size="12" font-weight="600">.github/actionlint.yaml</text>
+      <text x="698" y="536" fill="#f0f6fc">self-hosted-runner:</text>
+      <text x="698" y="552" fill="#f0f6fc">  labels: [tablero-lab]</text>
+    </g>
+    <path d="M520 406 L520 340" stroke="#79c0ff" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#a15)"/>
+    <text x="528" y="362" fill="#79c0ff" font-size="10">un runner JIT por job</text>
+
+    <!-- configuración -->
+    <text x="30" y="626" fill="#d2a8ff" font-size="14" font-weight="600">Configuración de &lt;tu-org&gt; y &lt;tu-org&gt;/tablero</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="638" width="430" height="84" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="46" y="662" fill="#d2a8ff" font-size="13" font-weight="600">org · runners de repositorio</text>
+      <text x="46" y="684" fill="#f0f6fc">enabled_repositories: selected</text>
+      <text x="46" y="702" fill="#f0f6fc">solo tablero</text>
+
+      <rect x="500" y="638" width="430" height="84" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="516" y="662" fill="#d2a8ff" font-size="13" font-weight="600">repo · PR de forks</text>
+      <text x="516" y="684" fill="#f0f6fc">all_external_contributors</text>
+      <text x="516" y="702" fill="#8b949e">revisa .github/ antes de aprobar</text>
+    </g>
+
+    <!-- después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="746" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="773"><tspan font-weight="600">Semana 16</tspan> · ARC en kind</text>
+      <rect x="340" y="746" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="773"><tspan font-weight="600">Semana 17</tspan> · despliegue a Kubernetes</text>
+      <rect x="650" y="746" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="773"><tspan font-weight="600">Semana 18</tspan> · merge queue y rulesets</text>
+    </g>
+    <text x="480" y="830" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y piezas nuevas o ampliadas. Verde: lo fijado por digest y las capas del contenedor. Morado: configuración y credenciales.</text>
+    <text x="480" y="848" fill="#8b949e" font-size="11" text-anchor="middle">Rojo: lo que el contenedor no tiene a propósito.</text>
+    <text x="480" y="866" fill="#8b949e" font-size="11" text-anchor="middle">Gris discontinuo: lo que añaden las siguientes semanas.</text>
+  </g>
+</svg>

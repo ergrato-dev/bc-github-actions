@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t01">
+  <title id="t01">Ciclo de vida de un runner propio en cuatro fases: registro, escucha, job y salida, comparando un runner persistente con uno JIT. Persistente: config.sh con un token de registro que caduca en una hora deja .runner y .credentials en el disco; run.sh arranca el listener, que pide trabajo a GitHub con conexiones HTTPS salientes por el puerto 443; por cada job el listener lanza un worker que ejecuta los steps en _work; al terminar vuelve a escuchar con el mismo _work, una y otra vez; sale con config.sh remove, con DELETE en la API o cuando GitHub lo borra tras 14 días sin conectar. JIT: la configuración la pide desde fuera la API generate-jitconfig, que registra el runner y devuelve encoded_jit_config, sin config.sh ni token de registro en la máquina; run.sh la recibe por ACTIONS_RUNNER_INPUT_JITCONFIG; ejecuta como mucho un job; GitHub lo da de baja y el contenedor con --rm desaparece; si nunca conecta, se borra al día.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="r01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Ciclo de vida del runner</text>
+
+    <!-- cabeceras de fase -->
+    <g font-size="14" font-weight="600" fill="#f0f6fc" text-anchor="middle">
+      <text x="242" y="74">1 · Registro</text>
+      <text x="452" y="74">2 · Escucha</text>
+      <text x="662" y="74">3 · Job</text>
+      <text x="862" y="74">4 · Salida</text>
+    </g>
+
+    <!-- persistente -->
+    <text x="30" y="118" fill="#e3b341" font-size="14" font-weight="600">Persistente</text>
+    <text x="30" y="136" fill="#8b949e" font-size="11">muchos jobs</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="150" y="96" width="184" height="128" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="162" y="118" fill="#f0f6fc" font-size="12" font-weight="600">config.sh</text>
+      <text x="162" y="138" fill="#d2a8ff">--token de registro</text>
+      <text x="162" y="154" fill="#8b949e">  caduca en 1 h</text>
+      <text x="162" y="180" fill="#f0f6fc">deja en el disco:</text>
+      <text x="162" y="196" fill="#d2a8ff">.runner</text>
+      <text x="162" y="212" fill="#d2a8ff">.credentials</text>
+
+      <rect x="360" y="96" width="184" height="128" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="372" y="118" fill="#f0f6fc" font-size="12" font-weight="600">run.sh → listener</text>
+      <text x="372" y="138" fill="#79c0ff">HTTPS saliente :443</text>
+      <text x="372" y="154" fill="#79c0ff">"¿hay un job?"</text>
+      <text x="372" y="180" fill="#8b949e">sin puertos de entrada</text>
+      <text x="372" y="200" fill="#3fb950">Idle · online</text>
+
+      <rect x="570" y="96" width="184" height="128" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="582" y="118" fill="#f0f6fc" font-size="12" font-weight="600">listener → worker</text>
+      <text x="582" y="138" fill="#f0f6fc">un proceso por job</text>
+      <text x="582" y="158" fill="#8b949e">_work/_actions</text>
+      <text x="582" y="174" fill="#8b949e">_work/tablero/tablero</text>
+      <text x="582" y="190" fill="#8b949e">_work/_tool · _temp</text>
+      <text x="582" y="212" fill="#e3b341">Active · busy</text>
+
+      <rect x="780" y="96" width="160" height="128" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="792" y="118" fill="#f0f6fc">config.sh remove</text>
+      <text x="792" y="138" fill="#f0f6fc">DELETE …/runners/{id}</text>
+      <text x="792" y="168" fill="#8b949e">o GitHub lo borra</text>
+      <text x="792" y="184" fill="#8b949e">tras 14 días</text>
+      <text x="792" y="200" fill="#8b949e">sin conectar</text>
+    </g>
+    <path d="M334 160 L356 160" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M544 160 L566 160" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M754 160 L776 160" stroke="#79c0ff" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#a01)"/>
+    <path d="M662 224 L662 254 L452 254 L452 228" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#r01)"/>
+    <text x="557" y="274" fill="#f85149" font-size="12" text-anchor="middle">siguiente job, mismo _work: lo que dejó el anterior sigue ahí</text>
+
+    <line x1="30" y1="304" x2="930" y2="304" stroke="#30363d"/>
+
+    <!-- JIT -->
+    <text x="30" y="346" fill="#3fb950" font-size="14" font-weight="600">JIT</text>
+    <text x="30" y="364" fill="#8b949e" font-size="11">un job como mucho</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="150" y="324" width="184" height="148" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="162" y="346" fill="#f0f6fc" font-size="12" font-weight="600">API, desde fuera</text>
+      <text x="162" y="366" fill="#79c0ff">POST …/runners/</text>
+      <text x="162" y="382" fill="#79c0ff">  generate-jitconfig</text>
+      <text x="162" y="402" fill="#f0f6fc">name · runner_group_id</text>
+      <text x="162" y="418" fill="#f0f6fc">labels</text>
+      <text x="162" y="442" fill="#d2a8ff">→ encoded_jit_config</text>
+      <text x="162" y="460" fill="#8b949e">sin config.sh</text>
+
+      <rect x="360" y="324" width="184" height="148" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="372" y="346" fill="#f0f6fc" font-size="12" font-weight="600">run.sh → listener</text>
+      <text x="372" y="366" fill="#d2a8ff">ACTIONS_RUNNER_INPUT_</text>
+      <text x="372" y="382" fill="#d2a8ff">  JITCONFIG</text>
+      <text x="372" y="402" fill="#8b949e">la quita de su entorno</text>
+      <text x="372" y="418" fill="#8b949e">y la enmascara</text>
+      <text x="372" y="442" fill="#79c0ff">HTTPS saliente :443</text>
+
+      <rect x="570" y="324" width="184" height="148" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="582" y="346" fill="#f0f6fc" font-size="12" font-weight="600">listener → worker</text>
+      <text x="582" y="366" fill="#f0f6fc">un único job</text>
+      <text x="582" y="392" fill="#8b949e">mismo _work, pero</text>
+      <text x="582" y="408" fill="#8b949e">en un contenedor</text>
+      <text x="582" y="424" fill="#8b949e">que va a morir</text>
+
+      <rect x="780" y="324" width="160" height="148" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="792" y="346" fill="#3fb950" font-size="12" font-weight="600">baja automática</text>
+      <text x="792" y="366" fill="#f0f6fc">GitHub lo da de baja</text>
+      <text x="792" y="386" fill="#f0f6fc">docker run --rm</text>
+      <text x="792" y="402" fill="#f0f6fc">  borra el disco</text>
+      <text x="792" y="428" fill="#8b949e">si nunca conecta:</text>
+      <text x="792" y="444" fill="#8b949e">borrado al día</text>
+    </g>
+    <path d="M334 398 L356 398" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M544 398 L566 398" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M754 398 L776 398" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M860 472 L860 502 L242 502 L242 476" stroke="#3fb950" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+    <text x="551" y="522" fill="#3fb950" font-size="12" text-anchor="middle">siguiente job: otra config JIT, otro runner, otro contenedor (el bucle de jit-runner.sh)</text>
+
+    <text x="480" y="566" fill="#8b949e" font-size="11" text-anchor="middle">Azul: lo que habla con GitHub. Morado: credenciales. Rojo: el estado que pasa de un job al siguiente.</text>
+    <text x="480" y="584" fill="#8b949e" font-size="11" text-anchor="middle">Verde: lo que se destruye solo. Verificado con actions/runner v2.338.2, noviembre de 2026.</text>
+  </g>
+</svg>

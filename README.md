@@ -87,7 +87,7 @@ Equipo: Linux o WSL2 con Docker, **8 GB de RAM** (16 GB recomendados desde la Se
 | [12](bootcamp/week-12-modelo_de_amenazas_y_endurecimiento/README.md) | Modelo de amenazas y endurecimiento |
 | [13](bootcamp/week-13-secretos_entornos_y_oidc/README.md) | Secretos, entornos y OIDC |
 | [14](bootcamp/week-14-releases_cadena_de_suministro_y_attestations/README.md) | Releases, cadena de suministro y attestations |
-| 15 | Runners propios |
+| [15](bootcamp/week-15-runners_self_hosted/README.md) | Runners propios |
 | 16 | Actions Runner Controller en kind |
 | 17 | Despliegue continuo a Kubernetes |
 | 18 | Merge queue, rulesets y monorepos |

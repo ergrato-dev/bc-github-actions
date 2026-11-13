@@ -1,0 +1,118 @@
+{
+  "week": "15",
+  "title": "Runners propios",
+  "checks": [
+    {
+      "id": "runner-image-pinned",
+      "description": "ops/runner/Dockerfile parte de la imagen oficial ghcr.io/actions/actions-runner fijada por tag y digest",
+      "cmd": "grep -E '^FROM ' ops/runner/Dockerfile",
+      "assert": "stdout~^FROM ghcr\\.io/actions/actions-runner:[0-9]+\\.[0-9]+\\.[0-9]+@sha256:[0-9a-f]{64}$",
+      "hint": "2-practicas/03-contenedor-endurecido-e-imagen-al-dia.md, paso 1"
+    },
+    {
+      "id": "dependabot-runner-image",
+      "description": "dependabot.yml vigila la imagen del runner: el ecosistema docker incluye /ops/runner además de /api y /web",
+      "cmd": "yq '.updates[] | select(.\"package-ecosystem\" == \"docker\") | (.directories // [.directory]) | sort | join(\",\")' .github/dependabot.yml",
+      "assert": "stdout~^/api,/ops/runner,/web$",
+      "hint": "2-practicas/03-contenedor-endurecido-e-imagen-al-dia.md, paso 2"
+    },
+    {
+      "id": "jit-not-registration-token",
+      "description": "jit-runner.sh registra cada runner con la API generate-jitconfig del repositorio, sin token de registro ni config.sh",
+      "cmd": "f=ops/runner/jit-runner.sh; printf 'jit=%s reg=%s' \"$(grep -c 'repos/[^ ]*/actions/runners/generate-jitconfig' $f)\" \"$(grep -cE 'registration-token|config\\.sh' $f)\"",
+      "assert": "stdout~^jit=[1-9][0-9]* reg=0$",
+      "hint": "2-practicas/02-runner-jit-efimero-en-docker.md, paso 2"
+    },
+    {
+      "id": "jit-runner-labels",
+      "description": "El runner JIT se registra en el grupo por defecto con las etiquetas self-hosted y tablero-lab",
+      "cmd": "f=ops/runner/jit-runner.sh; printf 'group=%s self-hosted=%s lab=%s' \"$(grep -cE 'runner_group_id=1( |$)' $f)\" \"$(grep -c 'labels\\[\\]=self-hosted' $f)\" \"$(grep -cE 'labels\\[\\]=(tablero-lab|\\$LABEL|\\$\\{LABEL\\})' $f)\"",
+      "assert": "stdout~^group=1 self-hosted=1 lab=1$",
+      "hint": "2-practicas/02-runner-jit-efimero-en-docker.md, paso 2"
+    },
+    {
+      "id": "jitconfig-by-env",
+      "description": "La config JIT llega al contenedor por la variable ACTIONS_RUNNER_INPUT_JITCONFIG, nunca como argumento --jitconfig",
+      "cmd": "f=ops/runner/jit-runner.sh; printf 'env=%s arg=%s' \"$(grep -c -- '-e ACTIONS_RUNNER_INPUT_JITCONFIG' $f)\" \"$(grep -c -- '--jitconfig' $f)\"",
+      "assert": "stdout~^env=1 arg=0$",
+      "hint": "2-practicas/02-runner-jit-efimero-en-docker.md, paso 3"
+    },
+    {
+      "id": "runner-container-locked",
+      "description": "El contenedor del runner se borra al salir (--rm) y corre sin capacidades, sin escalada y con techo de procesos y memoria",
+      "cmd": "docker_run=$(sed -e ':a' -e '/\\\\$/N; s/\\\\\\n//; ta' ops/runner/jit-runner.sh | grep -E '^[[:space:]]*docker run '); for o in -- '--rm' '--cap-drop ALL' 'no-new-privileges' '--pids-limit' '--memory'; do [ \"$o\" = -- ] && continue; grep -qe \"$o\" <<<\"$docker_run\" && printf 'ok ' || printf '%s ' \"falta:$o\"; done",
+      "assert": "stdout~^ok ok ok ok ok $",
+      "hint": "2-practicas/03-contenedor-endurecido-e-imagen-al-dia.md, paso 3"
+    },
+    {
+      "id": "runner-container-isolated",
+      "description": "El contenedor del runner no es privilegiado, no monta el socket de Docker ni volúmenes y no publica puertos ni usa la red del host",
+      "cmd": "docker_run=$(sed -e ':a' -e '/\\\\$/N; s/\\\\\\n//; ta' ops/runner/jit-runner.sh | grep -E '^[[:space:]]*docker run '); grep -oE -e '--privileged|docker\\.sock|(^| )(-v|--volume|--mount|-p|--publish)[ =]|--network[ =]host' <<<\"$docker_run\" || true",
+      "assert": "stdout!~.",
+      "hint": "2-practicas/03-contenedor-endurecido-e-imagen-al-dia.md, paso 4"
+    },
+    {
+      "id": "lab-dispatch-only",
+      "description": "lab.yml solo se lanza con workflow_dispatch",
+      "cmd": "yq '.on | keys | join(\",\")' .github/workflows/lab.yml",
+      "assert": "stdout~^workflow_dispatch$",
+      "hint": "2-practicas/04-workflow-del-runner-propio.md, paso 1"
+    },
+    {
+      "id": "self-hosted-only-in-lab",
+      "description": "El único job de los workflows de tablero que pide self-hosted está en lab.yml",
+      "cmd": "yq -N '.jobs | to_entries | .[] | select(.value.\"runs-on\" | tostring | test(\"self-hosted\")) | (filename | sub(\".*/\"; \"\")) + \":\" + .key' .github/workflows/*.yml | tr '\\n' ' '",
+      "assert": "stdout~^lab\\.yml:[A-Za-z0-9_-]+ $",
+      "hint": "2-practicas/04-workflow-del-runner-propio.md, pasos 1 y 5"
+    },
+    {
+      "id": "lab-runs-on",
+      "description": "El job de lab.yml pide runs-on: [self-hosted, tablero-lab] y actionlint conoce la etiqueta",
+      "cmd": "printf 'runs-on=%s actionlint=%s' \"$(yq '.jobs[].\"runs-on\" | join(\",\")' .github/workflows/lab.yml)\" \"$(yq '.\"self-hosted-runner\".labels | join(\",\")' .github/actionlint.yaml)\"",
+      "assert": "stdout~^runs-on=self-hosted,tablero-lab actionlint=tablero-lab$",
+      "hint": "2-practicas/04-workflow-del-runner-propio.md, paso 2"
+    },
+    {
+      "id": "lab-job-limits",
+      "description": "El job de lab.yml solo lee contents, tiene timeout-minutes de 30 o menos y no usa secretos",
+      "cmd": "printf '%s secrets=%s' \"$(yq '.jobs[] | \"perms=\" + (.permissions | to_entries | map(.key + \"=\" + .value) | join(\",\")) + \" timeout=\" + (.\"timeout-minutes\" | tostring)' .github/workflows/lab.yml)\" \"$(grep -c 'secrets\\.' .github/workflows/lab.yml)\"",
+      "assert": "stdout~^perms=contents=read timeout=([1-9]|[12][0-9]|30) secrets=0$",
+      "hint": "2-practicas/04-workflow-del-runner-propio.md, paso 2"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "actionlint y zizmor pasan sin hallazgos sobre los workflows de tablero",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/04-workflow-del-runner-propio.md, paso 3"
+    },
+    {
+      "id": "fork-pr-approval",
+      "description": "tablero exige aprobación para los workflows de todos los contribuidores externos",
+      "cmd": "gh api repos/{owner}/{repo}/actions/permissions/fork-pr-contributor-approval --jq .approval_policy",
+      "assert": "stdout~^all_external_contributors$",
+      "hint": "2-practicas/01-primer-runner-propio.md, paso 1"
+    },
+    {
+      "id": "org-self-hosted-selected",
+      "description": "La org solo permite runners propios de repositorio en tablero",
+      "cmd": "printf 'enabled=%s repos=%s' \"$(gh api orgs/{owner}/actions/permissions/self-hosted-runners --jq .enabled_repositories)\" \"$(gh api orgs/{owner}/actions/permissions/self-hosted-runners/repositories --jq '[.repositories[].name] | join(\",\")')\"",
+      "assert": "stdout~^enabled=selected repos=tablero$",
+      "hint": "2-practicas/01-primer-runner-propio.md, paso 1"
+    },
+    {
+      "id": "lab-green-on-own-runner",
+      "description": "lab.yml está en verde en el último commit de main y lo ejecutó un runner tablero-lab con las etiquetas self-hosted y tablero-lab",
+      "cmd": "git fetch -q origin main && id=$(gh run list --workflow lab.yml --commit \"$(git rev-parse origin/main)\" --json databaseId --jq '.[0].databaseId') && gh api \"repos/{owner}/{repo}/actions/runs/$id/jobs\" --jq '.jobs[0] | \"conclusion=\\(.conclusion) runner=\\(.runner_name) labels=\\(.labels | join(\",\"))\"'",
+      "assert": "stdout~^conclusion=success runner=tablero-lab-[^ ]+ labels=self-hosted,tablero-lab$",
+      "hint": "2-practicas/04-workflow-del-runner-propio.md, paso 4"
+    },
+    {
+      "id": "runners-ephemeral",
+      "description": "tablero no tiene runners persistentes registrados y el runner del último lab.yml ya no existe",
+      "cmd": "git fetch -q origin main && id=$(gh run list --workflow lab.yml --commit \"$(git rev-parse origin/main)\" --json databaseId --jq '.[0].databaseId') && r=$(gh api \"repos/{owner}/{repo}/actions/runs/$id/jobs\" --jq '.jobs[0].runner_name') && gh api 'repos/{owner}/{repo}/actions/runners' --jq \"\\\"persistent=\\([.runners[] | select(.ephemeral | not)] | length) last=\\([.runners[] | select(.name == \\\"$r\\\")] | length)\\\"\"",
+      "assert": "stdout~^persistent=0 last=0$",
+      "hint": "2-practicas/04-workflow-del-runner-propio.md, paso 5"
+    }
+  ]
+}

@@ -119,7 +119,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 | 12 ✅ | `week-12-modelo_de_amenazas_y_endurecimiento` | Modelo de amenazas y endurecimiento |
 | 13 ✅ | `week-13-secretos_entornos_y_oidc` | Secretos, entornos y OIDC |
 | 14 ✅ | `week-14-releases_cadena_de_suministro_y_attestations` | Releases, cadena de suministro y attestations |
-| 15 | `week-15-runners_self_hosted` | Runners propios |
+| 15 ✅ | `week-15-runners_self_hosted` | Runners propios |
 | 16 | `week-16-actions_runner_controller_en_kind` | Actions Runner Controller en kind |
 | 17 | `week-17-despliegue_continuo_a_kubernetes` | Despliegue continuo a Kubernetes |
 | 18 | `week-18-merge_queue_rulesets_y_monorepos` | Merge queue, rulesets y monorepos |
@@ -451,8 +451,8 @@ y el CI propio. Versión para el alumno, con ejemplo malo y bueno de cada una:
    (compromiso del 2026-03-19).
 10. **Imágenes con tag completo**, nunca `latest` ni sin tag. Desde la S14 el
     despliegue se hace por digest.
-11. **Runner propio blindado**: efímero (JIT o ARC), en un runner group
-    restringido a `tablero`, jobs `self-hosted` solo en `push` a `main`,
+11. **Runner propio blindado**: efímero (JIT o ARC), que solo `tablero` puede usar
+    (runner de repositorio y política de la org limitada a `tablero`; runner group en Team), jobs `self-hosted` solo en `push` a `main`,
     `workflow_dispatch` o un environment protegido, y aprobación obligatoria
     para todos los contribuidores externos.
 12. **Nada expuesto a la red pública**: puertos de Compose y de kind en

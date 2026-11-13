@@ -231,6 +231,24 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **Prueba la puerta de Trivy en local antes del push**: `trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed tablero-web:local`
   sobre la imagen construida con `docker build` te dice si la release va a fallar.
 
+
+## Semana 15 — [Runners propios](../bootcamp/week-15-runners_self_hosted/README.md)
+
+- **Tus runners sin abrir la UI**:
+  `gh api repos/{owner}/{repo}/actions/runners --jq '.runners[] | "\(.name) \(.status) busy=\(.busy) ephemeral=\(.ephemeral)"'`
+  dice cuáles están conectados, cuáles trabajan y cuáles se borrarán solos.
+- **Qué máquina ejecutó cada job de un run**:
+  `gh api repos/{owner}/{repo}/actions/runs/<id>/jobs --jq '.jobs[] | "\(.name): \(.runner_name) [\(.labels | join(","))]"'`.
+  La UI lo enseña dentro de cada log; la API, de todos a la vez.
+- **Cualquier argumento del runner por el entorno**: `run.sh` y `config.sh` leen
+  `ACTIONS_RUNNER_INPUT_<ARG>` (por ejemplo `ACTIONS_RUNNER_INPUT_JITCONFIG`), lo borran de su
+  entorno y enmascaran los secretos. Así una credencial no aparece en `ps` ni en la línea de órdenes, y los procesos del job no la heredan (`docker inspect` sí la enseña: quien controla Docker en tu máquina ya es root).
+- **Barre los runners que quedaron offline** tras parar el bucle a mitad:
+  `gh api repos/{owner}/{repo}/actions/runners --jq '.runners[] | select(.status == "offline") | .id' | xargs -I{} gh api -X DELETE repos/{owner}/{repo}/actions/runners/{}`.
+- **El log del runner, sin buscar `_diag`**: la imagen oficial trae
+  `ACTIONS_RUNNER_PRINT_LOG_TO_STDOUT=1`, así que `docker logs <contenedor>` ya es el log del
+  listener.
+
 ---
 
 | ← Anterior | Siguiente → |

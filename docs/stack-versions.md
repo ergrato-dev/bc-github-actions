@@ -87,6 +87,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | `ghcr.io/astral-sh/uv` | `0.13.6` | 06 | Solo en la etapa de build de la API. Digest del índice (S14, `docker buildx imagetools inspect`, 2026-11-13): `sha256:af22a52f5eafef3d78e551599d405c02df61919d18028f0cea8eda93bc9986d0` |
 | `node` | `26.13.0-trixie-slim` | 06 | Solo en la etapa de build de la web; pnpm entra con `ADD --checksum`. Digest del índice (S14, `docker buildx imagetools inspect`, 2026-11-13): `sha256:5adad64f9a1fca2d51972caa65983634c8a774eb300d72b20f7f2a0f60368072` |
 | `catthehacker/ubuntu` | `act-24.04-20260815` | 08 | Imagen de runner para act (Docker Hub, 2026-11-02). Digest `sha256:c58e2b364da03b0c804c7d660f2ecbedf2f221a382b9baa0b344b0144780ff43`. La etiqueta `act-24.04` se mueve: se fija la fechada |
+| `ghcr.io/actions/actions-runner` | `2.338.2` | 15 | Imagen oficial del runner (`actions/runner` v2.338.2, release del 2026-10-26, la última a 2026-11-13). Digest del índice (`docker buildx imagetools inspect`, 2026-11-13): `sha256:6d0b2d80d80f143f77dcb676e50920100bbb547e39e883454d57f45ab8c31300`. Ubuntu 24.04, usuario `runner` (uid 1001) con `sudo` sin contraseña, que `--security-opt no-new-privileges` anula. Lee los argumentos de `run.sh` también de `ACTIONS_RUNNER_INPUT_<ARG>` y enmascara `jitconfig` (`CommandSettings.cs`, v2.338.2). Un runner propio debe ir como mucho 63 días por detrás de la última versión o deja de recibir jobs |
 
 ## Referencia: se fija al escribir su semana
 
@@ -95,7 +96,6 @@ nuevo, en la tanda que escribe la semana que la usa.
 
 | Pieza | Vigente (2026-11-02) | Semana | Nota |
 |---|---|:--:|---|
-| actions/runner | v2.338.2 | 15 | Imagen `ghcr.io/actions/actions-runner` |
 | ARC (`gha-runner-scale-set-controller`, `gha-runner-scale-set`) | 0.15.1 | 16 | Charts OCI en `ghcr.io/actions/actions-runner-controller-charts` |
 | Helm | v4.3.1 | 16 | |
 | PyJWT | — | 13 | Se fija en el `uv.lock` de `tools/oidc-verifier/` |

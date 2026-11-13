@@ -1,0 +1,4 @@
+# Configuración de actionlint de tablero. Se copia a .github/actionlint.yaml de <tu-org>/tablero.
+self-hosted-runner:
+  # TODO 10: declara la etiqueta propia del runner de tablero.
+  labels: []

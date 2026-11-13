@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t02">
+  <title id="t02">Qué sobrevive de un job al siguiente en tres tipos de runner. Runner persistente: acepta muchos jobs, se registra desde la máquina con un token de registro, guarda .credentials en el disco mientras exista, y el directorio _work, la caché _tool y cualquier proceso que el job deje y escape a la limpieza del runner pasan al siguiente job. Runner --ephemeral en la misma máquina: acepta un job y GitHub lo da de baja, pero se registra también con un token de registro desde la máquina, y _work, _tool y los procesos que escapen a la limpieza quedan en la máquina para el próximo runner que se registre ahí. Runner JIT en un contenedor con --rm: la API lo registra desde fuera, en la máquina solo existe la configuración JIT de un solo uso, ejecuta como mucho un job y al salir el contenedor desaparece con _work, _tool y procesos. Conclusión: efímero describe al runner, no a la máquina; lo que garantiza que nada sobrevive es destruir la máquina.</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Qué sobrevive entre jobs</text>
+
+    <!-- cabeceras -->
+    <g font-size="14" font-weight="600" text-anchor="middle">
+      <rect x="250" y="60" width="220" height="48" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="360" y="82" fill="#e3b341">Persistente</text>
+      <text x="360" y="99" fill="#8b949e" font-size="11" font-weight="400">config.sh</text>
+      <rect x="480" y="60" width="220" height="48" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="590" y="82" fill="#e3b341">--ephemeral</text>
+      <text x="590" y="99" fill="#8b949e" font-size="11" font-weight="400">misma máquina</text>
+      <rect x="710" y="60" width="220" height="48" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="820" y="82" fill="#3fb950">JIT en contenedor</text>
+      <text x="820" y="99" fill="#8b949e" font-size="11" font-weight="400">docker run --rm</text>
+    </g>
+
+    <!-- etiquetas de fila -->
+    <g font-size="13" fill="#f0f6fc">
+      <text x="30" y="146">Jobs por runner</text>
+      <text x="30" y="200">Quién lo registra</text>
+      <text x="30" y="254">Credencial en la máquina</text>
+      <text x="30" y="308">_work y _tool</text>
+      <text x="30" y="356">Procesos que escapan</text><text x="30" y="372" fill="#8b949e" font-size="11">a la limpieza del runner</text>
+      <text x="30" y="416">La máquina</text>
+    </g>
+
+    <!-- celdas -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" text-anchor="middle">
+      <!-- jobs -->
+      <rect x="250" y="124" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="360" y="148" fill="#f85149">muchos</text>
+      <rect x="480" y="124" width="220" height="38" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="590" y="148" fill="#3fb950">uno</text>
+      <rect x="710" y="124" width="220" height="38" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="820" y="148" fill="#3fb950">uno como mucho</text>
+      <!-- registro -->
+      <rect x="250" y="178" width="220" height="38" rx="6" fill="#161b22" stroke="#e3b341"/>
+      <text x="360" y="202" fill="#e3b341">la máquina · token</text>
+      <rect x="480" y="178" width="220" height="38" rx="6" fill="#161b22" stroke="#e3b341"/>
+      <text x="590" y="202" fill="#e3b341">la máquina · token</text>
+      <rect x="710" y="178" width="220" height="38" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="820" y="202" fill="#3fb950">la API, desde fuera</text>
+      <!-- credencial -->
+      <rect x="250" y="232" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="360" y="256" fill="#d2a8ff">.credentials, siempre</text>
+      <rect x="480" y="232" width="220" height="38" rx="6" fill="#161b22" stroke="#e3b341"/>
+      <text x="590" y="256" fill="#d2a8ff">token y .credentials</text>
+      <rect x="710" y="232" width="220" height="38" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="820" y="256" fill="#d2a8ff">config JIT, un uso</text>
+      <!-- _work -->
+      <rect x="250" y="286" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="360" y="310" fill="#f85149">pasan al siguiente job</text>
+      <rect x="480" y="286" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="590" y="310" fill="#f85149">quedan en el disco</text>
+      <rect x="710" y="286" width="220" height="38" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="820" y="310" fill="#3fb950">se borran con --rm</text>
+      <!-- procesos -->
+      <rect x="250" y="340" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="360" y="364" fill="#f85149">ven el siguiente job</text>
+      <rect x="480" y="340" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="590" y="364" fill="#f85149">siguen vivos</text>
+      <rect x="710" y="340" width="220" height="38" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="820" y="364" fill="#3fb950">mueren con el contenedor</text>
+      <!-- máquina -->
+      <rect x="250" y="394" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="360" y="418" fill="#f85149">la misma</text>
+      <rect x="480" y="394" width="220" height="38" rx="6" fill="#161b22" stroke="#f85149"/>
+      <text x="590" y="418" fill="#f85149">la misma</text>
+      <rect x="710" y="394" width="220" height="38" rx="6" fill="#161b22" stroke="#3fb950"/>
+      <text x="820" y="418" fill="#3fb950">nueva en cada job</text>
+    </g>
+
+    <rect x="30" y="456" width="900" height="44" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="480" y="483" fill="#f0f6fc" font-size="13" text-anchor="middle">«Efímero» describe al runner, no a la máquina: lo que garantiza que nada sobrevive es destruir la máquina.</text>
+
+    <text x="480" y="530" fill="#8b949e" font-size="11" text-anchor="middle">Rojo: pasa al siguiente job. Amarillo: depende de cómo gestiones la máquina. Verde: desaparece. Morado: credenciales.</text>
+  </g>
+</svg>

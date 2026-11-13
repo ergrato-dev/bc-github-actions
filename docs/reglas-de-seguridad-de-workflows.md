@@ -179,7 +179,9 @@ Un runner propio en un repo público ejecuta en **tu máquina** lo que diga el w
 medidas, todas obligatorias:
 
 1. Efímero (JIT o ARC): un job y se destruye.
-2. En un runner group restringido a `tablero`.
+2. Que solo `tablero` pueda usarlo: runner registrado en el repositorio y la política de runners
+   de repositorio de la org limitada a `tablero`. En el plan Team, un runner group con
+   `visibility: selected`.
 3. Jobs `self-hosted` solo en `push` a `main`, `workflow_dispatch` o un environment protegido.
    Nunca en `pull_request`.
 4. Aprobación obligatoria de workflows para todos los contribuidores externos.

@@ -81,7 +81,7 @@ Hardware: Linux or WSL2 with Docker, **8 GB RAM** (16 GB recommended from Week 1
 | [12](bootcamp/week-12-modelo_de_amenazas_y_endurecimiento/README.md) | Threat model and hardening |
 | [13](bootcamp/week-13-secretos_entornos_y_oidc/README.md) | Secrets, environments and OIDC |
 | [14](bootcamp/week-14-releases_cadena_de_suministro_y_attestations/README.md) | Releases, supply chain and attestations |
-| 15 | Self-hosted runners |
+| [15](bootcamp/week-15-runners_self_hosted/README.md) | Self-hosted runners |
 | 16 | Actions Runner Controller on kind |
 | 17 | Continuous deployment to Kubernetes |
 | 18 | Merge queue, rulesets and monorepos |

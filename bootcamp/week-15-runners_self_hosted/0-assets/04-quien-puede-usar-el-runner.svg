@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t04">
+  <title id="t04">Quién puede mandar un job al runner propio de tablero, filtrado por cuatro capas. Cuatro orígenes a la izquierda y el runner JIT con la etiqueta tablero-lab a la derecha. Otro repo de tu organización se para en la primera capa, la política de runners de repositorio de la org en Selected con solo tablero, y además el runner es de repositorio. Un push o un pull_request normal de tablero pasa las dos primeras capas pero se para en la tercera: solo lab.yml pide tablero-lab y solo con workflow_dispatch; el resto corre en ubuntu-24.04. Un pull request de un fork que añade su propio workflow con runs-on self-hosted y tablero-lab se salta la tercera capa, porque trae su workflow, y se para en la cuarta: la aprobación para todos los contribuidores externos, que exige que un mantenedor lo apruebe tras revisar .github/workflows. Solo tú, lanzando lab.yml a mano con workflow_dispatch desde main, llegas al runner. Si algo pasa las cuatro capas, el contenedor endurecido y efímero limita el daño a un job.</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="g04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Quién puede usar el runner de tablero</text>
+
+    <!-- capas -->
+    <g font-size="12" text-anchor="middle">
+      <rect x="230" y="60" width="130" height="400" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="295" y="82" fill="#d2a8ff" font-weight="600">1 · Org</text>
+      <text x="295" y="100" fill="#8b949e" font-size="11">runners de repo:</text>
+      <text x="295" y="114" fill="#8b949e" font-size="11">solo tablero</text>
+
+      <rect x="380" y="60" width="130" height="400" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="445" y="82" fill="#d2a8ff" font-weight="600">2 · Repo</text>
+      <text x="445" y="100" fill="#8b949e" font-size="11">runner de tablero</text>
+      <text x="445" y="114" fill="#8b949e" font-size="11">etiqueta tablero-lab</text>
+
+      <rect x="530" y="60" width="130" height="400" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="595" y="82" fill="#2088ff" font-weight="600">3 · Disparador</text>
+      <text x="595" y="100" fill="#8b949e" font-size="11">solo lab.yml, solo</text>
+      <text x="595" y="114" fill="#8b949e" font-size="11">workflow_dispatch</text>
+
+      <rect x="680" y="60" width="130" height="400" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="745" y="82" fill="#e3b341" font-weight="600">4 · Forks</text>
+      <text x="745" y="100" fill="#8b949e" font-size="11">aprobación para</text>
+      <text x="745" y="114" fill="#8b949e" font-size="11">todo externo</text>
+    </g>
+
+    <!-- runner -->
+    <rect x="836" y="390" width="104" height="70" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="888" y="414" fill="#3fb950" font-size="12" font-weight="600" text-anchor="middle">runner JIT</text>
+    <text x="888" y="432" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-lab</text>
+    <text x="888" y="450" fill="#8b949e" font-size="10" text-anchor="middle">contenedor --rm</text>
+
+    <!-- orígenes -->
+    <g font-size="12">
+      <rect x="20" y="140" width="190" height="52" rx="8" fill="#0d1117" stroke="#30363d"/>
+      <text x="32" y="162" fill="#f0f6fc" font-weight="600">Otro repo de tu org</text>
+      <text x="32" y="180" fill="#8b949e" font-size="11">registra o pide un runner</text>
+
+      <rect x="20" y="220" width="190" height="52" rx="8" fill="#0d1117" stroke="#30363d"/>
+      <text x="32" y="242" fill="#f0f6fc" font-weight="600">push o PR normal</text>
+      <text x="32" y="260" fill="#8b949e" font-size="11">ci-api, ci-web, release…</text>
+
+      <rect x="20" y="300" width="190" height="52" rx="8" fill="#0d1117" stroke="#f85149"/>
+      <text x="32" y="322" fill="#f0f6fc" font-weight="600">PR de un fork</text>
+      <text x="32" y="340" fill="#f85149" font-size="11">trae su workflow con tablero-lab</text>
+
+      <rect x="20" y="398" width="190" height="52" rx="8" fill="#0d1117" stroke="#3fb950"/>
+      <text x="32" y="420" fill="#f0f6fc" font-weight="600">Tú, a mano</text>
+      <text x="32" y="438" fill="#8b949e" font-size="11">gh workflow run lab.yml</text>
+    </g>
+
+    <!-- recorridos -->
+    <path d="M210 166 L276 166" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="295" y="172" fill="#f85149" font-size="22" font-weight="600" text-anchor="middle">✕</text>
+
+    <path d="M210 246 L576 246" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="595" y="252" fill="#f85149" font-size="22" font-weight="600" text-anchor="middle">✕</text>
+    <text x="595" y="276" fill="#8b949e" font-size="10" text-anchor="middle">van a ubuntu-24.04</text>
+
+    <path d="M210 326 L726 326" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="595" y="318" fill="#e3b341" font-size="10" text-anchor="middle">trae su propio workflow</text>
+    <text x="745" y="332" fill="#f85149" font-size="22" font-weight="600" text-anchor="middle">✕</text>
+    <text x="745" y="356" fill="#8b949e" font-size="10" text-anchor="middle">revisa .github/workflows</text>
+    <text x="745" y="370" fill="#8b949e" font-size="10" text-anchor="middle">y no lo apruebes</text>
+
+    <path d="M210 424 L832 424" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g04)"/>
+
+    <text x="480" y="496" fill="#f0f6fc" font-size="12" text-anchor="middle">Si algo atraviesa las cuatro capas, el contenedor endurecido y efímero limita el daño a un job.</text>
+    <text x="480" y="530" fill="#8b949e" font-size="11" text-anchor="middle">Morado: configuración de la org y del repo. Azul: el workflow. Amarillo: una persona decide. Verde: el único camino abierto.</text>
+  </g>
+</svg>

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t03">
+  <title id="t03">Capas del contenedor del runner de tablero y qué pasa con el socket de Docker montado. A la izquierda, tu máquina, con su kernel, el demonio de Docker que corre como root y tu red local. Dentro, el contenedor del runner con seis capas: --rm borra el disco al salir; --cap-drop ALL quita todas las capacidades del kernel; --security-opt no-new-privileges impide escalar con sudo; --pids-limit 512, --memory 4g y --cpus 2 ponen techo; sin montar /var/run/docker.sock; y sin -p, ningún puerto abierto. En el centro, el usuario runner con uid 1001 ejecutando el job, que solo hace conexiones HTTPS salientes a GitHub. Lo que el contenedor no aísla: el kernel es el de tu máquina y la red llega a tu red local. A la derecha, el antipatrón: con el socket montado, el job le pide al demonio, que es root, un contenedor nuevo con la raíz del host montada en /host; ese contenedor nace con las opciones del demonio, no con las tuyas, así que cap-drop y no-new-privileges no le afectan, y el job lee y escribe tu disco como root.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="r03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Capas del contenedor del runner</text>
+
+    <!-- tablero: host -->
+    <text x="30" y="72" fill="#3fb950" font-size="14" font-weight="600">Así en tablero</text>
+    <rect x="30" y="84" width="520" height="440" rx="10" fill="#0d1117" stroke="#30363d" stroke-width="2"/>
+    <text x="46" y="108" fill="#f0f6fc" font-size="13" font-weight="600">Tu máquina</text>
+    <text x="534" y="108" fill="#8b949e" font-size="11" text-anchor="end">kernel compartido · dockerd (root) · red local</text>
+
+    <!-- contenedor -->
+    <rect x="50" y="122" width="480" height="382" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="66" y="146" fill="#3fb950" font-size="13" font-weight="600">docker run</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <rect x="66" y="158" width="448" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="78" y="178" fill="#f0f6fc">--rm</text>
+      <text x="502" y="178" fill="#8b949e" text-anchor="end">el disco del job muere con él</text>
+      <rect x="66" y="194" width="448" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="78" y="214" fill="#f0f6fc">--cap-drop ALL</text>
+      <text x="502" y="214" fill="#8b949e" text-anchor="end">ninguna capacidad del kernel</text>
+      <rect x="66" y="230" width="448" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="78" y="250" fill="#f0f6fc">--security-opt no-new-privileges</text>
+      <text x="502" y="250" fill="#8b949e" text-anchor="end">sudo no da root</text>
+      <rect x="66" y="266" width="448" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="78" y="286" fill="#f0f6fc">--pids-limit 512 --memory 4g --cpus 2</text>
+      <text x="502" y="286" fill="#8b949e" text-anchor="end">techo</text>
+      <rect x="66" y="302" width="448" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="78" y="322" fill="#f0f6fc">sin -v /var/run/docker.sock</text>
+      <text x="502" y="322" fill="#8b949e" text-anchor="end">no habla con dockerd</text>
+      <rect x="66" y="338" width="448" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="78" y="358" fill="#f0f6fc">sin -p</text>
+      <text x="502" y="358" fill="#8b949e" text-anchor="end">ningún puerto de entrada</text>
+
+      <rect x="130" y="384" width="320" height="104" rx="8" fill="#0d1117" stroke="#2088ff" stroke-width="2"/>
+      <text x="290" y="408" fill="#2088ff" font-size="13" font-weight="600" text-anchor="middle">job</text>
+      <text x="290" y="430" fill="#f0f6fc" text-anchor="middle">usuario runner · uid 1001</text>
+      <text x="290" y="450" fill="#d2a8ff" text-anchor="middle">ACTIONS_RUNNER_INPUT_JITCONFIG</text>
+      <text x="290" y="474" fill="#79c0ff" text-anchor="middle">→ github.com:443</text>
+    </g>
+    <text x="290" y="546" fill="#e3b341" font-size="12" text-anchor="middle">No aísla: el kernel ni lo que alcance por la red durante el job.</text>
+
+    <!-- antipatrón: socket -->
+    <text x="590" y="72" fill="#f85149" font-size="14" font-weight="600">Con el socket montado</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <rect x="590" y="84" width="340" height="80" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="606" y="108" fill="#f0f6fc" font-size="13" font-weight="600">job</text>
+      <text x="606" y="130" fill="#f85149">-v /var/run/docker.sock:</text>
+      <text x="606" y="148" fill="#f85149">   /var/run/docker.sock</text>
+
+      <rect x="590" y="200" width="340" height="72" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="606" y="224" fill="#f0f6fc" font-size="13" font-weight="600">dockerd · root</text>
+      <text x="606" y="246" fill="#8b949e">docker run -v /:/host …</text>
+      <text x="606" y="262" fill="#8b949e">pedido por el job</text>
+
+      <rect x="590" y="308" width="340" height="96" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="606" y="332" fill="#f0f6fc" font-size="13" font-weight="600">contenedor nuevo</text>
+      <text x="606" y="354" fill="#8b949e">opciones del demonio, no las tuyas:</text>
+      <text x="606" y="372" fill="#8b949e">cap-drop y no-new-privileges</text>
+      <text x="606" y="390" fill="#8b949e">no le afectan</text>
+
+      <rect x="590" y="440" width="340" height="64" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="606" y="464" fill="#f85149" font-size="13" font-weight="600">/ de tu máquina en /host</text>
+      <text x="606" y="486" fill="#f0f6fc">el job lee y escribe como root</text>
+    </g>
+    <path d="M760 164 L760 196" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#r03)"/>
+    <path d="M760 272 L760 304" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#r03)"/>
+    <path d="M760 404 L760 436" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#r03)"/>
+    <text x="760" y="546" fill="#f85149" font-size="12" text-anchor="middle">Quien habla con el socket es root en tu máquina.</text>
+
+    <text x="480" y="584" fill="#8b949e" font-size="11" text-anchor="middle">Verde: el contenedor de tablero. Rojo: el antipatrón. Imagen ghcr.io/actions/actions-runner:2.338.2, noviembre de 2026.</text>
+  </g>
+</svg>

@@ -49,7 +49,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| 15 | Runners propios | ⬜ |
+| [15](week-15-runners_self_hosted/README.md) | Runners propios | ✅ |
 | 16 | Actions Runner Controller en kind | ⬜ |
 | 17 | Despliegue continuo a Kubernetes | ⬜ |
 
