@@ -133,4 +133,4 @@ cuando se usa en la documentación. Glosario de todas las semanas:
 
 | ← Anterior | Siguiente → |
 |:---|---:|
-| [Webgrafía](../4-recursos/webgrafia/README.md) | [Índice del bootcamp](../../README.md) |
+| [Webgrafía](../4-recursos/webgrafia/README.md) | [Semana 18 — Merge queue, rulesets y monorepos](../../week-18-merge_queue_rulesets_y_monorepos/README.md) |

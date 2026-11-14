@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t02">
+  <title id="t02">Tres casos de un check obligatorio en un PR que solo toca web. Primero, un workflow con filtro paths sobre api: el workflow no se crea, su check nunca llega, queda como Expected y el PR se bloquea para siempre. Segundo, un workflow que siempre corre con un job api cuyo if es falso: el job se salta, un job saltado cuenta como success y el PR se puede fusionar, que es lo correcto si api no cambió. Tercero, un job puerta ci-gate cuando el job api falla: sin if always, la puerta se salta, cuenta como success y el PR entra con los tests en rojo; con if always, la puerta corre, jq ve failure en needs, ci-gate sale en rojo y el PR queda bloqueado.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Un PR que solo toca web/: tres formas de exigir el CI</text>
+
+    <!-- panel A -->
+    <rect x="30" y="58" width="280" height="462" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="84" fill="#f0f6fc" font-size="14" font-weight="600">1 · Workflow con paths</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <rect x="46" y="100" width="248" height="56" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="58" y="122" fill="#2088ff" font-weight="600">ci-api.yml</text>
+      <text x="58" y="142" fill="#79c0ff">paths: [api/**]</text>
+      <path d="M170 156 L170 182" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+      <rect x="46" y="186" width="248" height="56" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="58" y="208" fill="#8b949e" font-weight="600">el workflow no se crea</text>
+      <text x="58" y="228" fill="#8b949e" font-size="11">no hay jobs ni checks</text>
+      <path d="M170 242 L170 268" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+      <rect x="46" y="272" width="248" height="56" rx="6" fill="#0d1117" stroke="#e3b341" stroke-width="2"/>
+      <text x="58" y="294" fill="#e3b341" font-weight="600">check: Expected</text>
+      <text x="58" y="314" fill="#8b949e" font-size="11">esperando un status que no llega</text>
+      <path d="M170 328 L170 354" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+      <rect x="46" y="358" width="248" height="56" rx="6" fill="#0d1117" stroke="#f85149" stroke-width="2"/>
+      <text x="58" y="380" fill="#f85149" font-weight="600">PR bloqueado</text>
+      <text x="58" y="400" fill="#8b949e" font-size="11">para siempre</text>
+    </g>
+    <text x="46" y="448" fill="#8b949e" font-size="11">Workflow saltado por paths, branches</text>
+    <text x="46" y="464" fill="#8b949e" font-size="11">o [skip ci]: su check queda pendiente.</text>
+    <text x="46" y="496" fill="#f85149" font-size="12" font-weight="600">No sirve como check obligatorio</text>
+
+    <!-- panel B -->
+    <rect x="340" y="58" width="280" height="462" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="356" y="84" fill="#f0f6fc" font-size="14" font-weight="600">2 · Job con if:</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <rect x="356" y="100" width="248" height="56" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="368" y="122" fill="#2088ff" font-weight="600">ci.yml · siempre corre</text>
+      <text x="368" y="142" fill="#79c0ff">job api: if: … == 'true'</text>
+      <path d="M480 156 L480 182" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+      <rect x="356" y="186" width="248" height="56" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="368" y="208" fill="#8b949e" font-weight="600">api: skipped</text>
+      <text x="368" y="228" fill="#8b949e" font-size="11">el if es falso: api/ no cambió</text>
+      <path d="M480 242 L480 268" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+      <rect x="356" y="272" width="248" height="56" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="368" y="294" fill="#3fb950" font-weight="600">cuenta como success</text>
+      <text x="368" y="314" fill="#8b949e" font-size="11">success · skipped · neutral</text>
+      <path d="M480 328 L480 354" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+      <rect x="356" y="358" width="248" height="56" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="368" y="380" fill="#3fb950" font-weight="600">PR fusionable</text>
+      <text x="368" y="400" fill="#8b949e" font-size="11">correcto: no había nada que probar</text>
+    </g>
+    <text x="356" y="448" fill="#8b949e" font-size="11">El check existe y se resuelve. Pero un</text>
+    <text x="356" y="464" fill="#8b949e" font-size="11">salto por otro motivo también es verde.</text>
+    <text x="356" y="496" fill="#e3b341" font-size="12" font-weight="600">Sirve si algo vigila los saltos</text>
+
+    <!-- panel C -->
+    <rect x="650" y="58" width="280" height="462" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="666" y="84" fill="#f0f6fc" font-size="14" font-weight="600">3 · Puerta, si api falla</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <rect x="666" y="100" width="248" height="40" rx="6" fill="#0d1117" stroke="#f85149"/>
+      <text x="678" y="125" fill="#f85149" font-weight="600">api: failure</text>
+
+      <text x="666" y="166" fill="#f0f6fc" font-weight="600">ci-gate sin if:</text>
+      <rect x="666" y="176" width="248" height="56" rx="6" fill="#0d1117" stroke="#f85149" stroke-width="2"/>
+      <text x="678" y="198" fill="#f85149" font-weight="600">ci-gate: skipped → success</text>
+      <text x="678" y="218" fill="#8b949e" font-size="11">el PR entra con los tests en rojo</text>
+
+      <text x="666" y="262" fill="#f0f6fc" font-weight="600">ci-gate con if: always()</text>
+      <rect x="666" y="272" width="248" height="72" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="678" y="294" fill="#79c0ff" font-size="11">RESULTS: toJSON(needs.*.result)</text>
+      <text x="678" y="312" fill="#f0f6fc" font-size="11">jq -e 'all(.[]; . == "success"</text>
+      <text x="704" y="330" fill="#f0f6fc" font-size="11">or . == "skipped")'</text>
+      <path d="M790 344 L790 354" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+      <rect x="666" y="358" width="248" height="56" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="678" y="380" fill="#3fb950" font-weight="600">ci-gate: failure</text>
+      <text x="678" y="400" fill="#8b949e" font-size="11">PR bloqueado, como debe</text>
+    </g>
+    <text x="666" y="448" fill="#8b949e" font-size="11">La puerta nunca se salta, y acepta</text>
+    <text x="666" y="464" fill="#8b949e" font-size="11">skipped solo de los jobs de área.</text>
+    <text x="666" y="496" fill="#3fb950" font-size="12" font-weight="600">El único check que exige tablero</text>
+
+    <text x="480" y="556" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y flujo. Amarillo: check pendiente. Verde: lo que cuenta como éxito o lo que protege bien.</text>
+    <text x="480" y="574" fill="#8b949e" font-size="11" text-anchor="middle">Rojo: fallo, o un éxito que no debería serlo. Gris discontinuo: lo que no llega a existir.</text>
+  </g>
+</svg>

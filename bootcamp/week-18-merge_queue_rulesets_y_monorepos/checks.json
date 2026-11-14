@@ -1,0 +1,132 @@
+{
+  "week": "18",
+  "title": "Merge queue, rulesets y monorepos",
+  "checks": [
+    {
+      "id": "changed-areas-script",
+      "description": "scripts/changed-areas.sh marca solo las áreas que tocan los archivos cambiados, y todas si cambia .github/ o no hay base",
+      "cmd": "s=\"$PWD/scripts/changed-areas.sh\"; t=$(mktemp -d); cd \"$t\" && git init -q && k() { git add -A && git -c user.name=t -c user.email=t@t commit -q --allow-empty -m \"$1\"; } && k root && mkdir web && touch web/a && k web && w=$(\"$s\" HEAD~1 | sort | tr '\\n' ' ') && mkdir .github && touch .github/a && k dotgithub && g=$(\"$s\" HEAD~1 | sort | tr '\\n' ' ') && n=$(\"$s\" \"\" | sort | tr '\\n' ' '); cd / && rm -rf \"$t\"; echo \"web: $w| github: $g| none: $n\"",
+      "assert": "stdout~^web: api=false smoke=true tools=false web=true workflows=false \\| github: api=true smoke=true tools=true web=true workflows=true \\| none: api=true smoke=true tools=true web=true workflows=true $",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 1"
+    },
+    {
+      "id": "ci-triggers",
+      "description": "ci.yml corre en pull_request, en merge_group y en push a main",
+      "cmd": "yq '(.on | keys | sort | join(\",\")) + \" push=\" + (.on.push.branches // [] | join(\",\"))' .github/workflows/ci.yml",
+      "assert": "stdout~^merge_group,pull_request,push,workflow_dispatch push=main$",
+      "hint": "2-practicas/03-merge-queue.md, paso 1"
+    },
+    {
+      "id": "ci-changes-job",
+      "description": "El job changes de ci.yml calcula las áreas con scripts/changed-areas.sh contra la base del PR, de la cola o del push, con el historial completo",
+      "cmd": "yq '.jobs.changes | ([.steps[].env.BASE // \"\"] | join(\"\")) as $b | \"outputs=\" + (.outputs // {} | keys | sort | join(\",\")) + \" depth=\" + ([.steps[] | select(.uses // \"\" | test(\"^actions/checkout@\")) | .with.\"fetch-depth\"] | join(\",\")) + \" script=\" + ([.steps[] | select(.run // \"\" | test(\"scripts/changed-areas\\.sh \\\"\\$BASE\\\".*GITHUB_OUTPUT\"))] | length | tostring) + \" base=\" + (($b | test(\"pull_request\\.base\\.sha\")) and ($b | test(\"merge_group\\.base_sha\")) and ($b | test(\"event\\.before\")) | tostring)' .github/workflows/ci.yml",
+      "assert": "stdout~^outputs=api,smoke,tools,web,workflows depth=0 script=1 base=true$",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 2"
+    },
+    {
+      "id": "areas-called-by-changes",
+      "description": "ci.yml llama a ci-api, ci-web, ci-tools, smoke y lint-workflows como reutilizables, cada uno solo si su área cambia",
+      "cmd": "yq '[.jobs | to_entries | .[] | select(.value.uses // \"\" | test(\"^\\./\\.github/workflows/\")) | select((.value.if // \"\") == \"needs.changes.outputs.\" + .key + \" == '\"'\"'true'\"'\"'\") | .key + \":\" + (.value.uses | sub(\".*/\"; \"\") | sub(\"\\.yml$\"; \"\"))] | sort | join(\" \")' .github/workflows/ci.yml",
+      "assert": "stdout~^api:ci-api smoke:smoke tools:ci-tools web:ci-web workflows:lint-workflows$",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 3"
+    },
+    {
+      "id": "areas-callable-only",
+      "description": "ci-api, ci-web, ci-tools, smoke y lint-workflows solo se disparan por workflow_call o a mano, y sin concurrency propia",
+      "cmd": "for f in ci-api ci-web ci-tools smoke lint-workflows; do printf '%s=%s ' \"$f\" \"$(yq '(.on | keys | sort | join(\",\")) + (if has(\"concurrency\") then \":concurrency\" else \"\" end)' .github/workflows/$f.yml)\"; done",
+      "assert": "stdout~^ci-api=workflow_call,workflow_dispatch ci-web=workflow_call,workflow_dispatch ci-tools=workflow_call,workflow_dispatch smoke=workflow_call,workflow_dispatch lint-workflows=workflow_call,workflow_dispatch $",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 3"
+    },
+    {
+      "id": "ci-gate-needs-all",
+      "description": "ci-gate corre siempre, sin permisos, después de todos los jobs de ci.yml salvo runner-info y summary",
+      "cmd": "yq '.jobs.\"ci-gate\" | \"if=\" + (.if // \"\" | test(\"always[(][)]\") | tostring) + \" perms=\" + (.permissions | tag) + \":\" + (.permissions | length | tostring) + \" needs=\" + (.needs // [] | sort | join(\",\"))' .github/workflows/ci.yml",
+      "assert": "stdout~^if=true perms=!!map:0 needs=api,changes,smoke,sql,structure,tools,version,web,workflows$",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 4"
+    },
+    {
+      "id": "ci-gate-blocks",
+      "description": "ci-gate pasa si todo terminó en success o skipped, y falla si algún job falló o se canceló",
+      "cmd": "r=$(yq '.jobs.\"ci-gate\".steps[-1].run' .github/workflows/ci.yml); g() { RESULTS=\"$1\" bash -c \"$r\" >/dev/null 2>&1 && echo pass || echo block; }; echo \"ok=$(g '[\"success\",\"skipped\"]') failure=$(g '[\"success\",\"failure\"]') cancelled=$(g '[\"cancelled\",\"success\"]')\"",
+      "assert": "stdout~^ok=pass failure=block cancelled=block$",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 4"
+    },
+    {
+      "id": "pr-report-follows-ci",
+      "description": "pr-report.yml escucha a ci y solo comenta cuando el run trae el artefacto dist-report",
+      "cmd": "yq '\"from=\" + (.on.workflow_run.workflows | join(\",\")) + \" guarded=\" + ([.jobs[].steps[] | select(.if // \"\" | test(\"steps\\.\")) ] | length | tostring)' .github/workflows/pr-report.yml",
+      "assert": "stdout~^from=ci guarded=[2-9]$",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 5"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "actionlint y zizmor pasan sin hallazgos sobre los workflows de tablero",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/01-un-solo-check-para-un-monorepo.md, paso 6"
+    },
+    {
+      "id": "codeowners",
+      "description": "CODEOWNERS asigna dueño a /.github/ y a /ops/",
+      "cmd": "grep -E '^/(\\.github|ops)/[[:space:]]+@[A-Za-z0-9-]' .github/CODEOWNERS | awk '{print $1}' | sort | tr '\\n' ' '",
+      "assert": "stdout~^/\\.github/ /ops/ $",
+      "hint": "2-practicas/02-ruleset-y-codeowners-en-main.md, paso 1"
+    },
+    {
+      "id": "ruleset-file",
+      "description": "ops/github/ruleset-main.yaml protege la rama por defecto sin excepciones: sin borrado ni force push, PR obligatorio sin aprobaciones, ci-gate de GitHub Actions como check y merge queue",
+      "cmd": "yq -o=json ops/github/ruleset-main.yaml | jq -r '\"target=\\(.target) \\(.enforcement) ref=\\(.conditions.ref_name.include | join(\",\")) bypass=\\(.bypass_actors | length) rules=\\([.rules[].type] | sort | join(\",\")) approvals=\\(.rules[] | select(.type == \"pull_request\") | .parameters.required_approving_review_count) checks=\\([.rules[] | select(.type == \"required_status_checks\") | .parameters.required_status_checks[] | \"\\(.context)@\\(.integration_id)\"] | join(\",\"))\"'",
+      "assert": "stdout~^target=branch active ref=~DEFAULT_BRANCH bypass=0 rules=deletion,merge_queue,non_fast_forward,pull_request,required_status_checks approvals=0 checks=ci-gate@15368$",
+      "hint": "2-practicas/02-ruleset-y-codeowners-en-main.md, paso 2, y 2-practicas/03-merge-queue.md, paso 2"
+    },
+    {
+      "id": "release-app-token",
+      "description": "El job release-please de release.yml no da permisos a GITHUB_TOKEN y usa un token de la GitHub App, limitado a contents y pull-requests, desde el environment release",
+      "cmd": "yq -o=json '.jobs.\"release-please\"' .github/workflows/release.yml | jq -r '. as $j | ([.steps[] | select(.uses // \"\" | test(\"^actions/create-github-app-token@[0-9a-f]{40}$\"))][0]) as $a | \"perms=\\(.permissions | tojson) env=\\(.environment) client=\\($a.with.\"client-id\") key=\\($a.with.\"private-key\") scope=\\([$a.with | to_entries[] | select(.key | startswith(\"permission-\")) | \"\\(.key)=\\(.value)\"] | sort | join(\",\")) token=\\([.steps[] | select(.uses // \"\" | test(\"^googleapis/release-please-action@\")) | .with.token] | join(\"\"))\" | gsub(\" \"; \"\")'",
+      "assert": "stdout~^perms=\\{\\}env=releaseclient=\\$\\{\\{vars\\.RELEASE_APP_CLIENT_ID\\}\\}key=\\$\\{\\{secrets\\.RELEASE_APP_PRIVATE_KEY\\}\\}scope=permission-contents=write,permission-pull-requests=writetoken=\\$\\{\\{steps\\.[A-Za-z0-9_-]+\\.outputs\\.token\\}\\}$",
+      "hint": "2-practicas/04-release-please-con-una-github-app.md, paso 3"
+    },
+    {
+      "id": "ruleset-active",
+      "description": "La rama main de tablero tiene activas las reglas del ruleset, con ci-gate de GitHub Actions como check obligatorio",
+      "cmd": "gh api repos/{owner}/{repo}/rules/branches/main --jq '\"rules=\\([.[].type] | unique | join(\",\")) checks=\\([.[] | select(.type == \"required_status_checks\") | .parameters.required_status_checks[] | \"\\(.context)@\\(.integration_id)\"] | join(\",\"))\"'",
+      "assert": "stdout~^rules=deletion,merge_queue,non_fast_forward,pull_request,required_status_checks checks=ci-gate@15368$",
+      "hint": "2-practicas/02-ruleset-y-codeowners-en-main.md, paso 3, y 2-practicas/03-merge-queue.md, paso 2"
+    },
+    {
+      "id": "codeowners-valid",
+      "description": "GitHub no encuentra errores en el CODEOWNERS de tablero",
+      "cmd": "gh api repos/{owner}/{repo}/codeowners/errors --jq '.errors | length'",
+      "assert": "stdout~^0$",
+      "hint": "2-practicas/02-ruleset-y-codeowners-en-main.md, paso 1"
+    },
+    {
+      "id": "actions-cannot-approve",
+      "description": "Ni la organización ni tablero dejan que GITHUB_TOKEN cree o apruebe pull requests",
+      "cmd": "printf 'org=%s repo=%s' \"$(gh api orgs/{owner}/actions/permissions/workflow --jq .can_approve_pull_request_reviews)\" \"$(gh api repos/{owner}/{repo}/actions/permissions/workflow --jq .can_approve_pull_request_reviews)\"",
+      "assert": "stdout~^org=false repo=false$",
+      "hint": "2-practicas/04-release-please-con-una-github-app.md, paso 4"
+    },
+    {
+      "id": "release-environment",
+      "description": "El environment release solo admite main y guarda la clave privada y el client ID de la App",
+      "cmd": "printf 'branches=%s secrets=%s vars=%s' \"$(gh api repos/{owner}/{repo}/environments/release/deployment-branch-policies --jq '[.branch_policies[] | .type + \"/\" + .name] | join(\",\")')\" \"$(gh api repos/{owner}/{repo}/environments/release/secrets --jq '[.secrets[].name] | join(\",\")')\" \"$(gh api repos/{owner}/{repo}/environments/release/variables --jq '[.variables[].name] | join(\",\")')\"",
+      "assert": "stdout~^branches=branch/main secrets=RELEASE_APP_PRIVATE_KEY vars=RELEASE_APP_CLIENT_ID$",
+      "hint": "2-practicas/04-release-please-con-una-github-app.md, paso 2"
+    },
+    {
+      "id": "merged-through-queue",
+      "description": "El PR del último commit de main pasó ci-gate en la merge queue y ci volvió a pasar en el push a main",
+      "cmd": "git fetch -q origin main && sha=$(git rev-parse origin/main) && n=$(gh api \"repos/{owner}/{repo}/commits/$sha/pulls\" --jq '.[0].number') && printf 'queue=%s push=%s' \"$(gh run list --workflow ci.yml --event merge_group --limit 50 --json headBranch,conclusion --jq \"[.[] | select(.headBranch | test(\\\"/pr-$n(-|\\$)\\\"))][0].conclusion\")\" \"$(gh run list --workflow ci.yml --event push --commit \"$sha\" --json conclusion --jq '.[0].conclusion')\"",
+      "assert": "stdout~^queue=success push=success$",
+      "hint": "2-practicas/03-merge-queue.md, paso 4"
+    },
+    {
+      "id": "release-pr-by-app",
+      "description": "El último PR de release lo abrió la GitHub App, no GITHUB_TOKEN, y ci-gate corrió en verde sobre él",
+      "cmd": "gh pr list --state merged --label 'autorelease: tagged' --limit 1 --json author,headRefOid --jq '.[0] | \"\\(.author.login) \\(.headRefOid)\"' | { read -r who sha; printf 'bot=%s gate=%s' \"$([[ $who == app/* && $who != app/github-actions ]] && echo app || echo \"$who\")\" \"$(gh api \"repos/{owner}/{repo}/commits/$sha/check-runs?check_name=ci-gate\" --jq '[.check_runs[].conclusion] | first')\"; }",
+      "assert": "stdout~^bot=app gate=success$",
+      "hint": "2-practicas/04-release-please-con-una-github-app.md, paso 5"
+    }
+  ]
+}

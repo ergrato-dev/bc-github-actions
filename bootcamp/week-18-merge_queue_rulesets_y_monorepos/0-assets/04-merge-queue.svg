@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="t04">
+  <title id="t04">La merge queue de tablero con tres PR en fila: 7, 9 y 12. Para cada uno la cola crea una rama temporal gh-readonly-queue/main/pr-N con main más los PR que van delante más el suyo: main más 7; main más 7 más 9; main más 7 más 9 más 12. Los tres grupos se prueban a la vez con el evento merge_group, que ejecuta ci.yml y su ci-gate. El grupo de 7 pasa y 7 entra en main. El grupo de 9 falla: 9 sale de la cola. El grupo de 12 contenía a 9, así que se rehace como main más 7 más 12, pasa y 12 entra. Abajo, el evento merge_group: tipo checks_requested, GITHUB_SHA es el SHA del grupo y merge_group.base_sha el commit que el grupo tiene delante; si ci.yml no escucha merge_group, ci-gate no llega y el PR sale al agotar el timeout. Y los parámetros de tablero: merge_method SQUASH, grouping_strategy ALLGREEN, 5 grupos a la vez, entre 1 y 5 PR por fusión, sin espera y 30 minutos de timeout.</title>
+  <rect width="960" height="640" fill="#0d1117"/>
+  <defs>
+    <marker id="a04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Merge queue: cada PR se prueba sobre lo que habrá en main</text>
+
+    <text x="30" y="76" fill="#f0f6fc" font-size="13" font-weight="600">En la cola</text>
+    <text x="200" y="76" fill="#f0f6fc" font-size="13" font-weight="600">Grupos, probados a la vez con merge_group</text>
+    <text x="930" y="76" fill="#f0f6fc" font-size="13" font-weight="600" text-anchor="end">Resultado</text>
+
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <!-- fila #7 -->
+      <rect x="30" y="92" width="140" height="56" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="100" y="125" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">#7</text>
+      <rect x="200" y="96" width="90" height="26" fill="#161b22" stroke="#30363d"/>
+      <text x="245" y="114" fill="#8b949e" text-anchor="middle">main</text>
+      <rect x="290" y="96" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="320" y="114" fill="#f0f6fc" text-anchor="middle">#7</text>
+      <text x="200" y="140" fill="#8b949e">gh-readonly-queue/main/pr-7-…</text>
+      <text x="640" y="114" fill="#3fb950" font-weight="600" text-anchor="end">ci-gate ✔</text>
+      <path d="M648 110 L676 110" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+      <rect x="680" y="92" width="250" height="40" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="694" y="117" fill="#3fb950" font-weight="600">#7 entra en main</text>
+
+      <!-- fila #9 -->
+      <rect x="30" y="168" width="140" height="56" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="100" y="201" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">#9</text>
+      <rect x="200" y="172" width="90" height="26" fill="#161b22" stroke="#30363d"/>
+      <text x="245" y="190" fill="#8b949e" text-anchor="middle">main</text>
+      <rect x="290" y="172" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="320" y="190" fill="#f0f6fc" text-anchor="middle">#7</text>
+      <rect x="350" y="172" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="380" y="190" fill="#f0f6fc" text-anchor="middle">#9</text>
+      <text x="200" y="216" fill="#8b949e">gh-readonly-queue/main/pr-9-…</text>
+      <text x="640" y="190" fill="#f85149" font-weight="600" text-anchor="end">ci-gate ✕</text>
+      <path d="M648 186 L676 186" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+      <rect x="680" y="168" width="250" height="40" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="694" y="193" fill="#f85149" font-weight="600">#9 sale de la cola</text>
+
+      <!-- fila #12 -->
+      <rect x="30" y="244" width="140" height="56" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="100" y="277" fill="#f0f6fc" font-size="14" font-weight="600" text-anchor="middle">#12</text>
+      <rect x="200" y="248" width="90" height="26" fill="#161b22" stroke="#30363d"/>
+      <text x="245" y="266" fill="#8b949e" text-anchor="middle">main</text>
+      <rect x="290" y="248" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="320" y="266" fill="#f0f6fc" text-anchor="middle">#7</text>
+      <rect x="350" y="248" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="380" y="266" fill="#f0f6fc" text-anchor="middle">#9</text>
+      <rect x="410" y="248" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="440" y="266" fill="#f0f6fc" text-anchor="middle">#12</text>
+      <text x="200" y="292" fill="#8b949e">gh-readonly-queue/main/pr-12-…</text>
+      <text x="640" y="266" fill="#8b949e" text-anchor="end">contiene #9</text>
+      <path d="M648 262 L676 262" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+      <rect x="680" y="244" width="250" height="40" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="694" y="269" fill="#e3b341" font-weight="600">#12 se reconstruye</text>
+
+      <!-- fila #12 rehecha -->
+      <path d="M805 284 L805 316 L478 316" stroke="#e3b341" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#a04)"/>
+      <rect x="200" y="324" width="90" height="26" fill="#161b22" stroke="#30363d"/>
+      <text x="245" y="342" fill="#8b949e" text-anchor="middle">main</text>
+      <rect x="290" y="324" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="320" y="342" fill="#f0f6fc" text-anchor="middle">#7</text>
+      <rect x="350" y="324" width="60" height="26" fill="#161b22" stroke="#2088ff"/>
+      <text x="380" y="342" fill="#f0f6fc" text-anchor="middle">#12</text>
+      <text x="200" y="368" fill="#8b949e">nuevo grupo, sin #9</text>
+      <text x="640" y="342" fill="#3fb950" font-weight="600" text-anchor="end">ci-gate ✔</text>
+      <path d="M648 338 L676 338" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+      <rect x="680" y="320" width="250" height="40" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="694" y="345" fill="#3fb950" font-weight="600">#12 entra en main</text>
+    </g>
+
+    <!-- evento -->
+    <rect x="30" y="400" width="440" height="168" rx="10" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="426" fill="#2088ff" font-size="14" font-weight="600">Evento merge_group en ci.yml</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="46" y="450" fill="#f0f6fc">types: checks_requested (el único)</text>
+      <text x="46" y="470" fill="#79c0ff">GITHUB_SHA = SHA del grupo</text>
+      <text x="46" y="490" fill="#79c0ff">merge_group.base_sha = commit de delante</text>
+      <text x="46" y="510" fill="#8b949e">→ BASE del job changes: solo las áreas de este PR</text>
+      <text x="46" y="536" fill="#f85149">sin merge_group: ci-gate no llega,</text>
+      <text x="46" y="554" fill="#f85149">timeout y el PR sale de la cola</text>
+    </g>
+
+    <!-- parámetros -->
+    <rect x="490" y="400" width="440" height="168" rx="10" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="506" y="426" fill="#d2a8ff" font-size="14" font-weight="600">Regla merge_queue de tablero</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="506" y="450" fill="#f0f6fc">merge_method: SQUASH</text>
+      <text x="914" y="450" fill="#8b949e" text-anchor="end">en mayúsculas</text>
+      <text x="506" y="470" fill="#f0f6fc">grouping_strategy: ALLGREEN</text>
+      <text x="914" y="470" fill="#8b949e" text-anchor="end">cada grupo pasa</text>
+      <text x="506" y="490" fill="#f0f6fc">max_entries_to_build: 5</text>
+      <text x="914" y="490" fill="#8b949e" text-anchor="end">grupos a la vez</text>
+      <text x="506" y="510" fill="#f0f6fc">min 1 · max 5 · wait 0</text>
+      <text x="914" y="510" fill="#8b949e" text-anchor="end">PR por fusión</text>
+      <text x="506" y="530" fill="#f0f6fc">check_response_timeout_minutes: 30</text>
+      <text x="506" y="554" fill="#3fb950">strict: false en required_status_checks</text>
+    </g>
+
+    <text x="480" y="600" fill="#8b949e" font-size="11" text-anchor="middle">Gris: main. Azul: los PR, el evento y el flujo. Verde: entra en main. Rojo: falla o sale de la cola. Amarillo: el grupo que hay que rehacer.</text>
+    <text x="480" y="618" fill="#8b949e" font-size="11" text-anchor="middle">Morado: la configuración del ruleset.</text>
+  </g>
+</svg>

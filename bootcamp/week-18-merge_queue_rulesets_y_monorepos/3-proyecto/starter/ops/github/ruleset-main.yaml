@@ -1,0 +1,33 @@
+# Copia en <tu-org>/tablero como ops/github/ruleset-main.yaml. Se aplica convertido a JSON:
+#   yq -o=json ops/github/ruleset-main.yaml | gh api -X POST repos/{owner}/{repo}/rulesets --input -
+name: main
+target: branch
+enforcement: active
+conditions:
+  ref_name:
+    include: ["~DEFAULT_BRANCH"]
+    exclude: []
+# TODO 11: en tablero nadie se salta el ruleset, tampoco el rol admin (id 5).
+bypass_actors:
+  - actor_id: 5
+    actor_type: RepositoryRole
+    bypass_mode: always
+rules:
+  - type: deletion
+  - type: non_fast_forward
+  - type: pull_request
+    parameters:
+      # TODO 12: trabajas solo y GitHub no deja aprobar tu propio PR.
+      required_approving_review_count: 1
+      dismiss_stale_reviews_on_push: false
+      require_code_owner_review: false
+      require_last_push_approval: false
+      required_review_thread_resolution: true
+      allowed_merge_methods: [squash]
+  - type: required_status_checks
+    parameters:
+      strict_required_status_checks_policy: false
+      do_not_enforce_on_create: false
+      # TODO 13: ci-gate como único check, emitido por la app de GitHub Actions.
+      required_status_checks: []
+  # TODO 14 (práctica 03): la regla merge_queue, con squash y ALLGREEN.

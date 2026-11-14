@@ -90,7 +90,7 @@ Equipo: Linux o WSL2 con Docker, **8 GB de RAM** (16 GB recomendados desde la Se
 | [15](bootcamp/week-15-runners_self_hosted/README.md) | Runners propios |
 | [16](bootcamp/week-16-actions_runner_controller_en_kind/README.md) | Actions Runner Controller en kind |
 | [17](bootcamp/week-17-despliegue_continuo_a_kubernetes/README.md) | Despliegue continuo a Kubernetes |
-| 18 | Merge queue, rulesets y monorepos |
+| [18](bootcamp/week-18-merge_queue_rulesets_y_monorepos/README.md) | Merge queue, rulesets y monorepos |
 | 19 | Rendimiento, coste y observabilidad |
 | 20 | Capstone: un pipeline de producción defendido |
 

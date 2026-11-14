@@ -163,14 +163,19 @@ lo que cuenta es la semana en curso.
 | `id-token-scoped` | 13 | 17 | Los jobs con `id-token: write` pasan a ser `staging` y `production` de `deploy.yml` |
 | `writes-only-where-needed` | 13 y 14 | 17 | `deploy.yml` pide `id-token: write` y el job `deploy` de `release.yml`, `actions: write` |
 | `own-runners-only-in-lab` | 16 | 17 | `deploy.yml` también usa `tablero-runners`; la S17 lo comprueba con `own-runners-dispatch-only` |
-| `org-default-token-read` | 11 | 14 | release-please necesita `can_approve_pull_request_reviews=true`; la Semana 18 cierra el riesgo con revisión obligatoria |
+| `org-default-token-read` | 11 | 14 (vuelve a verde en la 18) | release-please necesita `can_approve_pull_request_reviews=true` en la S14; en la S18 usa el token de una GitHub App y el ajuste vuelve a `false` |
+| `ci-api-paths`, `ci-web-paths`, `lint-paths` y `paths-include-reusable` | 07, 08 y 09 | 18 | Los workflows de área pierden `push` y `pull_request`: `ci.yml` los llama con `workflow_call` según `scripts/changed-areas.sh` |
+| `jobs-timeout` | 08 | 18 | Los jobs de `ci.yml` que llaman a un reutilizable no admiten `timeout-minutes`: el límite va en los jobs del reutilizable |
+| `lint-green-on-main`, `callers-green-on-main`, `test-actions-green-on-main` y `green-on-main` | 08, 09, 10, 11 y 12 | 18 | `ci-api`, `ci-web` y `lint-workflows` ya no tienen runs propios: corren dentro del run de `ci`, que la S18 comprueba con `merged-through-queue` |
+| `pr-report-safe` | 12 | 18 | `pr-report.yml` escucha a `ci` en vez de a `ci-web` |
+| `release-please-permissions` | 14 | 18 | El job `release-please` deja `GITHUB_TOKEN` sin permisos: escribe con el token de la GitHub App |
 
 ## Permisos de `gh` por semana
 
 | Semanas | Scopes del token de `gh` | Por qué |
 |---|---|---|
 | 01-20 | `repo`, `workflow` | Leer runs y subir `.github/workflows/` |
-| 11, 15, 18 | además `admin:org` | Leer políticas de actions, runner groups y rulesets de organización |
+| 11, 15, 18 | además `admin:org` | Leer las políticas de Actions de la organización: actions permitidas, runners y lo que puede hacer `GITHUB_TOKEN` |
 
 `./scripts/check-week.sh --doctor` te dice qué scopes tienes. Para añadir uno:
 `gh auth refresh -s admin:org`.

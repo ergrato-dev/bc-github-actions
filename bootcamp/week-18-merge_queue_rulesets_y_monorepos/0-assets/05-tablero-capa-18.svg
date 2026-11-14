@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960" role="img" aria-labelledby="t18">
+  <title id="t18">Mapa del pipeline de tablero en la capa 18. Arriba, la regla de todos los workflows desde la capa 12: permissions vacío en la raíz, permisos por job y ninguna expresión dentro de run. A la izquierda, lo que ya existía y sigue igual: images con su filtro paths, que publica en main y no es un check obligatorio; nightly, que sigue lanzando ci-api, ci-web y smoke por dispatch; labeler y codeql; dependency-review.yml y dependabot.yml; lab.yml en tablero-runners; y deploy.yml de la Semana 17. A la derecha, lo nuevo. ci.yml es el único punto de entrada del CI y escucha push a main, pull_request, merge_group y workflow_dispatch. Su job changes hace checkout con fetch-depth 0 y ejecuta changed-areas.sh contra la base del PR, de la cola o del push; sin base o con cambios en .github corre todo. Un job por área, api, web, tools, smoke y workflows, llama a su reutilizable solo si su área cambia. ci-gate espera a todos con if always, acepta solo success o skipped y es el único check que exige el ruleset. ci-api, ci-web, ci-tools, smoke y lint-workflows pasan a tener solo workflow_call y workflow_dispatch, sin concurrency propia. pr-report escucha ahora a ci y comenta solo si hay informe dist-report. En release.yml, release-please usa el token de la GitHub App tablero-release generado con create-github-app-token v3.3.0, con permissions vacío y el environment release. Piezas del repo: scripts/changed-areas.sh; .github/CODEOWNERS con /.github/ y /ops/ para tu usuario; y ops/github/ruleset-main.yaml, aplicado con yq y gh api. Configuración: el ruleset main activo con PR obligatorio, squash, conversaciones resueltas, ci-gate de GitHub Actions con integration_id 15368, strict false, merge queue SQUASH y ALLGREEN y sin bypass; la App tablero-release con Contents y Pull requests en escritura, sin webhook e instalada solo en tablero, con su clave y su client-id en el environment release; y can_approve_pull_request_reviews en false en la org y en el repo. En gris, lo que llega después: rendimiento, coste y observabilidad en la Semana 19 y el capstone en la 20.</title>
+  <rect width="960" height="960" fill="#0d1117"/>
+  <defs>
+    <marker id="a18" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 18</text>
+
+    <!-- regla común -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="85" fill="#3fb950" font-size="12" font-weight="600">en todos los workflows</text>
+    <text x="210" y="85" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · permisos por job · nada de ${{ }} en run:</text>
+
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">Ya existían</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Nuevos en la capa 18 · un solo check para el monorepo</text>
+
+    <!-- existentes -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="146" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="169" fill="#f0f6fc" font-size="12" font-weight="600">images</text>
+      <text x="304" y="169" fill="#8b949e" text-anchor="end">paths · no es check exigido</text>
+
+      <rect x="30" y="190" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="213" fill="#f0f6fc" font-size="12" font-weight="600">nightly</text>
+      <text x="304" y="213" fill="#8b949e" text-anchor="end">ci-api · ci-web · smoke</text>
+
+      <rect x="30" y="234" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="257" fill="#f0f6fc" font-size="12" font-weight="600">labeler · codeql</text>
+
+      <rect x="30" y="278" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="301" fill="#f0f6fc" font-size="12" font-weight="600">dependency-review.yml</text>
+      <text x="304" y="301" fill="#8b949e" text-anchor="end">dependabot.yml</text>
+
+      <rect x="30" y="322" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="345" fill="#f0f6fc" font-size="12" font-weight="600">lab.yml</text>
+      <text x="304" y="345" fill="#3fb950" text-anchor="end">runs-on: tablero-runners</text>
+
+      <rect x="30" y="366" width="290" height="72" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="389" fill="#f0f6fc" font-size="12" font-weight="600">deploy.yml</text>
+      <text x="304" y="389" fill="#8b949e" text-anchor="end">Semana 17</text>
+      <text x="46" y="409" fill="#8b949e">verify → staging → production</text>
+      <text x="46" y="427" fill="#8b949e">lo lanza release.yml</text>
+    </g>
+
+    <!-- ci.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="146" width="580" height="226" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="170" fill="#2088ff" font-size="13" font-weight="600">ci.yml</text>
+      <text x="914" y="170" fill="#79c0ff" text-anchor="end">push main · pull_request · merge_group · dispatch</text>
+
+      <rect x="366" y="184" width="150" height="174" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="378" y="204" fill="#f0f6fc" font-size="12" font-weight="600">changes</text>
+      <text x="378" y="224" fill="#3fb950">fetch-depth: 0</text>
+      <text x="378" y="244" fill="#f0f6fc">changed-areas.sh</text>
+      <text x="391" y="260" fill="#f0f6fc">"$BASE"</text>
+      <text x="378" y="284" fill="#79c0ff">PR · cola · push</text>
+      <text x="378" y="314" fill="#e3b341">sin base: todo</text>
+      <text x="378" y="332" fill="#e3b341">.github/: todo</text>
+
+      <rect x="532" y="184" width="200" height="174" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="544" y="204" fill="#e3b341">if: área == 'true'</text>
+      <text x="544" y="228" fill="#f0f6fc">api → ci-api.yml</text>
+      <text x="544" y="246" fill="#f0f6fc">web → ci-web.yml</text>
+      <text x="544" y="264" fill="#f0f6fc">tools → ci-tools.yml</text>
+      <text x="544" y="282" fill="#f0f6fc">smoke → smoke.yml</text>
+      <text x="544" y="300" fill="#f0f6fc">workflows → lint-…</text>
+      <text x="544" y="332" fill="#8b949e">uses: ./.github/…</text>
+
+      <rect x="748" y="184" width="166" height="174" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="760" y="204" fill="#3fb950" font-size="12" font-weight="600">ci-gate</text>
+      <text x="760" y="226" fill="#e3b341">if: always()</text>
+      <text x="760" y="246" fill="#f0f6fc">needs: todos</text>
+      <text x="760" y="264" fill="#f0f6fc">success o skipped</text>
+      <text x="760" y="282" fill="#f0f6fc">jq -e all(…)</text>
+      <text x="760" y="300" fill="#d2a8ff">permissions: {}</text>
+      <text x="760" y="332" fill="#3fb950">el único check</text>
+    </g>
+    <path d="M516 270 L528 270" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a18)"/>
+    <path d="M732 270 L744 270" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a18)"/>
+
+    <!-- reutilizables, pr-report, release -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="382" width="580" height="56" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="404" fill="#2088ff" font-size="13" font-weight="600">ci-api · ci-web · ci-tools · smoke · lint-workflows</text>
+      <text x="366" y="426" fill="#f0f6fc">on: workflow_call · workflow_dispatch</text>
+      <text x="914" y="426" fill="#f85149" text-anchor="end">sin paths · sin concurrency</text>
+
+      <rect x="350" y="448" width="250" height="76" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="470" fill="#2088ff" font-size="13" font-weight="600">pr-report</text>
+      <text x="366" y="492" fill="#79c0ff">workflow_run: [ci]</text>
+      <text x="366" y="510" fill="#8b949e">comenta si hay dist-report</text>
+
+      <rect x="616" y="448" width="314" height="76" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="632" y="470" fill="#2088ff" font-size="13" font-weight="600">release.yml · release-please</text>
+      <text x="632" y="492" fill="#3fb950">create-github-app-token v3.3.0</text>
+      <text x="632" y="510" fill="#d2a8ff">environment: release · permissions: {}</text>
+    </g>
+
+    <!-- piezas del repo -->
+    <text x="30" y="560" fill="#f0f6fc" font-size="14" font-weight="600">Piezas nuevas del repo</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="572" width="290" height="104" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="596" fill="#2088ff" font-size="13" font-weight="600">scripts/changed-areas.sh</text>
+      <text x="46" y="618" fill="#f0f6fc">git diff --name-only BASE HEAD</text>
+      <text x="46" y="638" fill="#79c0ff">api= web= tools= smoke=</text>
+      <text x="46" y="656" fill="#79c0ff">workflows=</text>
+
+      <rect x="340" y="572" width="290" height="104" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="356" y="596" fill="#2088ff" font-size="13" font-weight="600">.github/CODEOWNERS</text>
+      <text x="356" y="618" fill="#f0f6fc">/.github/ @&lt;tu-usuario&gt;</text>
+      <text x="356" y="638" fill="#f0f6fc">/ops/ @&lt;tu-usuario&gt;</text>
+      <text x="356" y="656" fill="#3fb950">codeowners/errors: []</text>
+
+      <rect x="650" y="572" width="280" height="104" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="666" y="596" fill="#2088ff" font-size="13" font-weight="600">ops/github/</text>
+      <text x="666" y="618" fill="#f0f6fc">ruleset-main.yaml</text>
+      <text x="666" y="638" fill="#79c0ff">yq -o=json | gh api</text>
+      <text x="666" y="656" fill="#8b949e">POST la primera vez, PUT después</text>
+    </g>
+
+    <!-- configuración -->
+    <text x="30" y="712" fill="#d2a8ff" font-size="14" font-weight="600">Configuración de &lt;tu-org&gt;/tablero y de la org</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="724" width="290" height="108" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="46" y="748" fill="#d2a8ff" font-size="13" font-weight="600">ruleset main · active</text>
+      <text x="46" y="770" fill="#f0f6fc">PR · squash · hilos resueltos</text>
+      <text x="46" y="788" fill="#3fb950">ci-gate @ 15368 · strict: false</text>
+      <text x="46" y="806" fill="#f0f6fc">merge queue SQUASH · ALLGREEN</text>
+      <text x="46" y="824" fill="#f85149">bypass_actors: []</text>
+
+      <rect x="340" y="724" width="290" height="108" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="356" y="748" fill="#e3b341" font-size="13" font-weight="600">App tablero-release</text>
+      <text x="356" y="770" fill="#f0f6fc">Contents · Pull requests: RW</text>
+      <text x="356" y="788" fill="#3fb950">sin webhook · solo en tablero</text>
+      <text x="356" y="806" fill="#d2a8ff">env release: RELEASE_APP_</text>
+      <text x="369" y="824" fill="#d2a8ff">PRIVATE_KEY · CLIENT_ID</text>
+
+      <rect x="650" y="724" width="280" height="108" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="666" y="748" fill="#d2a8ff" font-size="13" font-weight="600">Actions no aprueba PR</text>
+      <text x="666" y="770" fill="#f0f6fc">can_approve_pull_</text>
+      <text x="679" y="788" fill="#f0f6fc">request_reviews: false</text>
+      <text x="666" y="806" fill="#3fb950">en la org y en el repo</text>
+      <text x="666" y="824" fill="#8b949e">deshace el true de la S14</text>
+    </g>
+
+    <!-- después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="852" width="440" height="40" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="877"><tspan font-weight="600">Semana 19</tspan> · rendimiento, coste y observabilidad</text>
+      <rect x="490" y="852" width="440" height="40" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="506" y="877"><tspan font-weight="600">Semana 20</tspan> · capstone</text>
+    </g>
+    <text x="480" y="918" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y piezas nuevas o ampliadas. Verde: lo fijado, verificado o restringido. Morado: permisos, configuración y credenciales.</text>
+    <text x="480" y="936" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: la App, los casos que corren todo y las condiciones. Rojo: lo que se quita. Gris discontinuo: lo que añaden las siguientes semanas.</text>
+  </g>
+</svg>

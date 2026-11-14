@@ -52,7 +52,7 @@ el plan gratuito con repo público, se ajusta esa semana antes de escribirla y s
 | Runner JIT en contenedor en WSL2 | S15 | 🧪 La imagen `actions-runner` 2.338.2 arranca en WSL2 con `--cap-drop ALL`, `no-new-privileges` y límites, escribe en `_work` y llega a github.com (2026-11-13). Sin probar con una config JIT real |
 | ARC con GitHub App en kind, en WSL2 con 8 GB y con 16 GB | S16 | 🧪 Controller y scale set 0.15.1 instalados en kind v0.33.0 sobre WSL2 con 15 GB (2026-11-13); el pod endurecido arranca como uid 1001. Con otro clúster kind en marcha hace falta subir `fs.inotify.max_user_instances`. Sin probar con una GitHub App real ni con 8 GB |
 | Despliegue desde ARC con el token OIDC del job verificado por el apiserver de kind | S17 | 🧪 Configuración OIDC del apiserver cargada y recargada en caliente en kind v0.33.0 (nodo v1.37.0), token falso rechazado, RBAC por environment y chart con rollback automático probados con impersonación y con un token de ServiceAccount desde el pod del runner (2026-11-14). Sin probar con un token real de GitHub |
-| Merge queue en un repo público de org gratuita | S18 | ⏳ |
+| Merge queue en un repo público de org gratuita | S18 | 📄 La doc la da en todo repo público de una organización y los rulesets de repositorio en repos públicos de Free for organizations (2026-11-14). La S18 la aplica con un ruleset de repositorio |
 | act con la imagen equivalente a `ubuntu-24.04` | S08 | ⏳ |
 
 ## Validado

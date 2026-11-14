@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t03">
+  <title id="t03">ci.yml como único punto de entrada del CI de tablero, con un PR que solo toca web como ejemplo. A la izquierda, la base del diff según el evento: en pull_request, pull_request.base.sha; en merge_group, merge_group.base_sha; en push a main, event.before; en workflow_dispatch no hay base y se corre todo. En el centro, el job changes hace checkout con fetch-depth 0 y ejecuta scripts/changed-areas.sh con esa base; sus salidas son api false, web true, tools false, smoke true y workflows false. Después, un job por área llama a su workflow reutilizable con if sobre su salida: api, tools y workflows se saltan; web llama a ci-web.yml y smoke a smoke.yml. Los reutilizables solo tienen workflow_call y workflow_dispatch y no tienen concurrency propia. A la derecha, ci-gate necesita structure, version, sql, changes y las cinco áreas, corre con if always, acepta success y skipped y es el único check que exige el ruleset de main. Un cambio en .github o la falta de base marcan todas las áreas.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">ci.yml: decide qué cambia, llama a sus áreas y lo resume en ci-gate</text>
+    <text x="480" y="56" fill="#8b949e" font-size="12" text-anchor="middle">Ejemplo: un PR que solo toca web/</text>
+
+    <!-- eventos -->
+    <text x="30" y="92" fill="#79c0ff" font-size="13" font-weight="600">Evento → BASE</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="104" width="200" height="48" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="42" y="124" fill="#f0f6fc" font-weight="600">pull_request</text>
+      <text x="42" y="142" fill="#79c0ff">pull_request.base.sha</text>
+      <rect x="30" y="160" width="200" height="48" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="42" y="180" fill="#f0f6fc" font-weight="600">merge_group</text>
+      <text x="42" y="198" fill="#79c0ff">merge_group.base_sha</text>
+      <rect x="30" y="216" width="200" height="48" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="42" y="236" fill="#f0f6fc" font-weight="600">push a main</text>
+      <text x="42" y="254" fill="#79c0ff">event.before</text>
+      <rect x="30" y="272" width="200" height="48" rx="6" fill="#161b22" stroke="#30363d"/>
+      <text x="42" y="292" fill="#f0f6fc" font-weight="600">workflow_dispatch</text>
+      <text x="42" y="310" fill="#e3b341">sin base → todo</text>
+    </g>
+    <path d="M230 212 L262 212" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+
+    <!-- changes -->
+    <rect x="266" y="104" width="200" height="216" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="280" y="128" fill="#2088ff" font-size="13" font-weight="600">changes</text>
+      <text x="280" y="148" fill="#3fb950">fetch-depth: 0</text>
+      <text x="280" y="166" fill="#f0f6fc">changed-areas.sh</text>
+      <text x="294" y="182" fill="#f0f6fc">"$BASE"</text>
+      <text x="280" y="210" fill="#8b949e">api=false</text>
+      <text x="280" y="228" fill="#3fb950">web=true</text>
+      <text x="280" y="246" fill="#8b949e">tools=false</text>
+      <text x="280" y="264" fill="#3fb950">smoke=true</text>
+      <text x="280" y="282" fill="#8b949e">workflows=false</text>
+      <text x="280" y="306" fill="#8b949e" font-size="10">→ $GITHUB_OUTPUT</text>
+    </g>
+
+    <!-- áreas -->
+    <text x="510" y="92" fill="#f0f6fc" font-size="13" font-weight="600">needs: changes · if: salida == 'true'</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="510" y="104" width="220" height="40" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="522" y="128" fill="#8b949e">api → ci-api.yml</text>
+      <text x="718" y="128" fill="#8b949e" text-anchor="end">skipped</text>
+      <rect x="510" y="148" width="220" height="40" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="522" y="172" fill="#f0f6fc">web → ci-web.yml</text>
+      <text x="718" y="172" fill="#3fb950" text-anchor="end">success</text>
+      <rect x="510" y="192" width="220" height="40" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="522" y="216" fill="#8b949e">tools → ci-tools.yml</text>
+      <text x="718" y="216" fill="#8b949e" text-anchor="end">skipped</text>
+      <rect x="510" y="236" width="220" height="40" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="522" y="260" fill="#f0f6fc">smoke → smoke.yml</text>
+      <text x="718" y="260" fill="#3fb950" text-anchor="end">success</text>
+      <rect x="510" y="280" width="220" height="40" rx="6" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="522" y="304" fill="#8b949e">workflows → lint-…</text>
+      <text x="718" y="304" fill="#8b949e" text-anchor="end">skipped</text>
+    </g>
+    <path d="M466 212 L506 212" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+
+    <!-- ci-gate -->
+    <path d="M730 212 L766 212" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <rect x="770" y="104" width="160" height="216" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="784" y="128" fill="#3fb950" font-size="13" font-weight="600">ci-gate</text>
+      <text x="784" y="150" fill="#f0f6fc">needs:</text>
+      <text x="796" y="166" fill="#8b949e">structure</text>
+      <text x="796" y="182" fill="#8b949e">version · sql</text>
+      <text x="796" y="198" fill="#8b949e">changes</text>
+      <text x="796" y="214" fill="#8b949e">5 áreas</text>
+      <text x="784" y="238" fill="#e3b341">if: always()</text>
+      <text x="784" y="258" fill="#f0f6fc">success o</text>
+      <text x="784" y="274" fill="#f0f6fc">skipped → verde</text>
+      <text x="784" y="300" fill="#3fb950" font-weight="600">success</text>
+    </g>
+    <path d="M850 320 L850 356" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <rect x="740" y="360" width="190" height="52" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="835" y="382" fill="#d2a8ff" font-size="12" font-weight="600" text-anchor="middle">ruleset de main</text>
+    <text x="835" y="400" fill="#8b949e" font-size="11" text-anchor="middle">el único check exigido</text>
+
+    <!-- notas -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="360" width="436" height="104" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="46" y="384" fill="#e3b341" font-size="13" font-weight="600">Casos seguros: se prueba todo</text>
+      <text x="46" y="408" fill="#f0f6fc">cualquier cambio en .github/</text>
+      <text x="46" y="426" fill="#f0f6fc">BASE vacía, de ceros o fuera del clon</text>
+      <text x="46" y="450" fill="#8b949e">git cat-file -e "$base^{commit}" falla → todo true</text>
+
+      <rect x="490" y="436" width="440" height="80" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="506" y="460" fill="#2088ff" font-size="13" font-weight="600">Reutilizables de área</text>
+      <text x="506" y="482" fill="#f0f6fc">on: workflow_call · workflow_dispatch</text>
+      <text x="506" y="502" fill="#f85149">sin concurrency: github.workflow es el de ci</text>
+      <path d="M620 320 L620 432" stroke="#79c0ff" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#a03)"/>
+    </g>
+
+    <text x="480" y="552" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y jobs que corren. Gris discontinuo: jobs saltados, que cuentan como éxito. Verde: la puerta y lo que pasa.</text>
+    <text x="480" y="570" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: los casos que fuerzan todo y la condición de la puerta. Morado: el ruleset. Rojo: lo que hay que quitar.</text>
+  </g>
+</svg>

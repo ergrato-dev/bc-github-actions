@@ -284,6 +284,20 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   `gh api 'repos/{owner}/{repo}/deployments?environment=production&per_page=5' --jq '.[] | "\(.created_at) \(.sha[0:7])"'`
   lista qué commit llegó a production y cuándo, aunque los runs ya hayan caducado.
 
+## Semana 18 — [Merge queue, rulesets y monorepos](../bootcamp/week-18-merge_queue_rulesets_y_monorepos/README.md)
+
+- **Qué reglas se aplican de verdad a una rama**, sumando las de todos los rulesets, de repo y de
+  org: `gh api repos/{owner}/{repo}/rules/branches/main --jq '.[] | "\(.type) ← ruleset \(.ruleset_id)"'`.
+  La UI te enseña ruleset a ruleset; esto, el resultado.
+- **Errores de CODEOWNERS antes de que te muerdan**: `gh api repos/{owner}/{repo}/codeowners/errors --jq '.errors[] | "\(.line): \(.message)"'`.
+  Una línea inválida se ignora sin avisar en el PR.
+- **Prueba el diff del CI sin hacer push**: `scripts/changed-areas.sh origin/main` en tu rama te
+  dice qué áreas correría `ci.yml` en el PR.
+- **Qué hay en la merge queue ahora mismo**: `gh run list --workflow ci.yml --event merge_group --limit 5 --json headBranch,status,conclusion`.
+  Cada `headBranch` `gh-readonly-queue/main/…` es un grupo que la cola está probando.
+- **El ruleset en un archivo que puedes versionar**: `gh api repos/{owner}/{repo}/rulesets/<id> --jq '{name, target, enforcement, conditions, bypass_actors, rules}' | yq -P`
+  saca el que hiciste en la UI con la forma que acepta el `PUT`.
+
 ---
 
 | ← Anterior | Siguiente → |

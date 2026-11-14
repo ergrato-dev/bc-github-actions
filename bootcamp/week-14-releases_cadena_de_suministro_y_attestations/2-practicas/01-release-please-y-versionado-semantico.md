@@ -45,7 +45,8 @@ ahora lo abres, porque el ajuste **Allow GitHub Actions to create and approve pu
 uno solo para crear y para aprobar. Va primero en la org: si la org lo prohíbe, el repo no puede
 activarlo. `default_workflow_permissions` se queda en `read`: abres la creación de PR, no subes
 los permisos que recibe un workflow sin bloque `permissions:`. Que un workflow pueda aprobar PR
-es el riesgo que compras; en la Semana 18 lo cierras con un ruleset que exige revisión humana.
+es el riesgo que compras; en la Semana 18 lo cierras: release-please usará el token de una
+GitHub App y el ajuste vuelve a `false`.
 
 > ⚠️ **Cambias una política de toda la organización.** Primero guardas la actual; para volver
 > atrás, el `PUT` con los valores de ese archivo.
@@ -74,7 +75,7 @@ done
 ```
 
 > A partir de aquí `check-week.sh 11` marca `org-default-token-read` en rojo: es lo esperado. La
-> capa 14 sustituye esa política y la Semana 18 cierra el riesgo
+> capa 14 sustituye esa política y la Semana 18 la devuelve a `false`
 > ([comprobaciones superadas por capas posteriores](../../../docs/autograding.md#comprobaciones-superadas-por-capas-posteriores)).
 
 Falta otra política de la Semana 11: la org solo admite actions de GitHub y los patrones que
@@ -229,9 +230,10 @@ en `0.x`, con `bump-minor-pre-major`, también daría `0.2.0`). Por eso el prime
 recoge también los `fix` de semanas anteriores.
 
 El PR lo abre `GITHUB_TOKEN`, y los eventos que causa ese token no disparan workflows (salvo
-`workflow_dispatch` y `repository_dispatch`): **el PR de release no tiene checks**. No es un
-fallo; su contenido son tres archivos de texto que genera la propia herramienta. Si algún día
-un ruleset exige checks en todo PR (Semana 18), ese PR necesitará el token de una GitHub App.
+`workflow_dispatch`, `repository_dispatch` y los PR, cuyos runs esperan una aprobación manual):
+**el PR de release no ejecuta tus checks solo**. No es un fallo; su contenido son tres archivos de
+texto que genera la propia herramienta. Cuando un ruleset exija checks en todo PR (Semana 18), ese
+PR necesitará el token de una GitHub App.
 
 **Comando**:
 

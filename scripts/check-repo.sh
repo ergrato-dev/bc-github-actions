@@ -202,6 +202,12 @@ if command -v actionlint >/dev/null 2>&1; then
     tmp=$(mktemp -d)
     cp -r "$root/." "$tmp/"
     git -C "$tmp" init -q
+    # Un starter puede llamar a reutilizables que el alumno ya tiene de semanas anteriores
+    # (S18: ci.yml llama a ci-api.yml...): si no vienen en el starter, se lintea contra un stub.
+    grep -rhoE 'uses: \./\.github/workflows/[A-Za-z0-9_.-]+\.yml' "$tmp/.github/workflows" |
+      sed 's/uses: \.\///' | sort -u | while IFS= read -r called; do
+        [[ -f "$tmp/$called" ]] || printf 'on: workflow_call\njobs:\n  stub:\n    runs-on: ubuntu-24.04\n    steps:\n      - run: "true"\n' >"$tmp/$called"
+      done
     if ! output=$(cd "$tmp" && actionlint -no-color 2>&1); then
       echo "ACTIONLINT FALLA: $root"
       printf '%s\n' "$output" | sed 's/^/    /'

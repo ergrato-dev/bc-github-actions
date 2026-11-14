@@ -1,0 +1,3 @@
+# Copia en <tu-org>/tablero como .github/CODEOWNERS.
+# Quién responde de cada ruta de tablero. Gana el último patrón que casa.
+# TODO 10: /.github/ y /ops/ son tuyos (tu usuario de GitHub con @ delante).

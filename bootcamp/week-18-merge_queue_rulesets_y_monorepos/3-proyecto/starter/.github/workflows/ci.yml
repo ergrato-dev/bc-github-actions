@@ -1,0 +1,166 @@
+# Copia en <tu-org>/tablero como .github/workflows/ci.yml, sustituyendo el de la Semana 17.
+# Punto de entrada único del CI de tablero: decide qué áreas cambian, llama solo a sus
+# workflows y resume todo en ci-gate, el único check que exige el ruleset de main.
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # TODO 4 (práctica 03): el evento con el que la merge queue pide los checks.
+  workflow_dispatch:
+# Un run por workflow y ref: en un PR, el push nuevo cancela el run anterior;
+# en main cada commit termina su run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+# Raíz vacía: cada job declara solo los permisos que usa.
+permissions: {}
+defaults:
+  run:
+    shell: bash
+jobs:
+  runner-info:
+    name: Información del runner
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Sistema operativo
+        run: cat /etc/os-release
+      - name: CPU
+        run: nproc
+      - name: Memoria
+        run: free -h
+    permissions:
+      contents: read
+  structure:
+    name: Estructura del monorepo
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Lockfiles y compose en su sitio
+        run: |
+          for f in api/uv.lock web/pnpm-lock.yaml compose.yaml; do
+            test -f "$f" || { echo "falta $f"; exit 1; }
+          done
+    permissions:
+      contents: read
+  version:
+    name: Versión
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Versión de api/pyproject.toml más el SHA corto
+        id: version
+        run: echo "version=$(yq -p toml '.project.version' api/pyproject.toml)+${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+    permissions:
+      contents: read
+  sql:
+    name: SQL de las migraciones
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: <tu-org>/actions-tablero/sql-lint@<sha-de-v1.0.0> # v1.0.0
+        with:
+          path: api/migrations
+          # La migración alinea las columnas con espacios y LT01 las marcaría todas.
+          exclude-rules: LT01
+    permissions:
+      contents: read
+  changes:
+    name: Áreas que cambian
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      api: ${{ steps.diff.outputs.api }}
+      web: ${{ steps.diff.outputs.web }}
+      tools: ${{ steps.diff.outputs.tools }}
+      smoke: ${{ steps.diff.outputs.smoke }}
+      workflows: ${{ steps.diff.outputs.workflows }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # TODO 5: la base del diff puede estar muchos commits atrás; trae el historial.
+          persist-credentials: false
+      - name: Diff contra la base del evento
+        id: diff
+        env:
+          # TODO 6: añade la base de la merge queue y la del push a main.
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: scripts/changed-areas.sh "$BASE" | tee -a "$GITHUB_OUTPUT"
+  # Un reutilizable llamado con ./ corre en el mismo commit que ci.yml: ya está fijado.
+  # TODO 7: cada job de área corre solo si su salida de changes vale 'true'.
+  api:
+    needs: changes
+    uses: ./.github/workflows/ci-api.yml # zizmor: ignore[self-repository]
+    permissions:
+      contents: read
+  web:
+    needs: changes
+    uses: ./.github/workflows/ci-web.yml # zizmor: ignore[self-repository]
+    permissions:
+      contents: read
+  tools:
+    needs: changes
+    uses: ./.github/workflows/ci-tools.yml # zizmor: ignore[self-repository]
+    permissions:
+      contents: read
+  smoke:
+    needs: changes
+    uses: ./.github/workflows/smoke.yml # zizmor: ignore[self-repository]
+    permissions:
+      contents: read
+  workflows:
+    needs: changes
+    uses: ./.github/workflows/lint-workflows.yml # zizmor: ignore[self-repository]
+    permissions:
+      contents: read
+  summary:
+    name: Resumen
+    needs: [runner-info, structure, version, sql]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Resumen del run
+        env:
+          PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+          VERSION: ${{ needs.version.outputs.version }}
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          {
+            echo "## $PROJECT_NAME $VERSION"
+            echo
+            echo "| Job | Resultado |"
+            echo "|---|---|"
+            jq -r 'to_entries[] | "| \(.key) | \(.value.result) |"' <<<"$RESULTS"
+          } >> "$GITHUB_STEP_SUMMARY"
+          jq -e 'all(.[]; .result == "success")' <<<"$RESULTS" > /dev/null
+    permissions:
+      contents: read
+  ci-gate:
+    name: ci-gate
+    # TODO 8: ci-gate espera a todos los jobs (salvo runner-info y summary) y corre siempre.
+    needs: [changes]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Ningún job necesario falló ni se canceló
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTS"
+          # TODO 9: termina en error si algún resultado no es success ni skipped.

@@ -179,8 +179,10 @@ otros workflows** (salvo `workflow_dispatch` y `repository_dispatch`). Es la pro
 contra bucles infinitos de workflows.
 
 Por eso en `tablero` el job de imágenes vive en `release.yml`, detrás del de release-please y con
-el `if:` sobre `created`. El mismo motivo explica que **el PR de release no ejecute tu CI**: lo
-abre el `GITHUB_TOKEN`. Lo verás con los checks obligatorios en la Semana 18.
+el `if:` sobre `created`. Con los PR hay una excepción reciente: si `GITHUB_TOKEN` abre o
+actualiza un PR, sus runs de `pull_request` se crean pero **esperan a que alguien con escritura
+pulse Approve workflows to run**. Por eso el PR de release no ejecuta tu CI solo. La Semana 18 lo
+resuelve con el token de una GitHub App.
 
 ### Permitir que el token abra PR
 
@@ -197,8 +199,8 @@ gh api -X PUT repos/<tu-org>/tablero/actions/permissions/workflow \
 
 `default_workflow_permissions=read` se mantiene tal como lo dejaste en la Semana 11: solo abres la
 creación de PR, no subes los permisos por defecto. A partir de aquí `check-week.sh 11` marca
-`org-default-token-read` en rojo: es lo esperado, porque la capa 14 sustituye esa política, y la
-Semana 18 cierra el riesgo. Otra política de la Semana 11 también se toca: la lista de actions
+`org-default-token-read` en rojo: es lo esperado, porque la capa 14 sustituye esa política. La
+Semana 18 la devuelve a `false`: release-please pasa a usar el token de una GitHub App. Otra política de la Semana 11 también se toca: la lista de actions
 permitidas de la org necesita el patrón `googleapis/release-please-action@*`.
 
 ## 4. Antipatrones

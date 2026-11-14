@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" role="img" aria-labelledby="t01">
+  <title id="t01">El ruleset main sobre la rama por defecto de tablero. A la izquierda, cinco formas de cambiar main. A la derecha de cada una, la regla del ruleset que la recibe. Un push directo choca con la regla pull_request y se rechaza. Un force push choca con non_fast_forward y se rechaza. Borrar la rama choca con deletion y se rechaza. Un PR con ci-gate en rojo choca con required_status_checks, que exige ci-gate de la app GitHub Actions con integration_id 15368, y no se fusiona. Solo un PR con ci-gate en verde pasa, entra en la merge queue y llega a main. El ruleset se aplica a la rama por defecto con la condición tilde DEFAULT_BRANCH, está en enforcement active y su lista de bypass está vacía: nadie, tampoco el admin, se lo salta.</title>
+  <rect width="960" height="580" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="g01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Un ruleset sobre main: cada camino choca con una regla</text>
+
+    <text x="30" y="132" fill="#f0f6fc" font-size="14" font-weight="600">Cómo intentas cambiar main</text>
+
+    <!-- ruleset -->
+    <rect x="360" y="60" width="330" height="450" rx="10" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="376" y="86" fill="#2088ff" font-size="15" font-weight="600">ruleset main</text>
+    <text x="674" y="86" fill="#3fb950" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">enforcement: active</text>
+    <text x="376" y="108" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">include: ~DEFAULT_BRANCH</text>
+    <text x="376" y="128" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">bypass_actors: []</text>
+    <text x="674" y="128" fill="#8b949e" font-size="11" text-anchor="end">nadie se lo salta</text>
+
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">
+      <!-- fila 1: push directo -->
+      <rect x="30" y="148" width="270" height="52" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="170" fill="#f0f6fc">git push origin main</text>
+      <text x="46" y="190" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">push directo, sin PR</text>
+      <path d="M300 174 L372 174" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+      <rect x="376" y="150" width="298" height="48" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="390" y="171" fill="#f0f6fc" font-weight="600">pull_request</text>
+      <text x="390" y="189" fill="#8b949e" font-size="11">todo cambio llega por PR · squash</text>
+      <text x="710" y="179" fill="#f85149" font-weight="600">✕ rechazado</text>
+
+      <!-- fila 2: force push -->
+      <rect x="30" y="218" width="270" height="52" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="240" fill="#f0f6fc">git push --force</text>
+      <text x="46" y="260" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">reescribir la historia publicada</text>
+      <path d="M300 244 L372 244" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+      <rect x="376" y="220" width="298" height="48" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="390" y="241" fill="#f0f6fc" font-weight="600">non_fast_forward</text>
+      <text x="390" y="259" fill="#8b949e" font-size="11">sin force push</text>
+      <text x="710" y="249" fill="#f85149" font-weight="600">✕ rechazado</text>
+
+      <!-- fila 3: borrado -->
+      <rect x="30" y="288" width="270" height="52" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="310" fill="#f0f6fc">git push origin :main</text>
+      <text x="46" y="330" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">borrar la rama</text>
+      <path d="M300 314 L372 314" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+      <rect x="376" y="290" width="298" height="48" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="390" y="311" fill="#f0f6fc" font-weight="600">deletion</text>
+      <text x="390" y="329" fill="#8b949e" font-size="11">solo con bypass, y no hay</text>
+      <text x="710" y="319" fill="#f85149" font-weight="600">✕ rechazado</text>
+
+      <!-- fila 4: PR en rojo -->
+      <rect x="30" y="358" width="270" height="52" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="380" fill="#f0f6fc">PR con ci-gate en rojo</text>
+      <text x="46" y="400" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">o con un status ci-gate creado a mano</text>
+      <path d="M300 384 L372 384" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+      <rect x="376" y="360" width="298" height="48" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="390" y="381" fill="#f0f6fc" font-weight="600">required_status_checks</text>
+      <text x="390" y="399" fill="#3fb950" font-size="11">ci-gate · integration_id 15368</text>
+      <text x="710" y="389" fill="#f85149" font-weight="600">✕ no se fusiona</text>
+
+      <!-- fila 5: camino bueno -->
+      <rect x="30" y="438" width="270" height="52" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="46" y="460" fill="#f0f6fc">PR con ci-gate en verde</text>
+      <text x="46" y="480" fill="#8b949e" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="11">el único camino</text>
+      <path d="M300 464 L372 464" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g01)"/>
+      <rect x="376" y="440" width="298" height="48" rx="6" fill="#0d1117" stroke="#3fb950"/>
+      <text x="390" y="461" fill="#f0f6fc" font-weight="600">merge_queue</text>
+      <text x="390" y="479" fill="#8b949e" font-size="11">se prueba sobre el main real</text>
+      <path d="M674 464 L736 464" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#g01)"/>
+      <rect x="740" y="438" width="190" height="52" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="835" y="470" fill="#3fb950" font-size="15" font-weight="600" text-anchor="middle">main</text>
+    </g>
+
+    <text x="480" y="540" fill="#8b949e" font-size="11" text-anchor="middle">Azul: el ruleset y los intentos. Verde: lo que pasa y lo que fija la regla. Morado: configuración. Rojo: lo que GitHub rechaza en el servidor.</text>
+    <text x="480" y="558" fill="#8b949e" font-size="11" text-anchor="middle">La merge queue se añade en la Práctica 03; el resto de reglas, en la Práctica 02.</text>
+  </g>
+</svg>
