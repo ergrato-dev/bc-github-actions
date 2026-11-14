@@ -1,0 +1,11 @@
+# Las imágenes de tablero no tienen valor por defecto: deploy.yml pasa las que verificó, por
+# digest. Un despliegue por tag falla al renderizar (templates/api.yaml y web.yaml).
+images:
+  api: ""
+  web: ""
+  postgres: postgres:17.11-alpine@sha256:e5d2edd28b1f8d40a0a6c0c9cdc545b19b56a0d5d88f94bc11a97d970d4700d0
+
+# Llega desde el secreto DATABASE_PASSWORD del environment. Solo letras y números: va dentro de
+# DATABASE_URL.
+database:
+  password: ""

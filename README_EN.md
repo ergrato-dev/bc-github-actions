@@ -83,7 +83,7 @@ Hardware: Linux or WSL2 with Docker, **8 GB RAM** (16 GB recommended from Week 1
 | [14](bootcamp/week-14-releases_cadena_de_suministro_y_attestations/README.md) | Releases, supply chain and attestations |
 | [15](bootcamp/week-15-runners_self_hosted/README.md) | Self-hosted runners |
 | [16](bootcamp/week-16-actions_runner_controller_en_kind/README.md) | Actions Runner Controller on kind |
-| 17 | Continuous deployment to Kubernetes |
+| [17](bootcamp/week-17-despliegue_continuo_a_kubernetes/README.md) | Continuous deployment to Kubernetes |
 | 18 | Merge queue, rulesets and monorepos |
 | 19 | Performance, cost and observability |
 | 20 | Capstone: a defended production pipeline |

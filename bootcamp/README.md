@@ -51,7 +51,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 |:--:|---|:--:|
 | [15](week-15-runners_self_hosted/README.md) | Runners propios | ✅ |
 | [16](week-16-actions_runner_controller_en_kind/README.md) | Actions Runner Controller en kind | ✅ |
-| 17 | Despliegue continuo a Kubernetes | ⬜ |
+| [17](week-17-despliegue_continuo_a_kubernetes/README.md) | Despliegue continuo a Kubernetes | ✅ |
 
 ### Fase 6 — Escala y Operación (S18-20, 30 h)
 

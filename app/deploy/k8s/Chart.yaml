@@ -1,0 +1,7 @@
+# Chart de tablero para el laboratorio kind (Semana 17). Lo instala deploy.yml con Helm, una
+# release por environment: tablero en el namespace tablero-staging y en tablero-production.
+apiVersion: v2
+name: tablero
+description: API, web y PostgreSQL de tablero
+type: application
+version: 1.0.0

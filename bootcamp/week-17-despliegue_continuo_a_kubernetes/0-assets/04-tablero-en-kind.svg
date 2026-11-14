@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 760" role="img" aria-labelledby="t04">
+  <title id="t04">tablero dentro del clúster kind-gha. En el control plane, el apiserver lee authentication-config.yaml desde /etc/kubernetes/auth, montada desde la carpeta ~/.config/tablero-kind de tu máquina, y la recarga sola al cambiar. En el namespace arc-systems vive el controller de ARC con la clave de la GitHub App. En arc-runners, el pod del runner de tablero-runners: sin token de Kubernetes montado, con el CA del clúster en /etc/kube-ca desde el ConfigMap kube-root-ca.crt, y con Helm, que habla con el apiserver usando el token OIDC del job. El apiserver lo convierte en github:staging o github:production. Los namespaces tablero-staging y tablero-production tienen Pod Security restricted y un Role deployer cada uno, ligado solo a su usuario. Dentro de cada uno, la release tablero de Helm: el Deployment web con uid 101 en el puerto 8080, el Deployment api en el 8000 con readiness en /api/health, y el Deployment db de PostgreSQL con estrategia Recreate, uid 70, el Secret db y el PVC db-data con resource-policy keep. El smoke test del runner llega a la web por el DNS web.tablero-staging.svc.cluster.local:8080, que solo existe dentro del clúster.</title>
+  <rect width="960" height="760" fill="#0d1117"/>
+  <defs>
+    <marker id="a04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero en kind-gha</text>
+
+    <!-- máquina -->
+    <rect x="30" y="58" width="900" height="652" rx="10" fill="none" stroke="#30363d" stroke-width="2" stroke-dasharray="8 5"/>
+    <text x="46" y="80" fill="#8b949e" font-size="12">Tu máquina · Docker · clúster kind gha</text>
+    <text x="914" y="80" fill="#d2a8ff" font-size="11" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">~/.config/tablero-kind/authentication-config.yaml</text>
+
+    <!-- control plane -->
+    <rect x="50" y="96" width="860" height="96" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="66" y="120" fill="#2088ff" font-size="13" font-weight="600">gha-control-plane · kube-apiserver</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="66" y="144" fill="#d2a8ff">--authentication-config /etc/kubernetes/auth/authentication-config.yaml</text>
+      <text x="66" y="164" fill="#f0f6fc">emisor de GitHub · aud kind-gha · 4 reglas CEL · usuario 'github:' + environment</text>
+      <text x="66" y="182" fill="#8b949e">se recarga solo al cambiar; la métrica last_config_info enseña su sha256</text>
+    </g>
+    <path d="M820 84 L820 94" stroke="#d2a8ff" stroke-width="2" fill="none"/>
+
+    <!-- arc-systems -->
+    <rect x="50" y="212" width="270" height="90" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+    <text x="66" y="236" fill="#f0f6fc" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">arc-systems</text>
+    <text x="66" y="260" fill="#8b949e" font-size="11">controller de ARC (Semana 16)</text>
+    <text x="66" y="280" fill="#d2a8ff" font-size="11">secret tablero-arc-app: la GitHub App</text>
+
+    <!-- arc-runners -->
+    <rect x="50" y="318" width="270" height="250" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="66" y="342" fill="#f0f6fc" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">arc-runners</text>
+    <rect x="66" y="356" width="238" height="196" rx="6" fill="#0d1117" stroke="#2088ff"/>
+    <text x="78" y="378" fill="#2088ff" font-size="12" font-weight="600">pod de tablero-runners</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="78" y="400" fill="#8b949e">job staging de deploy.yml</text>
+      <text x="78" y="424" fill="#f85149">sin token de Kubernetes</text>
+      <text x="78" y="440" fill="#8b949e">automount...: false</text>
+      <text x="78" y="464" fill="#3fb950">/etc/kube-ca/ca.crt</text>
+      <text x="78" y="480" fill="#8b949e">ConfigMap kube-root-ca.crt</text>
+      <text x="78" y="504" fill="#f0f6fc">helm · kubeconfig.yaml</text>
+      <text x="78" y="520" fill="#d2a8ff">token OIDC del job</text>
+      <text x="78" y="540" fill="#f0f6fc">smoke-test.sh</text>
+    </g>
+
+    <!-- runner -> apiserver -->
+    <path d="M304 510 L340 510 L340 200" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="356" y="480" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace" transform="rotate(-90 356 480)">Bearer &lt;jwt&gt; → github:staging</text>
+
+    <!-- staging -->
+    <rect x="380" y="212" width="530" height="230" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="396" y="236" fill="#f0f6fc" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-staging</text>
+    <text x="894" y="236" fill="#3fb950" font-size="11" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">pod-security enforce: restricted</text>
+    <text x="396" y="256" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">Role deployer ← User github:staging</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="396" y="270" width="150" height="80" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="408" y="290" fill="#f0f6fc" font-size="12" font-weight="600">web</text>
+      <text x="408" y="308" fill="#8b949e">:8080 · uid 101</text>
+      <text x="408" y="326" fill="#8b949e">ready: /</text>
+      <text x="408" y="342" fill="#3fb950">@sha256:…</text>
+
+      <rect x="572" y="270" width="150" height="80" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="584" y="290" fill="#f0f6fc" font-size="12" font-weight="600">api</text>
+      <text x="584" y="308" fill="#8b949e">:8000</text>
+      <text x="584" y="326" fill="#8b949e">ready: /api/health</text>
+      <text x="584" y="342" fill="#3fb950">@sha256:…</text>
+
+      <rect x="748" y="270" width="146" height="80" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="760" y="290" fill="#f0f6fc" font-size="12" font-weight="600">db</text>
+      <text x="760" y="308" fill="#8b949e">:5432 · uid 70</text>
+      <text x="760" y="326" fill="#8b949e">Recreate</text>
+      <text x="760" y="342" fill="#8b949e">pg_isready</text>
+
+      <rect x="572" y="368" width="150" height="56" rx="6" fill="#0d1117" stroke="#d2a8ff"/>
+      <text x="584" y="390" fill="#d2a8ff" font-size="12" font-weight="600">Secret db</text>
+      <text x="584" y="408" fill="#8b949e">+ revisiones de Helm</text>
+
+      <rect x="748" y="368" width="146" height="56" rx="6" fill="#0d1117" stroke="#d2a8ff"/>
+      <text x="760" y="390" fill="#d2a8ff" font-size="12" font-weight="600">PVC db-data</text>
+      <text x="760" y="408" fill="#8b949e">1Gi · keep</text>
+
+    </g>
+    <path d="M546 310 L568 310" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M722 310 L744 310" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M821 350 L821 364" stroke="#d2a8ff" stroke-width="2" fill="none"/>
+
+    <!-- smoke test -->
+    <path d="M304 540 L360 540 L360 460 L470 460 L470 354" stroke="#3fb950" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#a04)"/>
+    <text x="480" y="470" fill="#3fb950" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">http://web.tablero-staging.svc.cluster.local:8080</text>
+
+    <!-- production -->
+    <rect x="380" y="494" width="530" height="196" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="396" y="518" fill="#f0f6fc" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-production</text>
+    <text x="894" y="518" fill="#3fb950" font-size="11" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">pod-security enforce: restricted</text>
+    <text x="396" y="538" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">Role deployer ← User github:production</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="600" fill="#f0f6fc">
+      <rect x="396" y="556" width="150" height="44" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="408" y="583">web</text>
+      <rect x="572" y="556" width="150" height="44" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="584" y="583">api</text>
+      <rect x="748" y="556" width="146" height="44" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="760" y="583">db</text>
+    </g>
+    <text x="396" y="628" fill="#8b949e" font-size="11">Los mismos objetos y los mismos digests que staging, tras tu aprobación.</text>
+    <text x="396" y="650" fill="#f85149" font-size="11">github:staging no puede ni listar los secrets de aquí:</text>
+    <text x="396" y="668" fill="#f85149" font-size="11">el token robado de staging no llega a production.</text>
+
+    <text x="66" y="600" fill="#8b949e" font-size="11">Un runner de GitHub no llega:</text>
+    <text x="66" y="618" fill="#8b949e" font-size="11">el apiserver y el DNS del clúster</text>
+    <text x="66" y="636" fill="#8b949e" font-size="11">solo existen en tu máquina.</text>
+
+    <text x="480" y="740" fill="#8b949e" font-size="11" text-anchor="middle">Azul: componentes y flujo. Verde: namespaces restricted, imágenes por digest y smoke test. Morado: configuración, secrets y datos. Amarillo: RBAC. Rojo: lo que no hay a propósito.</text>
+  </g>
+</svg>

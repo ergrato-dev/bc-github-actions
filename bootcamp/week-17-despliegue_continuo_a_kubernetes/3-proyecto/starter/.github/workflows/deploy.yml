@@ -1,0 +1,93 @@
+# Starter de la Semana 17: se copia a .github/workflows/deploy.yml de <tu-org>/tablero.
+# Sustituye a deploy-gate.yml, que se borra: el ensayo de la Semana 13 pasa a ser el despliegue.
+name: deploy
+run-name: deploy ${{ inputs.version }}
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Versión de tablero (X.Y.Z, sin la v)
+        required: true
+        type: string
+permissions: {}
+jobs:
+  verify:
+    name: Verificar imágenes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      attestations: read
+    outputs:
+      api: ${{ steps.verify.outputs.api }}
+      web: ${{ steps.verify.outputs.web }}
+    steps:
+      - name: Attestations de procedencia firmadas por release.yml
+        id: verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::Versión no válida: $VERSION"; exit 1; }
+          for c in api web; do
+            image="ghcr.io/${OWNER,,}/tablero-$c"
+            # TODO 1: exige que la firmara release.yml de tablero y que no se construyera en un runner propio
+            digest=$(gh attestation verify "oci://$image:$VERSION" --repo "$GITHUB_REPOSITORY" \
+              --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256')
+            echo "$c=$image@sha256:$digest" >> "$GITHUB_OUTPUT"
+            echo "- \`$image@sha256:$digest\`" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+  staging:
+    name: Staging
+    needs: verify
+    # TODO 2: el apiserver de kind solo se alcanza desde dentro del clúster
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: staging
+    # TODO 3: un solo despliegue a la vez en este namespace, sin cancelar el que está en marcha
+    permissions:
+      contents: read
+      # TODO 4: el token OIDC del job es la credencial del clúster
+    env:
+      NAMESPACE: tablero-staging
+      HELM_VERSION: v4.3.2
+      # TODO 5: Helm usa el kubeconfig sin credenciales de ops/deploy/
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Instalar Helm con checksum
+        run: |
+          cd "$RUNNER_TEMP"
+          file="helm-$HELM_VERSION-linux-amd64.tar.gz"
+          curl -fsSLO "https://get.helm.sh/$file"
+          curl -fsSL "https://get.helm.sh/$file.sha256sum" | sha256sum -c
+          tar -xzf "$file" linux-amd64/helm
+          echo "$RUNNER_TEMP/linux-amd64" >> "$GITHUB_PATH"
+      - name: Desplegar por digest
+        id: deploy
+        env:
+          API_IMAGE: ${{ needs.verify.outputs.api }}
+          WEB_IMAGE: ${{ needs.verify.outputs.web }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          VERSION: ${{ inputs.version }}
+        # TODO 6: si los pods no llegan a Ready, Helm vuelve solo a la revisión anterior
+        run: |
+          helm upgrade --install tablero deploy/k8s --namespace "$NAMESPACE" \
+            --timeout 3m --description "tablero $VERSION" \
+            --set-string images.api="$API_IMAGE" --set-string images.web="$WEB_IMAGE" \
+            --set-string database.password="$DATABASE_PASSWORD"
+      - name: Smoke test a través de la web
+        run: ./scripts/smoke-test.sh "http://web.$NAMESPACE.svc.cluster.local:8080"
+      # TODO 7: un step que haga helm rollback solo si el smoke test falla tras un despliegue correcto
+
+  production:
+    name: Production
+    # TODO 8: el mismo job que staging, en el environment production y el namespace
+    # tablero-production, y solo después de staging
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - run: echo "production sin desplegar"

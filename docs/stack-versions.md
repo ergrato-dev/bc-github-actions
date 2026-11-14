@@ -110,6 +110,7 @@ nuevo, en la tanda que escribe la semana que la usa.
 | Límites de anidamiento y de llamadas de workflows reutilizables | 09 | |
 | Merge queue y revisores de environment en una org gratuita con repo público | 13, 18 | Lo decide el spike, ver `decision-laboratorio.md`. Los rulesets de organización que exigen workflows piden el plan Team (S11: solo teoría) |
 | Referencia `$/` (runner 2.336.0 o superior) y su soporte en actionlint | 11 | Changelog de GitHub del 2026-07-30. actionlint 1.7.12 la rechaza (rhysd/actionlint#711, abierto el 2026-11-03): el repo central la tolera con `.github/actionlint.yaml` |
+| Configuración OIDC del apiserver (`AuthenticationConfiguration` `apiserver.config.k8s.io/v1`) en el nodo de kind v1.37.0 | 17 | Probado el 2026-11-14: `--authentication-config` por `kubeadmConfigPatches`, recarga en caliente al cambiar el archivo y hash SHA-256 del archivo cargado en `apiserver_authentication_config_controller_last_config_info` de `/metrics`. El token OIDC de GitHub vive 5 minutos (`iat` → `exp` del ejemplo de la documentación): `deploy.yml` lo pide con un plugin `exec` que declara su caducidad |
 | Dominios vigentes del examen GH-200 | 20 | `mapa-funcionalidades.md` |
 
 ## Retirado: no se usa
@@ -122,6 +123,7 @@ nuevo, en la tanda que escribe la semana que la usa.
 | `corepack enable` para pnpm | corepack ya no viene incluido desde Node 25 |
 | Trivy v0.69.4 y `aquasecurity/trivy-action` por tag | Compromiso del 2026-03-19 (GHSA-69fq-xp46-6x23) |
 | `actions/attest-build-provenance` | Desde v4 es una action composite que solo envuelve a `actions/attest` (`action.yml` en v4.2.2): se usa `actions/attest` directamente |
+| `helm upgrade --atomic` | Helm 4 lo sustituye por `--rollback-on-failure` (`helm upgrade --help` en v4.3.2), que además activa `--wait=watcher` |
 | `anchore/sbom-action` | Instala syft descargando su `install.sh` en tiempo de ejecución (`src/github/SyftGithubAction.ts` en v0.24.3) y su syft por defecto es v1.54.0: tablero instala el binario de syft con checksum, como el resto de herramientas |
 
 ---

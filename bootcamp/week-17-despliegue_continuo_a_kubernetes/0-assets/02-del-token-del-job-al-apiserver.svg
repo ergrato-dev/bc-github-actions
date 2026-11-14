@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 704" role="img" aria-labelledby="t02">
+  <title id="t02">Del token del job al apiserver. En el pod del runner de ARC, sin token de Kubernetes y con el CA del clúster montado desde kube-root-ca.crt, Helm lee ops/deploy/kubeconfig.yaml, que no tiene credenciales: apunta a https://kubernetes.default.svc y usa el plugin exec github-token.sh. Paso 1: el plugin pide a GitHub, con ACTIONS_ID_TOKEN_REQUEST_URL y audience kind-gha, el token OIDC del job. Paso 2: GitHub devuelve un JWT firmado que vive 5 minutos, con los claims aud, repository_id, ref, job_workflow_ref y environment. El plugin lo entrega a Helm como ExecCredential con caducidad a 4 minutos. Paso 3: Helm lo envía como Authorization Bearer. Paso 4: el apiserver comprueba la firma con las claves del emisor, la audiencia y las cuatro reglas CEL, y convierte el environment en el usuario github:staging. Si algo falla responde 401. Paso 5: RBAC deja a github:staging tocar solo el namespace tablero-staging. Abajo, la línea de tiempo: el token caduca a los 5 minutos, el plugin declara 4 y client-go vuelve a llamarlo, así que un upgrade de hasta 3 minutos más un rollback de hasta 3 minutos siempre llevan un token vivo.</title>
+  <rect width="960" height="704" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Del token del job al apiserver</text>
+
+    <g transform="translate(0,24)">
+    <!-- pod del runner -->
+    <rect x="30" y="62" width="280" height="330" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="86" fill="#2088ff" font-size="13" font-weight="600">Pod del runner · arc-runners</text>
+    <text x="46" y="106" fill="#8b949e" font-size="11">job staging · id-token: write</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="46" y="120" width="248" height="44" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="58" y="140" fill="#f0f6fc" font-size="12" font-weight="600">helm upgrade --install</text>
+      <text x="58" y="156" fill="#8b949e">token en memoria (client-go)</text>
+
+      <rect x="46" y="174" width="248" height="78" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="58" y="194" fill="#f0f6fc" font-size="12" font-weight="600">kubeconfig.yaml</text>
+      <text x="58" y="212" fill="#f0f6fc">server: kubernetes.default.svc</text>
+      <text x="58" y="228" fill="#f0f6fc">exec: ./github-token.sh</text>
+      <text x="58" y="244" fill="#3fb950">sin credenciales</text>
+
+      <rect x="46" y="262" width="248" height="44" rx="6" fill="#0d1117" stroke="#d2a8ff"/>
+      <text x="58" y="282" fill="#d2a8ff" font-size="12" font-weight="600">github-token.sh</text>
+      <text x="58" y="298" fill="#f0f6fc">ExecCredential · caduca a 4 min</text>
+
+      <text x="46" y="332" fill="#3fb950">/etc/kube-ca/ca.crt</text>
+      <text x="58" y="348" fill="#8b949e">desde kube-root-ca.crt</text>
+      <text x="46" y="374" fill="#f85149">sin /var/run/secrets</text>
+    </g>
+
+    <!-- GitHub OIDC -->
+    <rect x="370" y="62" width="250" height="140" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+    <text x="386" y="86" fill="#79c0ff" font-size="13" font-weight="600">Emisor OIDC de GitHub</text>
+    <text x="386" y="106" fill="#8b949e" font-size="10" font-family="ui-monospace, Menlo, Consolas, monospace">token.actions.githubusercontent.com</text>
+    <text x="386" y="134" fill="#f0f6fc" font-size="11">Firma un JWT para este job,</text>
+    <text x="386" y="152" fill="#f0f6fc" font-size="11">con la audiencia que pide.</text>
+    <text x="386" y="180" fill="#e3b341" font-size="11">Vive 5 minutos (exp = iat + 300)</text>
+
+    <!-- claims -->
+    <rect x="370" y="222" width="250" height="170" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="386" y="246" fill="#d2a8ff" font-size="13" font-weight="600">Claims que importan</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11" fill="#f0f6fc">
+      <text x="386" y="270">aud: kind-gha</text>
+      <text x="386" y="290">repository_id: '&lt;id&gt;'</text>
+      <text x="386" y="310">ref: refs/heads/main</text>
+      <text x="386" y="330">job_workflow_ref:</text>
+      <text x="399.2" y="346">…/deploy.yml@refs/heads/main</text>
+      <text x="386" y="370">environment: staging</text>
+    </g>
+
+    <!-- flechas pod <-> GitHub -->
+    <path d="M294 284 L340 284 L340 120 L364 120" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+    <circle cx="340" cy="200" r="11" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="340" y="204" fill="#79c0ff" font-size="11" font-weight="600" text-anchor="middle">1</text>
+    <path d="M370 170 L352 170 L352 296 L298 296" stroke="#79c0ff" stroke-width="2" stroke-dasharray="5 3" fill="none" marker-end="url(#a02)"/>
+    <circle cx="352" cy="250" r="11" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="352" y="254" fill="#79c0ff" font-size="11" font-weight="600" text-anchor="middle">2</text>
+
+    <!-- apiserver -->
+    <rect x="680" y="62" width="250" height="250" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="696" y="86" fill="#2088ff" font-size="13" font-weight="600">apiserver de kind-gha</text>
+    <text x="696" y="106" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">authentication-config.yaml</text>
+    <g font-size="11" fill="#f0f6fc">
+      <text x="696" y="134">a. Firma: claves del emisor</text>
+      <text x="696" y="154">b. aud está en [kind-gha]</text>
+      <text x="696" y="174">c. Reglas CEL, todas true:</text>
+      <g font-family="ui-monospace, Menlo, Consolas, monospace" fill="#d2a8ff">
+        <text x="712" y="192">repository_id · ref</text>
+        <text x="712" y="208">job_workflow_ref · environment</text>
+      </g>
+      <text x="696" y="232">d. Usuario:</text>
+      <text x="712" y="250" fill="#3fb950" font-family="ui-monospace, Menlo, Consolas, monospace">'github:' + claims.environment</text>
+      <text x="696" y="282" fill="#f85149">Cualquier fallo: 401 Unauthorized</text>
+      <text x="696" y="300" fill="#8b949e">El motivo, solo en su log</text>
+    </g>
+
+    <!-- flecha Bearer -->
+    <path d="M294 142 L330 142 L330 50 L650 50 L650 150 L676 150" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+    <circle cx="650" cy="100" r="11" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="650" y="104" fill="#79c0ff" font-size="11" font-weight="600" text-anchor="middle">3</text>
+    <text x="490" y="46" fill="#79c0ff" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">Authorization: Bearer &lt;jwt&gt;</text>
+
+    <!-- RBAC -->
+    <rect x="680" y="332" width="250" height="60" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="696" y="356" fill="#3fb950" font-size="12" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">github:staging</text>
+    <text x="696" y="376" fill="#f0f6fc" font-size="11">Role deployer, solo en tablero-staging</text>
+    <path d="M805 312 L805 328" stroke="#3fb950" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+    <circle cx="840" cy="322" r="11" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="840" y="326" fill="#79c0ff" font-size="11" font-weight="600" text-anchor="middle">4</text>
+
+    <!-- línea de tiempo -->
+    <text x="30" y="440" fill="#f0f6fc" font-size="14" font-weight="600">Por qué el plugin y no un token pedido al principio</text>
+    <line x1="80" y1="560" x2="900" y2="560" stroke="#30363d" stroke-width="2"/>
+    <g font-size="11" fill="#8b949e" text-anchor="middle">
+      <line x1="80" y1="554" x2="80" y2="566" stroke="#8b949e"/><text x="80" y="584">0</text>
+      <line x1="200" y1="554" x2="200" y2="566" stroke="#8b949e"/><text x="200" y="584">1 min</text>
+      <line x1="320" y1="554" x2="320" y2="566" stroke="#8b949e"/><text x="320" y="584">2</text>
+      <line x1="440" y1="554" x2="440" y2="566" stroke="#8b949e"/><text x="440" y="584">3</text>
+      <line x1="560" y1="554" x2="560" y2="566" stroke="#8b949e"/><text x="560" y="584">4</text>
+      <line x1="680" y1="554" x2="680" y2="566" stroke="#8b949e"/><text x="680" y="584">5</text>
+      <line x1="800" y1="554" x2="800" y2="566" stroke="#8b949e"/><text x="800" y="584">6</text>
+    </g>
+    <!-- despliegue -->
+    <rect x="80" y="460" width="360" height="22" rx="4" fill="#2088ff" fill-opacity="0.25" stroke="#2088ff"/>
+    <text x="92" y="475" fill="#f0f6fc" font-size="11">helm upgrade · hasta 3 min</text>
+    <rect x="440" y="460" width="360" height="22" rx="4" fill="#f85149" fill-opacity="0.2" stroke="#f85149"/>
+    <text x="452" y="475" fill="#f0f6fc" font-size="11">smoke test falla → helm rollback · hasta 3 min</text>
+    <!-- token único -->
+    <rect x="80" y="496" width="600" height="18" rx="4" fill="#0d1117" stroke="#8b949e" stroke-dasharray="4 3"/>
+    <text x="92" y="509" fill="#8b949e" font-size="11">un único token pedido al empezar · caduca a los 5 min</text>
+    <text x="690" y="509" fill="#f85149" font-size="11">el rollback llega con un token muerto</text>
+    <!-- plugin -->
+    <rect x="80" y="524" width="480" height="18" rx="4" fill="#3fb950" fill-opacity="0.2" stroke="#3fb950"/>
+    <text x="92" y="537" fill="#f0f6fc" font-size="11">token 1 · expirationTimestamp a 4 min</text>
+    <rect x="560" y="524" width="340" height="18" rx="4" fill="#3fb950" fill-opacity="0.2" stroke="#3fb950"/>
+    <text x="572" y="537" fill="#f0f6fc" font-size="11">token 2 · client-go vuelve a llamar al plugin</text>
+
+    <text x="480" y="626" fill="#8b949e" font-size="11" text-anchor="middle">El token nunca va a GITHUB_ENV, a un archivo ni al log: vive en la memoria de Helm durante el job.</text>
+    <text x="480" y="648" fill="#8b949e" font-size="11" text-anchor="middle">Azul: flujo de la petición. Morado: claims y el script que pide el token. Verde: lo que se acepta. Rojo: lo que falta o se rechaza.</text>
+  </g>
+  </g>
+</svg>

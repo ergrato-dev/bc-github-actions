@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1010" role="img" aria-labelledby="t17">
+  <title id="t17">Mapa del pipeline de tablero en la capa 17. Arriba, la regla de todos los workflows desde la capa 12: permissions vacío en la raíz, permisos por job y ninguna expresión dentro de run. A la izquierda, lo que ya existía y sigue igual: ci-api, ci y ci-web; images; nightly, smoke y lint-workflows; labeler, pr-report, codeql y ci-tools; dependency-review.yml; dependabot.yml; y lab.yml, que sigue usando tablero-runners solo con workflow_dispatch. deploy-gate.yml desaparece: lo sustituye deploy.yml. A la derecha, lo nuevo. release.yml gana el job deploy, que tras release-please e images y con actions write como único permiso lanza deploy.yml con la versión. deploy.yml se lanza solo con workflow_dispatch y run-name deploy con la versión: el job verify en ubuntu-24.04 con attestations read comprueba con gh attestation verify que las imágenes las firmó release.yml en runners de GitHub y saca sus digests; los jobs staging y production corren en tablero-runners, cada uno en su environment, con concurrency sin cancelar, contents read e id-token write, instalan Helm v4.3.2 con checksum, despliegan por digest con --rollback-on-failure, pasan el smoke test y vuelven atrás con helm rollback si falla; production espera a staging y a tu aprobación. deploy/k8s es el chart de tablero, copiado de app, que solo acepta imágenes por digest y cuyos pods corren sin root, sin token, sin escalada ni capacidades, con seccomp y límites; el PVC se conserva. ops/cluster trae authentication-config.yaml, con el emisor de GitHub, audiencia kind-gha y reglas sobre el id del repo, main, deploy.yml y el environment, que se convierte en el usuario; y access.yaml, con los namespaces tablero-staging y tablero-production en Pod Security restricted y un Role por environment. ops/deploy trae un kubeconfig sin credenciales y github-token.sh, el plugin exec que pide el token OIDC con audiencia kind-gha. ops/arc/values.yaml monta el CA del clúster desde kube-root-ca.crt y sigue sin token. En configuración: los environments staging y production con el secreto DATABASE_PASSWORD y production con revisor; el clúster kind-gha recreado con la configuración OIDC del apiserver en ~/.config/tablero-kind, access.yaml aplicado y ARC reinstalado. En gris, lo que llega después: merge queue y rulesets en la Semana 18, rendimiento, coste y observabilidad en la 19 y el capstone en la 20.</title>
+  <rect width="960" height="1010" fill="#0d1117"/>
+  <defs>
+    <marker id="a17" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 17</text>
+
+    <!-- regla común -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="85" fill="#3fb950" font-size="12" font-weight="600">en todos los workflows</text>
+    <text x="210" y="85" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · permisos por job · nada de ${{ }} en run:</text>
+
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">Ya existían</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Nuevos en la capa 17 · despliegue a kind</text>
+
+    <!-- existentes -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="146" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="169" fill="#f0f6fc" font-size="12" font-weight="600">ci-api · ci · ci-web</text>
+      <text x="304" y="169" fill="#8b949e" text-anchor="end">contents: read</text>
+
+      <rect x="30" y="190" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="213" fill="#f0f6fc" font-size="12" font-weight="600">images</text>
+      <text x="304" y="213" fill="#8b949e" text-anchor="end">por SHA · _image.yml</text>
+
+      <rect x="30" y="234" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="257" fill="#f0f6fc" font-size="12" font-weight="600">nightly · smoke</text>
+      <text x="304" y="257" fill="#8b949e" text-anchor="end">lint-workflows</text>
+
+      <rect x="30" y="278" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="301" fill="#f0f6fc" font-size="12" font-weight="600">labeler · pr-report</text>
+      <text x="304" y="301" fill="#8b949e" text-anchor="end">codeql · ci-tools</text>
+
+      <rect x="30" y="322" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="345" fill="#f0f6fc" font-size="12" font-weight="600">dependency-review.yml</text>
+      <text x="304" y="345" fill="#8b949e" text-anchor="end">high</text>
+
+      <rect x="30" y="366" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="389" fill="#f0f6fc" font-size="12" font-weight="600">dependabot.yml</text>
+      <text x="304" y="389" fill="#8b949e" text-anchor="end">cooldown: 7 días</text>
+
+      <rect x="30" y="410" width="290" height="54" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="432" fill="#f0f6fc" font-size="12" font-weight="600">lab.yml</text>
+      <text x="304" y="432" fill="#3fb950" text-anchor="end">runs-on: tablero-runners</text>
+      <text x="46" y="452" fill="#8b949e">workflow_dispatch · sin id-token</text>
+
+      <rect x="30" y="472" width="290" height="44" rx="8" fill="#0d1117" stroke="#f85149" stroke-dasharray="6 4"/>
+      <text x="46" y="499" fill="#f85149" font-size="12" font-weight="600" text-decoration="line-through">deploy-gate.yml</text>
+      <text x="304" y="499" fill="#8b949e" text-anchor="end">→ deploy.yml</text>
+    </g>
+
+    <!-- release.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="146" width="580" height="66" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="170" fill="#2088ff" font-size="13" font-weight="600">release.yml</text>
+      <text x="914" y="170" fill="#8b949e" text-anchor="end">release-please → images (firmadas) → deploy</text>
+      <text x="366" y="196" fill="#f0f6fc">job deploy:</text>
+      <text x="458" y="196" fill="#d2a8ff">actions: write</text>
+      <text x="914" y="196" fill="#79c0ff" text-anchor="end">gh workflow run deploy.yml -f version=X.Y.Z</text>
+    </g>
+    <path d="M640 212 L640 230" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a17)"/>
+
+    <!-- deploy.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="236" width="580" height="250" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="260" fill="#2088ff" font-size="13" font-weight="600">deploy.yml</text>
+      <text x="914" y="260" fill="#79c0ff" text-anchor="end">workflow_dispatch · run-name: deploy X.Y.Z</text>
+
+      <rect x="366" y="274" width="170" height="196" rx="6" fill="#0d1117" stroke="#3fb950"/>
+      <text x="378" y="294" fill="#f0f6fc" font-size="12" font-weight="600">verify</text>
+      <text x="378" y="314" fill="#8b949e">ubuntu-24.04</text>
+      <text x="378" y="330" fill="#d2a8ff">attestations: read</text>
+      <text x="378" y="354" fill="#f0f6fc">gh attestation</text>
+      <text x="391.2" y="370" fill="#f0f6fc">verify</text>
+      <text x="378" y="388" fill="#3fb950">--signer-workflow</text>
+      <text x="391.2" y="404" fill="#3fb950">release.yml</text>
+      <text x="378" y="420" fill="#3fb950">--deny-self-hosted</text>
+      <text x="378" y="446" fill="#79c0ff">outputs: api · web</text>
+      <text x="391.2" y="462" fill="#79c0ff">@sha256:…</text>
+
+      <rect x="552" y="274" width="362" height="196" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="564" y="294" fill="#f0f6fc" font-size="12" font-weight="600">staging → production</text>
+      <text x="902" y="294" fill="#3fb950" text-anchor="end">runs-on: tablero-runners</text>
+      <text x="564" y="314" fill="#e3b341">environment: staging · production</text>
+      <text x="564" y="330" fill="#8b949e">concurrency: deploy-&lt;env&gt; · sin cancelar</text>
+      <text x="564" y="346" fill="#d2a8ff">contents: read · id-token: write</text>
+      <text x="564" y="370" fill="#f0f6fc">KUBECONFIG: ops/deploy/kubeconfig.yaml</text>
+      <text x="564" y="388" fill="#3fb950">Helm v4.3.2 · sha256sum -c</text>
+      <text x="564" y="406" fill="#f0f6fc">helm upgrade --install · por digest</text>
+      <text x="577.2" y="422" fill="#f0f6fc">--rollback-on-failure --timeout 3m</text>
+      <text x="564" y="440" fill="#f0f6fc">smoke-test.sh · web.&lt;ns&gt;.svc</text>
+      <text x="564" y="458" fill="#f85149">si falla: helm rollback</text>
+      <text x="902" y="458" fill="#e3b341" text-anchor="end">production: tu aprobación</text>
+    </g>
+    <path d="M536 372 L548 372" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a17)"/>
+
+    <!-- piezas del repo -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="540" width="290" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="564" fill="#2088ff" font-size="13" font-weight="600">deploy/k8s/</text>
+      <text x="304" y="564" fill="#8b949e" text-anchor="end">chart de app/</text>
+      <text x="46" y="588" fill="#f0f6fc">db · api · web</text>
+      <text x="46" y="606" fill="#3fb950">imágenes solo @sha256</text>
+      <text x="46" y="624" fill="#3fb950">sin root · sin token · drop [ALL]</text>
+      <text x="46" y="642" fill="#3fb950">seccomp · límites</text>
+      <text x="46" y="660" fill="#d2a8ff">PVC db-data: resource-policy keep</text>
+      <text x="46" y="678" fill="#8b949e">postgres:17.11-alpine@sha256</text>
+
+      <rect x="340" y="540" width="290" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="356" y="564" fill="#2088ff" font-size="13" font-weight="600">ops/cluster/</text>
+      <text x="356" y="588" fill="#d2a8ff">authentication-config.yaml</text>
+      <text x="356" y="606" fill="#f0f6fc">emisor GitHub · aud kind-gha</text>
+      <text x="356" y="624" fill="#f0f6fc">id · main · deploy.yml · env</text>
+      <text x="356" y="642" fill="#3fb950">usuario 'github:' + environment</text>
+      <text x="356" y="664" fill="#d2a8ff">access.yaml</text>
+      <text x="356" y="682" fill="#3fb950">restricted · Role por environment</text>
+
+      <rect x="650" y="540" width="280" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="666" y="564" fill="#2088ff" font-size="13" font-weight="600">ops/deploy/ · ops/arc/</text>
+      <text x="666" y="588" fill="#f0f6fc">kubeconfig.yaml</text>
+      <text x="679.2" y="606" fill="#3fb950">sin credenciales · exec</text>
+      <text x="666" y="624" fill="#d2a8ff">github-token.sh</text>
+      <text x="679.2" y="642" fill="#8b949e">token OIDC · caduca a 4 min</text>
+      <text x="666" y="664" fill="#f0f6fc">values.yaml</text>
+      <text x="679.2" y="682" fill="#3fb950">+ CA en /etc/kube-ca</text>
+    </g>
+    <path d="M175 536 L175 526 L700 526 L700 490" stroke="#79c0ff" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#a17)"/>
+    <path d="M790 536 L790 490" stroke="#79c0ff" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#a17)"/>
+
+    <!-- configuración -->
+    <text x="30" y="736" fill="#d2a8ff" font-size="14" font-weight="600">Configuración de &lt;tu-org&gt;/tablero y de tu máquina</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="748" width="280" height="84" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="46" y="772" fill="#e3b341" font-size="13" font-weight="600">environments</text>
+      <text x="46" y="794" fill="#f0f6fc">staging · production: solo main</text>
+      <text x="46" y="812" fill="#d2a8ff">secreto DATABASE_PASSWORD</text>
+
+      <rect x="340" y="748" width="280" height="84" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+      <text x="356" y="772" fill="#e3b341" font-size="13" font-weight="600">production</text>
+      <text x="356" y="794" fill="#f0f6fc">revisor obligatorio: tú</text>
+      <text x="356" y="812" fill="#8b949e">deployments en la API</text>
+
+      <rect x="650" y="748" width="280" height="84" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="666" y="772" fill="#d2a8ff" font-size="13" font-weight="600">kind-gha · recreado</text>
+      <text x="666" y="794" fill="#f0f6fc">~/.config/tablero-kind</text>
+      <text x="666" y="812" fill="#8b949e">access.yaml · ARC reinstalado</text>
+    </g>
+
+    <!-- después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="856" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="883"><tspan font-weight="600">Semana 18</tspan> · merge queue y rulesets</text>
+      <rect x="340" y="856" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="356" y="883"><tspan font-weight="600">Semana 19</tspan> · rendimiento y coste</text>
+      <rect x="650" y="856" width="280" height="44" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="883"><tspan font-weight="600">Semana 20</tspan> · capstone</text>
+    </g>
+    <text x="480" y="936" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y piezas nuevas o ampliadas. Verde: lo fijado, verificado o restringido. Morado: permisos, configuración y credenciales.</text>
+    <text x="480" y="954" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: environments y aprobación. Rojo: lo que se borra o deshace.</text>
+    <text x="480" y="972" fill="#8b949e" font-size="11" text-anchor="middle">Gris discontinuo: lo que añaden las siguientes semanas.</text>
+  </g>
+</svg>

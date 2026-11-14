@@ -159,6 +159,10 @@ lo que cuenta es la semana en curso.
 | `lab-runs-on` | 15 | 16 | `lab.yml` pasa de `[self-hosted, tablero-lab]` a `tablero-runners` (ARC) |
 | `self-hosted-only-in-lab` | 15 | 16 | `runs-on: tablero-runners` ya no contiene `self-hosted`; la S16 lo comprueba con `own-runners-only-in-lab` |
 | `lab-green-on-own-runner` | 15 | 16 | El run lo ejecuta un runner `tablero-runners-…` de ARC, no uno `tablero-lab-…` |
+| `gate-environments`, `gate-concurrency`, `gate-env-secret`, `gate-verifier` y `green-on-main` | 13 | 17 | `deploy-gate.yml` se borra: `deploy.yml` despliega de verdad y el apiserver de kind hace de verificador OIDC |
+| `id-token-scoped` | 13 | 17 | Los jobs con `id-token: write` pasan a ser `staging` y `production` de `deploy.yml` |
+| `writes-only-where-needed` | 13 y 14 | 17 | `deploy.yml` pide `id-token: write` y el job `deploy` de `release.yml`, `actions: write` |
+| `own-runners-only-in-lab` | 16 | 17 | `deploy.yml` también usa `tablero-runners`; la S17 lo comprueba con `own-runners-dispatch-only` |
 | `org-default-token-read` | 11 | 14 | release-please necesita `can_approve_pull_request_reviews=true`; la Semana 18 cierra el riesgo con revisión obligatoria |
 
 ## Permisos de `gh` por semana

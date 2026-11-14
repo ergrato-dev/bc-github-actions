@@ -1,0 +1,20 @@
+# Starter de la Semana 17: se copia a ops/cluster/authentication-config.yaml de <tu-org>/tablero.
+# Después se instala en ~/.config/tablero-kind/, la carpeta que lab-up.sh monta en el apiserver.
+apiVersion: apiserver.config.k8s.io/v1
+kind: AuthenticationConfiguration
+jwt:
+  - issuer:
+      url: https://token.actions.githubusercontent.com
+      # TODO 9: la audiencia que pide ops/deploy/github-token.sh
+      audiences: [https://github.com/tu-org]
+    claimValidationRules:
+      # TODO 10: el id numérico de tablero, no su nombre
+      - expression: "claims.repository == 'tu-org/tablero'"
+        message: el token no es de tablero
+      - expression: "claims.ref == 'refs/heads/main'"
+        message: solo se despliega desde main
+      # TODO 11: solo deploy.yml desde main (job_workflow_ref) y solo los environments staging y production
+    claimMappings:
+      # TODO 12: el usuario de Kubernetes es el environment, con el prefijo github:
+      username:
+        expression: "claims.sub"

@@ -1,0 +1,64 @@
+{{- $image := required "images.api: deploy.yml la pasa por digest" .Values.images.api }}
+{{- if not (regexMatch "@sha256:[0-9a-f]{64}$" $image) }}
+{{- fail (printf "images.api tiene que ir por digest (...@sha256:...), no %s" $image) }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: {{ $image }}
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: password
+            # Kubernetes sustituye $(DATABASE_PASSWORD) por la variable de arriba.
+            - name: DATABASE_URL
+              value: postgresql://tablero:$(DATABASE_PASSWORD)@db:5432/tablero
+          ports:
+            - containerPort: 8000
+          # Las migraciones corren al arrancar: hasta que terminan, no hay /api/health.
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8000
+            periodSeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 8000

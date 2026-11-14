@@ -2,12 +2,31 @@
 # El worker aloja los runners de ARC y los despliegues de tablero.
 # Imagen de nodo fijada por digest, como exige kind para garantizar que la
 # imagen corresponde a su versión (versiones en docs/stack-versions.md).
-# Se crea con ./scripts/lab-up.sh, no a mano.
+# Se crea con ./scripts/lab-up.sh, no a mano: el script cambia __AUTH_DIR__
+# por la carpeta de tu máquina con la configuración OIDC del apiserver.
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 name: gha
 nodes:
   - role: control-plane
     image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+    # Semana 17: el apiserver acepta tokens OIDC de GitHub según
+    # authentication-config.yaml, y lo recarga solo cuando cambia.
+    extraMounts:
+      - hostPath: __AUTH_DIR__
+        containerPath: /etc/kubernetes/auth
+        readOnly: true
+    kubeadmConfigPatches:
+      - |
+        kind: ClusterConfiguration
+        apiServer:
+          extraArgs:
+            authentication-config: /etc/kubernetes/auth/authentication-config.yaml
+          extraVolumes:
+            - name: auth
+              hostPath: /etc/kubernetes/auth
+              mountPath: /etc/kubernetes/auth
+              readOnly: true
+              pathType: Directory
   - role: worker
     image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5

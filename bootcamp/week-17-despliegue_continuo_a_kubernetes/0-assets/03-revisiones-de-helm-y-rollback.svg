@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t03">
+  <title id="t03">Revisiones de la release tablero en el namespace tablero-staging. La revisión 1, tablero 1.3.1, y la 2, tablero 1.3.2, quedaron superseded. La revisión 3, tablero 1.4.0, falló: sus pods no llegaron a Ready en los 3 minutos de timeout y Helm, por --rollback-on-failure, creó la revisión 4, Rollback to 2, que vuelve a aplicar los manifiestos de la revisión 2 y queda deployed. Cada revisión se guarda en un Secret del propio namespace, y Helm 4 conserva las 10 últimas. Abajo, los dos caminos de vuelta atrás: si el upgrade no arranca, lo deshace Helm con --rollback-on-failure dentro del mismo comando; si arranca pero el smoke test falla, lo deshace el step de deploy.yml con helm rollback, solo cuando el paso de Helm terminó en success. Fuera de las revisiones queda el PVC db-data con helm.sh/resource-policy keep: ni un rollback ni un uninstall borran los datos, y tampoco deshacen las migraciones que ya corrieron.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <defs>
+    <marker id="a03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="r03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Revisiones de Helm y rollback</text>
+    <text x="30" y="72" fill="#f0f6fc" font-size="14" font-weight="600">helm history tablero -n tablero-staging</text>
+    <text x="930" y="72" fill="#8b949e" font-size="11" text-anchor="end">cada revisión: un Secret del namespace · se guardan las 10 últimas</text>
+
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="92" width="200" height="110" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <text x="46" y="118" fill="#f0f6fc" font-size="16" font-weight="600">1</text>
+      <text x="46" y="142" fill="#8b949e">superseded</text>
+      <text x="46" y="166" fill="#f0f6fc">tablero 1.3.1</text>
+
+      <rect x="262" y="92" width="200" height="110" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="278" y="118" fill="#f0f6fc" font-size="16" font-weight="600">2</text>
+      <text x="278" y="142" fill="#8b949e">superseded</text>
+      <text x="278" y="166" fill="#f0f6fc">tablero 1.3.2</text>
+      <text x="278" y="188" fill="#3fb950">la última que funcionó</text>
+
+      <rect x="494" y="92" width="200" height="110" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="510" y="118" fill="#f0f6fc" font-size="16" font-weight="600">3</text>
+      <text x="510" y="142" fill="#f85149">failed</text>
+      <text x="510" y="166" fill="#f0f6fc">Upgrade "tablero"</text>
+      <text x="510" y="182" fill="#f0f6fc">failed: …</text>
+
+      <rect x="726" y="92" width="204" height="110" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="742" y="118" fill="#f0f6fc" font-size="16" font-weight="600">4</text>
+      <text x="742" y="142" fill="#3fb950">deployed</text>
+      <text x="742" y="166" fill="#f0f6fc">Rollback to 2</text>
+      <text x="742" y="188" fill="#8b949e">manifiestos de la 2</text>
+    </g>
+    <path d="M230 147 L258 147" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <path d="M462 147 L490 147" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <path d="M694 147 L722 147" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a03)"/>
+    <path d="M362 202 L362 236 L828 236 L828 206" stroke="#3fb950" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#r03)"/>
+    <text x="595" y="256" fill="#3fb950" font-size="11" text-anchor="middle">Helm vuelve a aplicar lo que tenía la revisión 2</text>
+
+    <!-- dos caminos -->
+    <text x="30" y="304" fill="#f0f6fc" font-size="14" font-weight="600">Dos formas de volver atrás en deploy.yml</text>
+
+    <rect x="30" y="320" width="430" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="344" fill="#2088ff" font-size="13" font-weight="600">No arranca</text>
+    <text x="444" y="344" fill="#8b949e" font-size="11" text-anchor="end">dentro del mismo comando</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="46" y="370" fill="#f0f6fc">helm upgrade --install ...</text>
+      <text x="59.2" y="386" fill="#f0f6fc">--rollback-on-failure --timeout 3m</text>
+      <text x="46" y="412" fill="#8b949e">espera con --wait=watcher; a los 3 min</text>
+      <text x="46" y="428" fill="#8b949e">sin Ready: revisión failed + Rollback to N</text>
+      <text x="46" y="454" fill="#e3b341">primer install: desinstala la release</text>
+    </g>
+
+    <rect x="500" y="320" width="430" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="516" y="344" fill="#2088ff" font-size="13" font-weight="600">Arranca, pero el smoke test falla</text>
+    <text x="914" y="344" fill="#8b949e" font-size="11" text-anchor="end">un step aparte</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <text x="516" y="370" fill="#f0f6fc">if: failure() &amp;&amp;</text>
+      <text x="529.2" y="386" fill="#f0f6fc">steps.deploy.outcome == 'success'</text>
+      <text x="516" y="404" fill="#f0f6fc">helm rollback tablero --wait --timeout 3m</text>
+      <text x="516" y="430" fill="#8b949e">sin número: vuelve a la anterior</text>
+      <text x="516" y="454" fill="#e3b341">si Helm ya volvió atrás, no corre</text>
+    </g>
+
+    <!-- lo que no deshace -->
+    <rect x="30" y="490" width="900" height="60" rx="8" fill="#0d1117" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="46" y="514" fill="#d2a8ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">PVC db-data · helm.sh/resource-policy: keep</text>
+    <text x="46" y="536" fill="#f0f6fc" font-size="11">Fuera de las revisiones: ni un rollback ni un uninstall borran los datos. Tampoco deshacen las migraciones que ya corrieron.</text>
+
+    <text x="480" y="580" fill="#8b949e" font-size="11" text-anchor="middle">Verde: lo que funcionó y a lo que se vuelve. Rojo: la revisión fallida. Amarillo: casos que conviene recordar. Morado: lo que Helm no toca.</text>
+  </g>
+</svg>

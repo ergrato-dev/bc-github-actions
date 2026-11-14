@@ -1,0 +1,133 @@
+{
+  "week": "17",
+  "title": "Despliegue continuo a Kubernetes",
+  "context": "kind-gha",
+  "checks": [
+    {
+      "id": "chart-digest-only",
+      "description": "El chart deploy/k8s rechaza imágenes por tag y renderiza con imágenes por digest",
+      "cmd": "d=$(printf \"a%.0s\" $(seq 64)); t() { helm template t deploy/k8s --set-string images.api=\"$1\" --set-string images.web=\"$1\" --set-string database.password=x >/dev/null 2>&1 && echo ok || echo rejected; }; echo \"tag=$(t ghcr.io/x/y:1.0.0) digest=$(t ghcr.io/x/y@sha256:$d)\"",
+      "assert": "stdout~^tag=rejected digest=ok$",
+      "hint": "2-practicas/02-chart-y-rollback-con-helm.md, paso 1"
+    },
+    {
+      "id": "chart-pods-restricted",
+      "description": "Cada pod del chart corre sin root, sin token de Kubernetes, sin escalada ni capacidades, con seccomp y con límites",
+      "cmd": "d=$(printf \"a%.0s\" $(seq 64)); helm template t deploy/k8s --set-string images.api=ghcr.io/x/api@sha256:$d --set-string images.web=ghcr.io/x/web@sha256:$d --set-string database.password=x | yq -N 'select(.kind == \"Deployment\") | .metadata.name + \":\" + ((.spec.template.spec.automountServiceAccountToken == false and .spec.template.spec.securityContext.runAsNonRoot == true and .spec.template.spec.securityContext.seccompProfile.type == \"RuntimeDefault\" and ([.spec.template.spec.containers[] | select(.securityContext.allowPrivilegeEscalation == false and (.securityContext.capabilities.drop | contains([\"ALL\"])) and .resources.limits.cpu != null and .resources.limits.memory != null)] | length) == (.spec.template.spec.containers | length)) | tostring)' | sort | paste -sd\" \"",
+      "assert": "stdout~^api:true db:true web:true$",
+      "hint": "2-practicas/02-chart-y-rollback-con-helm.md, paso 2"
+    },
+    {
+      "id": "namespaces-restricted",
+      "description": "ops/cluster/access.yaml crea tablero-staging y tablero-production con Pod Security restricted",
+      "cmd": "yq -N 'select(.kind == \"Namespace\") | .metadata.name + \"=\" + .metadata.labels.\"pod-security.kubernetes.io/enforce\"' ops/cluster/access.yaml | sort | paste -sd\" \"",
+      "assert": "stdout~^tablero-production=restricted tablero-staging=restricted$",
+      "hint": "2-practicas/01-el-cluster-confia-en-github.md, paso 4"
+    },
+    {
+      "id": "rbac-per-environment",
+      "description": "Cada environment es un usuario de Kubernetes con un Role solo en su namespace, sin comodines ni permisos de clúster",
+      "cmd": "f=ops/cluster/access.yaml; echo \"$(yq -N 'select(.kind == \"RoleBinding\") | .metadata.namespace + \"=\" + (.subjects | map(.kind + \"/\" + .name) | join(\",\"))' $f | sort | paste -sd\" \") cluster=$(yq -N 'select(.kind == \"ClusterRole\" or .kind == \"ClusterRoleBinding\") | .kind' $f | wc -l) wildcards=$(yq -N 'select(.kind == \"Role\") | .rules[] | (.apiGroups + .resources + .verbs)[] | select(test(\"^\\\\*$\"))' $f | wc -l)\"",
+      "assert": "stdout~^tablero-production=User/github:production tablero-staging=User/github:staging cluster=0 wildcards=0$",
+      "hint": "2-practicas/01-el-cluster-confia-en-github.md, paso 4"
+    },
+    {
+      "id": "oidc-authn-config",
+      "description": "authentication-config.yaml acepta solo tokens de GitHub con audiencia kind-gha, del id de tablero, desde main y de deploy.yml, y usa el environment como usuario",
+      "cmd": "f=ops/cluster/authentication-config.yaml; id=$(gh api \"repos/$GH_REPO\" --jq .id); printf \"issuer=%s aud=%s repo=%s main=%s workflow=%s user=%s\" \"$(yq '.jwt[0].issuer.url' $f)\" \"$(yq '.jwt[0].issuer.audiences | join(\",\")' $f)\" \"$(grep -cF \"claims.repository_id == '$id'\" $f)\" \"$(grep -cF \"claims.ref == 'refs/heads/main'\" $f)\" \"$(grep -cF \"claims.job_workflow_ref == '$GH_REPO/.github/workflows/deploy.yml@refs/heads/main'\" $f)\" \"$(yq '.jwt[0].claimMappings.username.expression' $f)\"",
+      "assert": "stdout~^issuer=https://token\\.actions\\.githubusercontent\\.com aud=kind-gha repo=1 main=1 workflow=1 user='github:' \\+ claims\\.environment$",
+      "hint": "2-practicas/01-el-cluster-confia-en-github.md, paso 3"
+    },
+    {
+      "id": "runner-mounts-kube-ca",
+      "description": "El pod del runner monta el CA del clúster desde kube-root-ca.crt y sigue sin token de Kubernetes",
+      "cmd": "yq '\"automount=\" + (.template.spec.automountServiceAccountToken | tostring) + \" ca=\" + ([.template.spec.volumes[] | select(.configMap.name == \"kube-root-ca.crt\") | .name] | join(\",\")) + \" mount=\" + ([.template.spec.containers[0].volumeMounts[] | .mountPath] | join(\",\"))' ops/arc/values.yaml",
+      "assert": "stdout~^automount=false ca=[a-z0-9-]+ mount=/etc/kube-ca$",
+      "hint": "2-practicas/01-el-cluster-confia-en-github.md, paso 2"
+    },
+    {
+      "id": "own-runners-dispatch-only",
+      "description": "Solo lab.yml y deploy.yml piden runners propios, y los dos se lanzan solo con workflow_dispatch",
+      "cmd": "yq -N 'select([.jobs[].\"runs-on\" | tostring | test(\"self-hosted|tablero-lab|tablero-runners\")] | any) | (filename | sub(\".*/\"; \"\")) + \":\" + (.on | keys | join(\",\"))' .github/workflows/*.yml | sort | paste -sd\" \"",
+      "assert": "stdout~^deploy\\.yml:workflow_dispatch lab\\.yml:workflow_dispatch$",
+      "hint": "2-practicas/03-deploy-yml.md, paso 1"
+    },
+    {
+      "id": "deploy-verifies-attestations",
+      "description": "El job verify de deploy.yml, en un runner de GitHub y con attestations: read como único permiso, verifica las imágenes firmadas por release.yml en runners de GitHub",
+      "cmd": "f=.github/workflows/deploy.yml; printf \"runs-on=%s perms=%s verify=%s\" \"$(yq '.jobs.verify.\"runs-on\"' $f)\" \"$(yq '.jobs.verify.permissions | to_entries | map(.key + \"=\" + .value) | join(\",\")' $f)\" \"$(yq '[.jobs.verify.steps[].run // \"\" | select(test(\"gh attestation verify\") and test(\"--signer-workflow \\\"?\\$GITHUB_REPOSITORY/\\.github/workflows/release\\.yml\") and test(\"--deny-self-hosted-runners\"))] | length' $f)\"",
+      "assert": "stdout~^runs-on=ubuntu-24\\.04 perms=attestations=read verify=1$",
+      "hint": "2-practicas/03-deploy-yml.md, paso 2"
+    },
+    {
+      "id": "deploy-environments",
+      "description": "staging y production corren en tablero-runners, cada uno en su environment y en cola sin cancelar, y production espera a staging",
+      "cmd": "yq -N '.jobs | to_entries | .[] | select(.value.environment) | .key + \":env=\" + (.value.environment | .name // .) + \",runs-on=\" + .value.\"runs-on\" + \",needs=\" + ([.value.needs] | flatten | join(\"+\")) + \",queue=\" + ((.value.concurrency.group // \"\") != \"\" and .value.concurrency.\"cancel-in-progress\" == false | tostring)' .github/workflows/deploy.yml | paste -sd\" \"",
+      "assert": "stdout~^staging:env=staging,runs-on=tablero-runners,needs=verify,queue=true production:env=production,runs-on=tablero-runners,needs=verify\\+staging,queue=true$",
+      "hint": "2-practicas/03-deploy-yml.md, paso 3"
+    },
+    {
+      "id": "deploy-kubeconfig-oidc",
+      "description": "Los jobs de despliegue usan ops/deploy/kubeconfig.yaml, sin credenciales dentro, que pide el token OIDC del job con audiencia kind-gha",
+      "cmd": "f=.github/workflows/deploy.yml; k=ops/deploy/kubeconfig.yaml; printf \"perms=%s kubeconfig=%s exec=%s aud=%s creds=%s\" \"$(yq -N '(.jobs.staging, .jobs.production) | .permissions | to_entries | map(.key + \"=\" + .value) | sort | join(\",\")' $f | sort -u | paste -sd\" \")\" \"$(yq -N '.jobs.staging.env.KUBECONFIG, .jobs.production.env.KUBECONFIG' $f | sort -u | paste -sd\" \")\" \"$(yq '.users[0].user.exec.command' $k)\" \"$(grep -c \"audience=kind-gha\" ops/deploy/github-token.sh)\" \"$(yq '[.. | select(tag == \"!!map\") | keys[] | select(test(\"^(token|tokenFile|client-key|client-key-data|password)$\"))] | length' $k)\"",
+      "assert": "stdout~^perms=contents=read,id-token=write kubeconfig=ops/deploy/kubeconfig\\.yaml exec=\\./github-token\\.sh aud=1 creds=0$",
+      "hint": "2-practicas/03-deploy-yml.md, paso 3"
+    },
+    {
+      "id": "deploy-helm-rollback",
+      "description": "Cada job de despliegue instala Helm con checksum, despliega las imágenes de verify con --rollback-on-failure y vuelve atrás si el smoke test falla",
+      "cmd": "f=.github/workflows/deploy.yml; for j in staging production; do printf \"%s:helm=%s checksum=%s deploy=%s rollback=%s \" $j \"$(yq \".jobs.$j.env.HELM_VERSION\" $f)\" \"$(yq \"[.jobs.$j.steps[].run // \\\"\\\" | select(test(\\\"sha256sum -c\\\"))] | length\" $f)\" \"$(yq \"[.jobs.$j.steps[] | select((.run // \\\"\\\" | test(\\\"helm upgrade --install\\\")) and (.run | test(\\\"--rollback-on-failure\\\")) and (.env.API_IMAGE // \\\"\\\" | test(\\\"needs.verify.outputs.api\\\")) and (.env.WEB_IMAGE // \\\"\\\" | test(\\\"needs.verify.outputs.web\\\")))] | length\" $f)\" \"$(yq \"[.jobs.$j.steps[] | select((.run // \\\"\\\" | test(\\\"helm rollback\\\")) and (.if // \\\"\\\" | test(\\\"failure\\\")))] | length\" $f)\"; done",
+      "assert": "stdout~^staging:helm=v4\\.3\\.2 checksum=1 deploy=1 rollback=1 production:helm=v4\\.3\\.2 checksum=1 deploy=1 rollback=1 $",
+      "hint": "2-practicas/03-deploy-yml.md, paso 4"
+    },
+    {
+      "id": "release-dispatches-deploy",
+      "description": "release.yml lanza deploy.yml con la versión publicada tras las imágenes, desde un job con actions: write como único permiso",
+      "cmd": "f=.github/workflows/release.yml; printf \"needs=%s perms=%s run=%s\" \"$(yq '.jobs.deploy.needs | join(\",\")' $f)\" \"$(yq '.jobs.deploy.permissions | to_entries | map(.key + \"=\" + .value) | join(\",\")' $f)\" \"$(yq '[.jobs.deploy.steps[].run // \"\" | select(test(\"gh workflow run deploy\\.yml\") and test(\"version=\"))] | length' $f)\"",
+      "assert": "stdout~^needs=release-please,images perms=actions=write run=1$",
+      "hint": "2-practicas/04-promocion-aprobacion-y-rollback.md, paso 1"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "actionlint y zizmor pasan sin hallazgos sobre los workflows de tablero",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/03-deploy-yml.md, paso 5"
+    },
+    {
+      "id": "apiserver-oidc-config-loaded",
+      "description": "El apiserver de kind-gha tiene cargada exactamente ops/cluster/authentication-config.yaml",
+      "cmd": "h=$(sha256sum ops/cluster/authentication-config.yaml | cut -d\" \" -f1); kubectl get --raw /metrics | grep -c \"^apiserver_authentication_config_controller_last_config_info{.*hash=\\\"sha256:$h\\\"}\"",
+      "assert": "stdout~^1$",
+      "hint": "2-practicas/01-el-cluster-confia-en-github.md, paso 3"
+    },
+    {
+      "id": "cluster-rbac-applied",
+      "description": "En kind-gha, github:staging y github:production solo pueden desplegar en su propio namespace",
+      "cmd": "for u in staging production; do for n in staging production; do printf \"%s@%s=%s \" $u $n \"$(kubectl auth can-i create deployments -n tablero-$n --as github:$u)\"; done; done; printf \"namespaces=%s\" \"$(kubectl auth can-i create namespaces --as github:production 2>/dev/null)\"",
+      "assert": "stdout~^staging@staging=yes staging@production=no production@staging=no production@production=yes namespaces=no$",
+      "hint": "2-practicas/01-el-cluster-confia-en-github.md, paso 4"
+    },
+    {
+      "id": "rollback-drill",
+      "description": "El historial de Helm de staging tiene una revisión fallida y un rollback automático",
+      "cmd": "helm history tablero -n tablero-staging -o json | jq -r '\"failed=\\(map(select(.status == \"failed\")) | length > 0) rollback=\\(map(select(.description | startswith(\"Rollback to\"))) | length > 0)\"'",
+      "assert": "stdout~^failed=true rollback=true$",
+      "hint": "2-practicas/02-chart-y-rollback-con-helm.md, paso 4"
+    },
+    {
+      "id": "production-runs-latest-release",
+      "description": "tablero-production en kind-gha corre la última release de tablero, por el digest que cubren sus attestations",
+      "cmd": "owner=${GH_REPO%%/*}; v=$(gh release view --json tagName --jq .tagName); for c in api web; do want=\"ghcr.io/${owner,,}/tablero-$c@sha256:$(gh attestation verify \"oci://ghcr.io/${owner,,}/tablero-$c:${v#v}\" --repo \"$GH_REPO\" --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256')\"; have=$(kubectl -n tablero-production get deploy $c -o jsonpath='{.spec.template.spec.containers[0].image}'); printf \"%s=%s \" $c \"$([[ \"$have\" == \"$want\" ]] && echo \"$v\" || echo \"${have:-ninguna}\")\"; done",
+      "assert": "stdout~^api=v[0-9]+\\.[0-9]+\\.[0-9]+ web=v[0-9]+\\.[0-9]+\\.[0-9]+ $",
+      "hint": "2-practicas/04-promocion-aprobacion-y-rollback.md, paso 2"
+    },
+    {
+      "id": "deploy-green-for-release",
+      "description": "El run de deploy.yml de la última release terminó en success y su deployment de production quedó en success",
+      "cmd": "v=$(gh release view --json tagName --jq '.tagName | ltrimstr(\"v\")'); read -r sha concl < <(gh run list --workflow deploy.yml --json displayTitle,headSha,conclusion --jq \"[.[] | select(.displayTitle == \\\"deploy $v\\\")][0] | \\\"\\(.headSha) \\(.conclusion)\\\"\"); dep=$(gh api \"repos/{owner}/{repo}/deployments?environment=production&sha=$sha\" --jq '.[0].id'); echo \"deploy=$concl production=$(gh api \"repos/{owner}/{repo}/deployments/$dep/statuses\" --jq '.[0].state')\"",
+      "assert": "stdout~^deploy=success production=success$",
+      "hint": "2-practicas/04-promocion-aprobacion-y-rollback.md, paso 2"
+    }
+  ]
+}

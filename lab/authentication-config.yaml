@@ -1,0 +1,15 @@
+# Configuración OIDC inicial del apiserver del laboratorio: confía en el emisor de GitHub pero
+# rechaza todos sus tokens. lab-up.sh la copia a ~/.config/tablero-kind/ si allí no hay ninguna;
+# en la Semana 17 la sustituyes por ops/cluster/authentication-config.yaml de tablero.
+apiVersion: apiserver.config.k8s.io/v1
+kind: AuthenticationConfiguration
+jwt:
+  - issuer:
+      url: https://token.actions.githubusercontent.com
+      audiences: [kind-gha]
+    claimValidationRules:
+      - expression: "false"
+        message: sin configurar (Semana 17)
+    claimMappings:
+      username:
+        expression: "'github:' + claims.sub"
