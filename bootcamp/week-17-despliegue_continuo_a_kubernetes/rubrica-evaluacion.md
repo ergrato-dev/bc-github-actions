@@ -566,7 +566,7 @@ gh api "repos/{owner}/{repo}/deployments/$dep/statuses" --jq '.[0].state'
 # 7. production corre el digest que cubre la attestation de esa versión
 for c in api web; do
   want="ghcr.io/$o/tablero-$c@sha256:$(gh attestation verify "oci://ghcr.io/$o/tablero-$c:$v" --repo "$GH_REPO" \
-    --signer-workflow "$GH_REPO/.github/workflows/release.yml" --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256')"
+    --signer-workflow "$GH_REPO/.github/workflows/release.yml" --source-ref refs/heads/main --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256')"
   have=$(kubectl --context kind-gha -n tablero-production get deploy $c -o jsonpath='{.spec.template.spec.containers[0].image}')
   [[ "$have" == "$want" ]] && printf 'ok ' || printf 'mal '
 done; echo

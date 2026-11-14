@@ -54,8 +54,8 @@
     },
     {
       "id": "deploy-verifies-attestations",
-      "description": "El job verify de deploy.yml, en un runner de GitHub y con attestations: read como único permiso, verifica las imágenes firmadas por release.yml en runners de GitHub",
-      "cmd": "f=.github/workflows/deploy.yml; printf \"runs-on=%s perms=%s verify=%s\" \"$(yq '.jobs.verify.\"runs-on\"' $f)\" \"$(yq '.jobs.verify.permissions | to_entries | map(.key + \"=\" + .value) | join(\",\")' $f)\" \"$(yq '[.jobs.verify.steps[].run // \"\" | select(test(\"gh attestation verify\") and test(\"--signer-workflow \\\"?\\$GITHUB_REPOSITORY/\\.github/workflows/release\\.yml\") and test(\"--deny-self-hosted-runners\"))] | length' $f)\"",
+      "description": "El job verify de deploy.yml, en un runner de GitHub y con attestations: read como único permiso, verifica las imágenes firmadas por release.yml desde main en runners de GitHub",
+      "cmd": "f=.github/workflows/deploy.yml; printf \"runs-on=%s perms=%s verify=%s\" \"$(yq '.jobs.verify.\"runs-on\"' $f)\" \"$(yq '.jobs.verify.permissions | to_entries | map(.key + \"=\" + .value) | join(\",\")' $f)\" \"$(yq '[.jobs.verify.steps[].run // \"\" | select(test(\"gh attestation verify\") and test(\"--signer-workflow \\\"?\\$GITHUB_REPOSITORY/\\.github/workflows/release\\.yml\") and test(\"--source-ref refs/heads/main\") and test(\"--deny-self-hosted-runners\"))] | length' $f)\"",
       "assert": "stdout~^runs-on=ubuntu-24\\.04 perms=attestations=read verify=1$",
       "hint": "2-practicas/03-deploy-yml.md, paso 2"
     },
@@ -77,7 +77,7 @@
       "id": "deploy-helm-rollback",
       "description": "Cada job de despliegue instala Helm con checksum, despliega las imágenes de verify con --rollback-on-failure y vuelve atrás si el smoke test falla",
       "cmd": "f=.github/workflows/deploy.yml; for j in staging production; do printf \"%s:helm=%s checksum=%s deploy=%s rollback=%s \" $j \"$(yq \".jobs.$j.env.HELM_VERSION\" $f)\" \"$(yq \"[.jobs.$j.steps[].run // \\\"\\\" | select(test(\\\"sha256sum -c\\\"))] | length\" $f)\" \"$(yq \"[.jobs.$j.steps[] | select((.run // \\\"\\\" | test(\\\"helm upgrade --install\\\")) and (.run | test(\\\"--rollback-on-failure\\\")) and (.env.API_IMAGE // \\\"\\\" | test(\\\"needs.verify.outputs.api\\\")) and (.env.WEB_IMAGE // \\\"\\\" | test(\\\"needs.verify.outputs.web\\\")))] | length\" $f)\" \"$(yq \"[.jobs.$j.steps[] | select((.run // \\\"\\\" | test(\\\"helm rollback\\\")) and (.if // \\\"\\\" | test(\\\"failure\\\")))] | length\" $f)\"; done",
-      "assert": "stdout~^staging:helm=v4\\.3\\.2 checksum=1 deploy=1 rollback=1 production:helm=v4\\.3\\.2 checksum=1 deploy=1 rollback=1 $",
+      "assert": "stdout~^staging:helm=v4\\.3\\.1 checksum=1 deploy=1 rollback=1 production:helm=v4\\.3\\.1 checksum=1 deploy=1 rollback=1 $",
       "hint": "2-practicas/03-deploy-yml.md, paso 4"
     },
     {

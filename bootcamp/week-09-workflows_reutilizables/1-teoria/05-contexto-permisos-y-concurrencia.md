@@ -168,7 +168,7 @@ concurrency:
 ```
 
 Si algún día un reutilizable necesita su propia `concurrency` (por ejemplo, un despliegue que no
-puede correr dos veces a la vez, Semana 17), su `group` tiene que llevar algo que el llamador no
+puede correr dos veces a la vez), su `group` tiene que llevar algo que el llamador no
 use, como un prefijo fijo: `deploy-${{ github.ref }}`.
 
 ## 4. Antipatrones

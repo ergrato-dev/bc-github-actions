@@ -38,6 +38,8 @@ coverage/
 runner/_work/
 _diag/
 kubeconfig*
+# El kubeconfig del starter de la S17 no lleva credenciales: es parte del material.
+!**/starter/ops/deploy/kubeconfig.yaml
 
 # --- Este bootcamp no tiene soluciones ---
 **/solution/

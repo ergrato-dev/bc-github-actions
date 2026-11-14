@@ -56,7 +56,8 @@ Ahora con los digests que firmó `release.yml`. La función hace en local lo mis
 ```bash
 digest() {
   gh attestation verify "oci://ghcr.io/$owner/tablero-$1:$v" --repo "$GH_REPO" \
-    --signer-workflow "$GH_REPO/.github/workflows/release.yml" --deny-self-hosted-runners \
+    --signer-workflow "$GH_REPO/.github/workflows/release.yml" --source-ref refs/heads/main \
+    --deny-self-hosted-runners \
     --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256'
 }
 API_IMAGE="ghcr.io/$owner/tablero-api@sha256:$(digest api)"

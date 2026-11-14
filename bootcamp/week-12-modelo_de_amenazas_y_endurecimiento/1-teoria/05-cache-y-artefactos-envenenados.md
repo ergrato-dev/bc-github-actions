@@ -159,7 +159,7 @@ Tres reglas, y el `pr-report` del archivo 04 las cumple todas:
    para el número) o se pasa como archivo (`--body-file`). Nunca se ejecuta, nunca se
    carga con `source`, nunca se interpola en un `${{ }}`.
 
-Cuando el artefacto sí tiene que ser código, como el `dist/` que despliegas en la Semana 17, la
+Cuando el artefacto sí tiene que ser código, como las imágenes que despliegas en la Semana 17, la
 respuesta es otra: que lo produzca un run de confianza (`push` a `main`) y comprobar su
 procedencia (Semana 14).
 

@@ -9,7 +9,7 @@
 ## 🎯 Qué vas a conseguir
 
 - El clúster `kind-gha` sano, con sus dos nodos en `Ready`
-- Helm v4.3.2 instalado desde la release oficial y comprobado con su checksum
+- Helm v4.3.1 instalado desde la release oficial y comprobado con su checksum
 - `ops/arc/install.sh` instalando el controller de ARC desde su chart OCI con la versión fijada
 - Las cuatro CRD de ARC en el clúster y el controller arrancado, leído en su propio log
 
@@ -77,7 +77,7 @@ Kubernetes. Un binario manipulado podría instalar cualquier otra cosa. La regla
 vale también para tus herramientas: versión fijada y checksum comprobado, nunca un
 `curl | bash` ([reglas de seguridad](../../../docs/reglas-de-seguridad-de-workflows.md)).
 
-Esta semana usas Helm **v4.3.2**, la versión de [`docs/stack-versions.md`](../../../docs/stack-versions.md).
+Esta semana usas Helm **v4.3.1**, la versión de [`docs/stack-versions.md`](../../../docs/stack-versions.md).
 La release publica, junto a cada archivo, otro `.sha256sum` con su hash en el formato que
 `sha256sum -c` entiende.
 
@@ -85,11 +85,11 @@ La release publica, junto a cada archivo, otro `.sha256sum` con su hash en el fo
 
 ```bash
 cd "$(mktemp -d)"
-curl -fsSLO https://get.helm.sh/helm-v4.3.2-linux-amd64.tar.gz
-curl -fsSLO https://get.helm.sh/helm-v4.3.2-linux-amd64.tar.gz.sha256sum
-sha256sum -c helm-v4.3.2-linux-amd64.tar.gz.sha256sum
-# helm-v4.3.2-linux-amd64.tar.gz: OK
-tar -xzf helm-v4.3.2-linux-amd64.tar.gz linux-amd64/helm
+curl -fsSLO https://get.helm.sh/helm-v4.3.1-linux-amd64.tar.gz
+curl -fsSLO https://get.helm.sh/helm-v4.3.1-linux-amd64.tar.gz.sha256sum
+sha256sum -c helm-v4.3.1-linux-amd64.tar.gz.sha256sum
+# helm-v4.3.1-linux-amd64.tar.gz: OK
+tar -xzf helm-v4.3.1-linux-amd64.tar.gz linux-amd64/helm
 install -m 0755 linux-amd64/helm ~/.local/bin/helm
 cd ~/code/tablero
 ```
@@ -100,7 +100,7 @@ Si `sha256sum -c` no dice `OK`, para: no extraigas nada y vuelve a descargar los
 
 ```bash
 helm version --template '{{.Version}}{{"\n"}}'
-# v4.3.2
+# v4.3.1
 command -v helm
 # /home/<tu-usuario>/.local/bin/helm
 ```
@@ -269,7 +269,7 @@ git status --short ops/arc
 ## ✅ Resultado
 
 - [ ] Los dos nodos de `kind-gha` están en `Ready`
-- [ ] Helm v4.3.2 instalado tras `sha256sum -c` en `OK`
+- [ ] Helm v4.3.1 instalado tras `sha256sum -c` en `OK`
 - [ ] `ops/arc/install.sh` ejecutable, con `ARC_VERSION` en una línea y el chart OCI oficial
 - [ ] La release `arc` desplegada en `arc-systems` con el chart 0.15.1
 - [ ] Las cuatro CRD de ARC en el clúster y el controller arrancado según su log
@@ -293,6 +293,7 @@ Sigue en rojo a propósito: el scale set aún no está en el script. La práctic
 | `sha256sum -c` dice `FAILED` | Descarga corrupta o incompleta | Borra los dos archivos y descárgalos de nuevo; no instales nunca un binario que no pasa |
 | `helm: command not found` | `~/.local/bin` no está en tu `PATH` | Añádelo en tu `~/.zshrc` o `~/.bashrc` y abre otra terminal |
 | `Error: kubernetes cluster unreachable: context "kind-gha" does not exist` | El clúster no está levantado | `~/code/bc-github-actions/scripts/lab-up.sh` |
+| `El clúster gha es anterior a la Semana 17` | El `lab-up.sh` actual monta la configuración OIDC y tu clúster se creó antes | Recréalo: `~/code/bc-github-actions/scripts/lab-down.sh && ~/code/bc-github-actions/scripts/lab-up.sh` |
 | `No gha-rs-controller deployment found` | Se intentó instalar el scale set antes que el controller | Instala primero el controller: `install.sh` respeta ese orden |
 | `pinned=0` en la verificación del paso 2 | `--version $ARC_VERSION` sin comillas o con otro nombre de variable | Escríbelo exactamente `--version "$ARC_VERSION"` |
 

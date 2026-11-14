@@ -52,7 +52,7 @@ seguridad sin parchear y que es compatible con el resto del stack. Procedimiento
 | Docker buildx | v0.38.1 como referencia | 06 | `docker buildx version` en el equipo del autor (2026-11-02). Plugin que viene con Docker Engine |
 | Docker Compose | v5.6.1 como referencia | 05 | `docker compose version` en el equipo del autor (2026-11-02). Plugin, nunca `docker-compose`. El runner `ubuntu-24.04` (imagen 20261026.354.1) trae Docker 28.0.4 y Compose 2.38.2 <!-- antipatron --> |
 | kind | v0.33.0 | 16 | Release del 2026-08-26. Con otro clúster kind corriendo en WSL2, el nodo nuevo no arranca (`inotify_init: too many open files`) hasta subir `fs.inotify.max_user_instances` a 512 (probado 2026-11-13) |
-| Helm | v4.3.2 | 16 | Release del 2026-11-13 (parche). `helm-v4.3.2-linux-amd64.tar.gz` con `.sha256sum` de `get.helm.sh` comprobado |
+| Helm | v4.3.1 | 16 | Release del 2026-10-15 (la v4.3.2 del 2026-11-13 no cumplía el cooldown de 7 días al publicar la S16). `helm-v4.3.1-linux-amd64.tar.gz` con `.sha256sum` de `get.helm.sh` comprobado |
 | ARC (`gha-runner-scale-set-controller`, `gha-runner-scale-set`) | 0.15.1 | 16 | Release del 2026-10-23. Charts OCI en `oci://ghcr.io/actions/actions-runner-controller-charts`; controller y scale set siempre con la misma versión. Valor de etiquetas en Helm: `scaleSetLabels`. Probado en kind-gha (2026-11-13) |
 | Nodo de kind | `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5` | 16 | Imagen por defecto de kind v0.33.0; el mismo digest que fija bc-kubernetes (2026-10-30) |
 | kubectl | v1.37.2 | 16 | Último patch de 1.37 (2026-10-28) |
@@ -123,7 +123,7 @@ nuevo, en la tanda que escribe la semana que la usa.
 | `corepack enable` para pnpm | corepack ya no viene incluido desde Node 25 |
 | Trivy v0.69.4 y `aquasecurity/trivy-action` por tag | Compromiso del 2026-03-19 (GHSA-69fq-xp46-6x23) |
 | `actions/attest-build-provenance` | Desde v4 es una action composite que solo envuelve a `actions/attest` (`action.yml` en v4.2.2): se usa `actions/attest` directamente |
-| `helm upgrade --atomic` | Helm 4 lo sustituye por `--rollback-on-failure` (`helm upgrade --help` en v4.3.2), que además activa `--wait=watcher` |
+| `helm upgrade --atomic` | Helm 4 lo sustituye por `--rollback-on-failure` (`helm upgrade --help` en v4.3.1), que además activa `--wait=watcher` |
 | `anchore/sbom-action` | Instala syft descargando su `install.sh` en tiempo de ejecución (`src/github/SyftGithubAction.ts` en v0.24.3) y su syft por defecto es v1.54.0: tablero instala el binario de syft con checksum, como el resto de herramientas |
 
 ---

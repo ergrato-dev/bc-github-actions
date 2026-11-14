@@ -143,7 +143,7 @@ Cada environment de `tablero` vive en su **namespace**: `tablero-staging` y `tab
 Los dos tienen los mismos objetos con los mismos nombres (`db`, `api`, `web`) sin chocar, y cada
 uno es la frontera donde se aplican el RBAC y Pod Security del archivo 05.
 
-_Verificado con kind (nodo v1.37.0) y Helm v4.3.2, noviembre de 2026._
+_Verificado con kind (nodo v1.37.0) y Helm v4.3.1, noviembre de 2026._
 
 ## 3. Cómo se usa
 

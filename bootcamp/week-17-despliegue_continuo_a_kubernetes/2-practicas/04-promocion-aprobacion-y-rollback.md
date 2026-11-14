@@ -59,7 +59,7 @@ apiserver.
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
-      # workflow_dispatch es el único evento que GITHUB_TOKEN puede disparar en otro workflow.
+      # Lanzar un workflow por workflow_dispatch pide actions: write.
       actions: write
     steps:
       - name: Lanzar deploy.yml con la versión publicada

@@ -268,14 +268,15 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 ## Semana 17 — [Despliegue continuo a Kubernetes](../bootcamp/week-17-despliegue_continuo_a_kubernetes/README.md)
 
 - **Qué versión corre en cada environment sin abrir GitHub**:
-  `helm history tablero -n tablero-production --max 5` lista las últimas revisiones con su
+  `helm history tablero --kube-context kind-gha -n tablero-production --max 5` lista las últimas revisiones con su
   descripción. `deploy.yml` pone `tablero X.Y.Z` en cada una, así que también ves los rollbacks.
 - **Si el apiserver cargó de verdad tu configuración OIDC**:
   `kubectl --context kind-gha get --raw /metrics | grep authentication_config_controller_last_config_info`
   enseña el SHA-256 del archivo cargado. Compáralo con `sha256sum ops/cluster/authentication-config.yaml`.
 - **Lo que podría hacer un token robado de staging**:
   `kubectl --context kind-gha auth can-i --list -n tablero-staging --as github:staging`. Repite
-  con `-n tablero-production` y comprueba que la lista se queda vacía.
+  con `-n tablero-production`: no sale ningún recurso de la app, solo los `selfsubject*reviews`
+  que tiene todo usuario autenticado.
 - **Qué versión desplegó cada run**: con `run-name: deploy ${{ inputs.version }}`,
   `gh run list --workflow deploy.yml --json displayTitle,conclusion --jq '.[] | "\(.displayTitle) \(.conclusion)"'`
   es el historial de despliegues sin abrir ningún run.

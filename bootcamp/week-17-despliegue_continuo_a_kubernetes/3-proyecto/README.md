@@ -20,7 +20,8 @@ comprueba el token OIDC de cada job y le deja tocar solo su namespace.
 | `ops/deploy/kubeconfig.yaml` y `github-token.sh` (nuevos) | Un kubeconfig sin credenciales cuyo plugin `exec` pide el token OIDC del job cuando Helm lo necesita | El token vive 5 minutos y un despliegue con rollback puede durar más |
 | `ops/arc/values.yaml` | El pod del runner monta el CA del clúster desde `kube-root-ca.crt` | Helm comprueba que habla con tu apiserver; el pod sigue sin identidad propia |
 | `deploy.yml` (nuevo; borra `deploy-gate.yml`) | `verify` en un runner de GitHub y, en `tablero-runners`, `staging` y `production` con Helm, smoke test y rollback | El ensayo de la Semana 13 pasa a desplegar de verdad |
-| `release.yml`, job `deploy` | Tras publicar las imágenes, lanza `deploy.yml` con la versión | La release la crea `GITHUB_TOKEN`, que solo puede disparar otros workflows con `workflow_dispatch` |
+| `release.yml`, job `deploy` | Tras publicar las imágenes, lanza `deploy.yml` con la versión | La release la crea `GITHUB_TOKEN`, cuyos eventos no lanzan workflows salvo `workflow_dispatch` y `repository_dispatch` |
+| Lo de la Semana 13 que se queda: `tools/oidc-verifier/`, `ci-tools.yml`, la plantilla del `sub` y las variables `OIDC_SUB` | `deploy.yml` ya no los usa: el apiserver comprueba sus propios claims | El verificador sigue con sus tests en CI como referencia; borrar las variables solo pondría en rojo `oidc-sub-vars` de la Semana 13 sin ganar nada |
 
 | Situación | Qué pasa |
 |---|---|
@@ -44,7 +45,7 @@ requerido, y release-please con el token de una GitHub App para que su PR tambi�
 - authentication-config.yaml acepta solo tokens de GitHub con audiencia kind-gha, del id de tablero, desde main y de deploy.yml, y usa el environment como usuario
 - El pod del runner monta el CA del clúster desde kube-root-ca.crt y sigue sin token de Kubernetes
 - Solo lab.yml y deploy.yml piden runners propios, y los dos se lanzan solo con workflow_dispatch
-- El job verify de deploy.yml, en un runner de GitHub y con attestations: read como único permiso, verifica las imágenes firmadas por release.yml en runners de GitHub
+- El job verify de deploy.yml, en un runner de GitHub y con attestations: read como único permiso, verifica las imágenes firmadas por release.yml desde main en runners de GitHub
 - staging y production corren en tablero-runners, cada uno en su environment y en cola sin cancelar, y production espera a staging
 - Los jobs de despliegue usan ops/deploy/kubeconfig.yaml, sin credenciales dentro, que pide el token OIDC del job con audiencia kind-gha
 - Cada job de despliegue instala Helm con checksum, despliega las imágenes de verify con --rollback-on-failure y vuelve atrás si el smoke test falla

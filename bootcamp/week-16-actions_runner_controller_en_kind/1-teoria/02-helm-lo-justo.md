@@ -102,7 +102,7 @@ No gha-rs-controller deployment found using label (app.kubernetes.io/part-of=gha
 
 Por eso el orden es fijo: primero el controller, después el scale set.
 
-_Verificado con ARC 0.15.1, Helm v4.3.2 y kind v0.33.0, noviembre de 2026._
+_Verificado con ARC 0.15.1, Helm v4.3.1 y kind v0.33.0, noviembre de 2026._
 
 ## 3. Cómo se usa
 
@@ -112,10 +112,10 @@ Helm se instala como cualquier binario del bootcamp: la release fijada y su chec
 script remoto por tubería.
 
 ```bash
-curl -fsSLO https://get.helm.sh/helm-v4.3.2-linux-amd64.tar.gz
-curl -fsSLO https://get.helm.sh/helm-v4.3.2-linux-amd64.tar.gz.sha256sum
-sha256sum -c helm-v4.3.2-linux-amd64.tar.gz.sha256sum
-# helm-v4.3.2-linux-amd64.tar.gz: OK
+curl -fsSLO https://get.helm.sh/helm-v4.3.1-linux-amd64.tar.gz
+curl -fsSLO https://get.helm.sh/helm-v4.3.1-linux-amd64.tar.gz.sha256sum
+sha256sum -c helm-v4.3.1-linux-amd64.tar.gz.sha256sum
+# helm-v4.3.1-linux-amd64.tar.gz: OK
 ```
 
 ### La forma que tiene `install.sh`

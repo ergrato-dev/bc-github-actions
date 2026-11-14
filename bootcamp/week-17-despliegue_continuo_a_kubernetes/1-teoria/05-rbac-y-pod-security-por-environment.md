@@ -161,7 +161,7 @@ El pod queda en `CreateContainerConfigError`. Por eso `web.yaml` fija `runAsUser
 del usuario `nginx`, y `db.yaml` fija `70`, el de `postgres` en la imagen alpine. Es el mismo
 problema que la Semana 16 resolvió con el uid 1001 del runner.
 
-_Verificado con kind (nodo v1.37.0) y Helm v4.3.2, noviembre de 2026._
+_Verificado con kind (nodo v1.37.0) y Helm v4.3.1, noviembre de 2026._
 
 ## 3. Cómo se usa
 

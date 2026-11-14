@@ -157,7 +157,7 @@ Con ella Helm no borra ese objeto aunque una revisión ya no lo incluya ni aunqu
 release. Los datos sobreviven; el precio es que, si de verdad quieres borrarlos, lo haces tú con
 `kubectl delete pvc`.
 
-_Verificado con Helm v4.3.2 y kind (nodo v1.37.0), noviembre de 2026._
+_Verificado con Helm v4.3.1 y kind (nodo v1.37.0), noviembre de 2026._
 
 ## 3. Cómo se usa
 

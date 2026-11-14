@@ -43,7 +43,7 @@ Los permisos mínimos son el control que **limita el daño** cuando falla otro.
 | `code-quality` | read, write, none | — |
 | `contents` | read, write, none | Checkout; casi todos los jobs |
 | `copilot-requests` | write, none | — |
-| `deployments` | read, write, none | Semana 17 |
+| `deployments` | read, write, none | — (el deployment lo crea el job con `environment:`, sin este permiso) |
 | `discussions`, `issues` | read, write, none | — |
 | `id-token` | write, none | OIDC, Semana 13 |
 | `packages` | read, write, none | `images` publica en GHCR |

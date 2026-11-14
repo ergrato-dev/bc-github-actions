@@ -47,9 +47,9 @@ el plan gratuito con repo público, se ajusta esa semana antes de escribirla y s
 | Scopes de `gh` necesarios para leer políticas de actions, runner groups y rulesets de la org | S11 | 📄 `admin:org` con token clásico (referencia REST, 2026-11-03); sin él, HTTP 403. Sin probar en una org propia |
 | Política "Require actions to be pinned to a full-length commit SHA" en una org gratuita | S11 | 📄 El campo `sha_pinning_required` existe en la API de la org (2026-11-03). Sin probar en una org gratuita |
 | Rulesets de organización que exigen workflows, en el plan gratuito | S11 | ❌ La doc limita los rulesets de organización a GitHub Team y Enterprise (2026-11-03). La S11 los explica sin práctica; los rulesets de repo quedan en la S18 |
-| Revisores obligatorios en environments de un repo público de org gratuita | S13 | ⏳ |
-| Attestations (`actions/attest`) y `gh attestation verify` en un repo público | S14 | ⏳ |
-| Runner JIT en contenedor en WSL2 | S15 | ⏳ |
+| Revisores obligatorios en environments de un repo público de org gratuita | S13 | 📄 La doc de environments los da para repos públicos en todos los planes (2026-11-04). Sin probar en una org propia |
+| Attestations (`actions/attest`) y `gh attestation verify` en un repo público | S14 | 📄 La doc de artifact attestations las da para repos públicos en todos los planes (2026-11-13). Sin probar en una org propia |
+| Runner JIT en contenedor en WSL2 | S15 | 🧪 La imagen `actions-runner` 2.338.2 arranca en WSL2 con `--cap-drop ALL`, `no-new-privileges` y límites, escribe en `_work` y llega a github.com (2026-11-13). Sin probar con una config JIT real |
 | ARC con GitHub App en kind, en WSL2 con 8 GB y con 16 GB | S16 | 🧪 Controller y scale set 0.15.1 instalados en kind v0.33.0 sobre WSL2 con 15 GB (2026-11-13); el pod endurecido arranca como uid 1001. Con otro clúster kind en marcha hace falta subir `fs.inotify.max_user_instances`. Sin probar con una GitHub App real ni con 8 GB |
 | Despliegue desde ARC con el token OIDC del job verificado por el apiserver de kind | S17 | 🧪 Configuración OIDC del apiserver cargada y recargada en caliente en kind v0.33.0 (nodo v1.37.0), token falso rechazado, RBAC por environment y chart con rollback automático probados con impersonación y con un token de ServiceAccount desde el pod del runner (2026-11-14). Sin probar con un token real de GitHub |
 | Merge queue en un repo público de org gratuita | S18 | ⏳ |

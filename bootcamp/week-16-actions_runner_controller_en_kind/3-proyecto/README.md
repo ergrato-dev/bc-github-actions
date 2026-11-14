@@ -28,7 +28,7 @@ root, ni capacidades, ni acceso a la API de Kubernetes.
 | Un job busca el token de Kubernetes | No existe: el pod no lo monta |
 | Un PR de un fork | Ningún workflow con `pull_request` usa `tablero-runners`: nunca llega a tu clúster |
 
-La Semana 17 usa este mismo clúster como destino: despliega `tablero` en kind por digest, con
+La Semana 17 usa el clúster del laboratorio, recreado con la configuración OIDC, como destino: despliega `tablero` en kind por digest, con
 aprobación para production y rollback automático.
 
 ## ✅ Requisitos verificables

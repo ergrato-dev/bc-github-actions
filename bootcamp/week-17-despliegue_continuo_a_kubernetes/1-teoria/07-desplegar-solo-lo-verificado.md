@@ -59,6 +59,7 @@ Falta que alguien la compruebe **antes** de desplegar.
             # Se despliega el digest que cubre la attestation, no lo que diga el tag después.
             digest=$(gh attestation verify "oci://$image:$VERSION" --repo "$GITHUB_REPOSITORY" \
               --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml" \
+              --source-ref refs/heads/main \
               --deny-self-hosted-runners \
               --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256')
             echo "$c=$image@sha256:$digest" >> "$GITHUB_OUTPUT"
@@ -87,6 +88,7 @@ La primera línea comprueba que `VERSION` es `X.Y.Z` con dígitos. El input lleg
 |---|---|
 | `--repo "$GITHUB_REPOSITORY"` | Que la attestation sea de `tablero` |
 | `--signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml"` | Que la firmara `release.yml`, no cualquier workflow del repo |
+| `--source-ref refs/heads/main` | Que `release.yml` corriera desde `main`: el apiserver exige lo mismo a `deploy.yml` |
 | `--deny-self-hosted-runners` | Que la imagen se construyera en un runner de GitHub |
 | `--format json --jq ...` | Sacar el digest que cubre la attestation |
 
@@ -160,7 +162,8 @@ más reciente, que incluye los cambios de la anterior. Cuando el linter la acept
 ```bash
 owner=<tu-org>
 gh attestation verify "oci://ghcr.io/$owner/tablero-api:1.4.0" --repo "$owner/tablero" \
-  --signer-workflow "$owner/tablero/.github/workflows/release.yml" --deny-self-hosted-runners \
+  --signer-workflow "$owner/tablero/.github/workflows/release.yml" --source-ref refs/heads/main \
+  --deny-self-hosted-runners \
   --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256'
 ```
 

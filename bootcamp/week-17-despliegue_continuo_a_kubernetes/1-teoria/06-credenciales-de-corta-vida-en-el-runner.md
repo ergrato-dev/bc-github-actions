@@ -152,7 +152,7 @@ Vuelve todo lo que el archivo 04 quitó:
 | Environment | No lo sabe | Es el usuario de Kubernetes |
 | Rotación | A mano | No hay nada que rotar |
 
-_Verificado con Helm v4.3.2 y kind (nodo v1.37.0), noviembre de 2026, desde un pod con la plantilla
+_Verificado con Helm v4.3.1 y kind (nodo v1.37.0), noviembre de 2026, desde un pod con la plantilla
 del runner y un emisor simulado. No verificado sin una org real: el token de GitHub de punta a
 punta._
 
@@ -166,7 +166,7 @@ punta._
       id-token: write
     env:
       NAMESPACE: tablero-staging
-      HELM_VERSION: v4.3.2
+      HELM_VERSION: v4.3.1
       # Sin credenciales: Helm pide el token OIDC del job con ops/deploy/github-token.sh.
       KUBECONFIG: ops/deploy/kubeconfig.yaml
 ```

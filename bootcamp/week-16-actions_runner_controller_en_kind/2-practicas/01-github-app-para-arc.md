@@ -254,6 +254,7 @@ El resto de comprobaciones siguen en rojo: las cierran las prácticas 02 a 04.
 | `git grep` encuentra un `.pem` en `tablero` | La clave se copió dentro del repo | Sácala a `~/.config/tablero-arc/`; si llegó a un commit, rota la clave: el historial ya la publicó |
 | `gha-worker` se queda en `NotReady` | Límite de inotify del host | [Práctica 02, antes de empezar](02-arc-con-helm.md#-antes-de-empezar) |
 | `context was not found for specified context: kind-gha` | El clúster no está levantado |  `~/code/bc-github-actions/scripts/lab-up.sh` |
+| `El clúster gha es anterior a la Semana 17` | El `lab-up.sh` actual monta la configuración OIDC y tu clúster se creó antes | Recréalo: `~/code/bc-github-actions/scripts/lab-down.sh && ~/code/bc-github-actions/scripts/lab-up.sh` |
 
 ---
 

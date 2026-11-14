@@ -73,11 +73,11 @@ Los `gate-*` de la Semana 13 y `own-runners-only-in-lab` de la 16 quedan en rojo
 
 ## Paso 2: El job `verify`
 
-**Por qué**: se despliega solo lo que firmó `release.yml` de `tablero` en un runner de GitHub
-([teoría 07](../1-teoria/07-desplegar-solo-lo-verificado.md)); `--deny-self-hosted-runners`
+**Por qué**: se despliega solo lo que firmó `release.yml` de `tablero`, desde `main` y en un runner
+de GitHub ([teoría 07](../1-teoria/07-desplegar-solo-lo-verificado.md)); `--deny-self-hosted-runners`
 importa porque ahora `tablero` tiene runners propios. La salida es **el digest que cubre la
-attestation**, no el tag: si alguien lo mueve después, Helm despliega lo verificado. La versión
-se valida aunque llegue por `env:`: acaba en una referencia de imagen.
+attestation**, no el tag: si alguien lo mueve después, Helm despliega lo verificado. La versión se
+valida aunque llegue por `env:`: acaba en una referencia de imagen.
 
 **Comando**: añade bajo `jobs:`:
 
@@ -105,6 +105,7 @@ se valida aunque llegue por `env:`: acaba en una referencia de imagen.
             # Se despliega el digest que cubre la attestation, no lo que diga el tag después.
             digest=$(gh attestation verify "oci://$image:$VERSION" --repo "$GITHUB_REPOSITORY" \
               --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml" \
+              --source-ref refs/heads/main \
               --deny-self-hosted-runners \
               --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256')
             echo "$c=$image@sha256:$digest" >> "$GITHUB_OUTPUT"
@@ -116,8 +117,7 @@ se valida aunque llegue por `env:`: acaba en una referencia de imagen.
 
 ```bash
 f=.github/workflows/deploy.yml
-printf 'runs-on=%s perms=%s\n' "$(yq '.jobs.verify."runs-on"' $f)" \
-  "$(yq '.jobs.verify.permissions | to_entries | map(.key + "=" + .value) | join(",")' $f)"
+printf 'runs-on=%s perms=%s\n' "$(yq '.jobs.verify."runs-on"' $f)" "$(yq '.jobs.verify.permissions | to_entries | map(.key + "=" + .value) | join(",")' $f)"
 # runs-on=ubuntu-24.04 perms=attestations=read
 ```
 
@@ -203,7 +203,7 @@ Añade a `deploy.yml` los dos jobs, de momento sin steps (llegan en el paso 4). 
       id-token: write
     env:
       NAMESPACE: tablero-staging
-      HELM_VERSION: v4.3.2
+      HELM_VERSION: v4.3.1
       # Sin credenciales: Helm pide el token OIDC del job con ops/deploy/github-token.sh.
       KUBECONFIG: ops/deploy/kubeconfig.yaml
 ```
@@ -225,7 +225,7 @@ Production es igual salvo `name`, `needs`, environment, grupo y namespace:
       id-token: write
     env:
       NAMESPACE: tablero-production
-      HELM_VERSION: v4.3.2
+      HELM_VERSION: v4.3.1
       KUBECONFIG: ops/deploy/kubeconfig.yaml
 ```
 
@@ -298,7 +298,7 @@ evita repetir el rollback cuando el que falló fue Helm.
 f=.github/workflows/deploy.yml; for j in staging production; do printf "%s:helm=%s checksum=%s rollback=%s " $j \
   "$(yq ".jobs.$j.env.HELM_VERSION" $f)" "$(yq "[.jobs.$j.steps[].run // \"\" | select(test(\"sha256sum -c\"))] | length" $f)" \
   "$(yq "[.jobs.$j.steps[] | select((.run // \"\" | test(\"helm rollback\")) and (.if // \"\" | test(\"failure\")))] | length" $f)"; done; echo
-# staging:helm=v4.3.2 checksum=1 rollback=1 production:helm=v4.3.2 checksum=1 rollback=1
+# staging:helm=v4.3.1 checksum=1 rollback=1 production:helm=v4.3.1 checksum=1 rollback=1
 ```
 
 ---

@@ -31,7 +31,7 @@ jobs:
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::Versión no válida: $VERSION"; exit 1; }
           for c in api web; do
             image="ghcr.io/${OWNER,,}/tablero-$c"
-            # TODO 1: exige que la firmara release.yml de tablero y que no se construyera en un runner propio
+            # TODO 1: exige que la firmara release.yml de tablero desde main y que no se construyera en un runner propio
             digest=$(gh attestation verify "oci://$image:$VERSION" --repo "$GITHUB_REPOSITORY" \
               --format json --jq '.[0].verificationResult.statement.subject[0].digest.sha256')
             echo "$c=$image@sha256:$digest" >> "$GITHUB_OUTPUT"
@@ -51,7 +51,7 @@ jobs:
       # TODO 4: el token OIDC del job es la credencial del clúster
     env:
       NAMESPACE: tablero-staging
-      HELM_VERSION: v4.3.2
+      HELM_VERSION: v4.3.1
       # TODO 5: Helm usa el kubeconfig sin credenciales de ops/deploy/
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

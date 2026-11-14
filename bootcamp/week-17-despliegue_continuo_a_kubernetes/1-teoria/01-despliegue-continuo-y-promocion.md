@@ -94,9 +94,6 @@ gh api 'repos/{owner}/{repo}/deployments?environment=production&per_page=5' \
 Cada deployment tiene sus estados en `deployments/<id>/statuses`; el último dice cómo terminó.
 La comprobación `deploy-green-for-release` de esta semana lee justo eso.
 
-> Esta cadena (deployment creado por el job y sus estados) no se ha podido comprobar de punta a
-> punta sin una org real al escribir la semana; la práctica 04 te la hace ver en la tuya.
-
 ### La cadena release → dispatch → deploy
 
 El paso natural sería que `deploy.yml` escuchara `on: release`. No funciona: la release la crea
@@ -115,7 +112,7 @@ publicadas y firmadas, lanza `deploy.yml` con la versión:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
-      # workflow_dispatch es el único evento que GITHUB_TOKEN puede disparar en otro workflow.
+      # Lanzar un workflow por workflow_dispatch pide actions: write.
       actions: write
     steps:
       - name: Lanzar deploy.yml con la versión publicada
