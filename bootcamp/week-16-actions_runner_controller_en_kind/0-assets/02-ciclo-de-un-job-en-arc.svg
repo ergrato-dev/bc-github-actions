@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 640" role="img" aria-labelledby="t2">
+  <title id="t2">Ciclo de un job en ARC y escalado de tablero-runners. Arriba, seis fases: el job entra en cola con runs-on tablero-runners; el listener recibe Job Available; las réplicas deseadas pasan a minRunners más los jobs asignados, sin pasar de maxRunners; nace un pod de runner con su configuración JIT; el runner ejecuta el job; y ARC borra el pod. Abajo, un ejemplo con minRunners 0 y maxRunners 2 y tres jobs lanzados a la vez: A y B arrancan en seguida en dos runners; C espera en cola hasta que A termina y entonces ARC crea un runner nuevo para C. Los runners vivos pasan de 0 a 2, siguen en 2, bajan a 1 cuando termina B y vuelven a 0 cuando termina C.</title>
+  <rect width="1020" height="640" fill="#0d1117"/>
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="510" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">El ciclo de un job en ARC</text>
+
+    <!-- fases -->
+    <g font-size="11" text-anchor="middle">
+      <rect x="30" y="64" width="140" height="84" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="100" y="88" fill="#79c0ff" font-size="12" font-weight="600">1 · Job en cola</text>
+      <text x="100" y="110" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">runs-on:</text>
+      <text x="100" y="126" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">tablero-runners</text>
+
+      <rect x="194" y="64" width="140" height="84" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="264" y="88" fill="#2088ff" font-size="12" font-weight="600">2 · Listener</text>
+      <text x="264" y="110" fill="#f0f6fc">recibe</text>
+      <text x="264" y="126" fill="#f0f6fc">"Job Available"</text>
+
+      <rect x="358" y="64" width="140" height="84" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="428" y="88" fill="#2088ff" font-size="12" font-weight="600">3 · Réplicas</text>
+      <text x="428" y="110" fill="#f0f6fc">min + jobs</text>
+      <text x="428" y="126" fill="#f0f6fc">sin pasar de max</text>
+
+      <rect x="522" y="64" width="140" height="84" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="592" y="88" fill="#d2a8ff" font-size="12" font-weight="600">4 · Nace el pod</text>
+      <text x="592" y="110" fill="#f0f6fc">con su config JIT</text>
+      <text x="592" y="126" fill="#f0f6fc">de un solo uso</text>
+
+      <rect x="686" y="64" width="140" height="84" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="756" y="88" fill="#3fb950" font-size="12" font-weight="600">5 · Ejecuta</text>
+      <text x="756" y="110" fill="#f0f6fc">un job, y solo uno</text>
+      <text x="756" y="126" fill="#f0f6fc">log hacia GitHub</text>
+
+      <rect x="850" y="64" width="140" height="84" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+      <text x="920" y="88" fill="#f85149" font-size="12" font-weight="600">6 · ARC lo borra</text>
+      <text x="920" y="110" fill="#f0f6fc">pod y disco</text>
+      <text x="920" y="126" fill="#f0f6fc">desaparecen</text>
+    </g>
+    <g stroke="#79c0ff" stroke-width="2" fill="none">
+      <path d="M170 106 L192 106" marker-end="url(#a2)"/>
+      <path d="M334 106 L356 106" marker-end="url(#a2)"/>
+      <path d="M498 106 L520 106" marker-end="url(#a2)"/>
+      <path d="M662 106 L684 106" marker-end="url(#a2)"/>
+      <path d="M826 106 L848 106" marker-end="url(#a2)"/>
+    </g>
+
+    <!-- ejemplo -->
+    <text x="30" y="200" fill="#f0f6fc" font-size="15" font-weight="600">Ejemplo: tres jobs a la vez con</text>
+    <text x="268" y="200" fill="#2088ff" font-size="14" font-family="ui-monospace, Menlo, Consolas, monospace">minRunners: 0 · maxRunners: 2</text>
+
+    <g font-size="12" fill="#f0f6fc" font-weight="600">
+      <text x="30" y="250">job A</text>
+      <text x="30" y="300">job B</text>
+      <text x="30" y="350">job C</text>
+      <text x="30" y="410">runners vivos</text>
+    </g>
+    <!-- guías -->
+    <g stroke="#30363d" stroke-dasharray="3 4">
+      <line x1="560" y1="222" x2="560" y2="440"/>
+      <line x1="660" y1="222" x2="660" y2="440"/>
+      <line x1="860" y1="222" x2="860" y2="440"/>
+    </g>
+    <!-- A -->
+    <rect x="200" y="232" width="40" height="28" rx="4" fill="#e3b341" fill-opacity="0.25" stroke="#e3b341"/>
+    <rect x="240" y="232" width="320" height="28" rx="4" fill="#3fb950" fill-opacity="0.25" stroke="#3fb950"/>
+    <text x="400" y="251" fill="#f0f6fc" font-size="11" text-anchor="middle">runner 1 ejecuta A</text>
+    <!-- B -->
+    <rect x="200" y="282" width="50" height="28" rx="4" fill="#e3b341" fill-opacity="0.25" stroke="#e3b341"/>
+    <rect x="250" y="282" width="410" height="28" rx="4" fill="#3fb950" fill-opacity="0.25" stroke="#3fb950"/>
+    <text x="455" y="301" fill="#f0f6fc" font-size="11" text-anchor="middle">runner 2 ejecuta B</text>
+    <!-- C -->
+    <rect x="200" y="332" width="380" height="28" rx="4" fill="#e3b341" fill-opacity="0.25" stroke="#e3b341"/>
+    <text x="390" y="351" fill="#f0f6fc" font-size="11" text-anchor="middle">en cola: ya hay 2 runners (el máximo)</text>
+    <rect x="580" y="332" width="280" height="28" rx="4" fill="#3fb950" fill-opacity="0.25" stroke="#3fb950"/>
+    <text x="720" y="351" fill="#f0f6fc" font-size="11" text-anchor="middle">runner 3, nuevo, ejecuta C</text>
+    <!-- runners vivos -->
+    <g font-size="13" font-weight="700" text-anchor="middle">
+      <rect x="190" y="390" width="30" height="34" fill="#161b22" stroke="#30363d"/>
+      <text x="205" y="412" fill="#8b949e">0</text>
+      <rect x="220" y="390" width="440" height="34" fill="#2088ff" fill-opacity="0.35" stroke="#2088ff"/>
+      <text x="440" y="412" fill="#f0f6fc">2</text>
+      <rect x="660" y="390" width="200" height="34" fill="#2088ff" fill-opacity="0.18" stroke="#2088ff"/>
+      <text x="760" y="412" fill="#f0f6fc">1</text>
+      <rect x="860" y="390" width="130" height="34" fill="#161b22" stroke="#30363d"/>
+      <text x="925" y="412" fill="#8b949e">0</text>
+    </g>
+    <path d="M190 456 L990 456" stroke="#8b949e" stroke-width="1.5" fill="none" marker-end="url(#a2)"/>
+    <text x="990" y="476" fill="#8b949e" font-size="11" text-anchor="end">tiempo</text>
+    <g fill="#8b949e" font-size="10" text-anchor="middle">
+      <text x="560" y="474">A termina</text>
+      <text x="660" y="474">B termina</text>
+      <text x="860" y="474">C termina</text>
+    </g>
+
+    <!-- notas -->
+    <g font-size="12" fill="#f0f6fc">
+      <text x="30" y="520">Runners que crea ARC = <tspan font-family="ui-monospace, Menlo, Consolas, monospace" fill="#2088ff">minRunners</tspan> + jobs asignados, sin pasar de <tspan font-family="ui-monospace, Menlo, Consolas, monospace" fill="#2088ff">maxRunners</tspan>.</text>
+      <text x="30" y="544">Un job que no cabe no se pierde: espera en cola hasta que se libera un hueco.</text>
+      <text x="30" y="568">El pod de A no se reutiliza para C: cada runner sirve un solo job y ARC crea otro nuevo.</text>
+      <text x="30" y="592">Con <tspan font-family="ui-monospace, Menlo, Consolas, monospace" fill="#2088ff">minRunners: 0</tspan> y sin jobs, en arc-runners no hay ningún pod.</text>
+    </g>
+    <g font-size="11" fill="#8b949e">
+      <rect x="700" y="510" width="14" height="14" rx="3" fill="#e3b341" fill-opacity="0.25" stroke="#e3b341"/>
+      <text x="722" y="521">en cola, esperando runner</text>
+      <rect x="700" y="534" width="14" height="14" rx="3" fill="#3fb950" fill-opacity="0.25" stroke="#3fb950"/>
+      <text x="722" y="545">ejecutándose en un pod</text>
+    </g>
+  </g>
+</svg>

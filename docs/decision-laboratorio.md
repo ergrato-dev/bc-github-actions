@@ -40,7 +40,7 @@ raíz de un repo de GitHub. El laboratorio tiene que cumplir tres condiciones:
 Se valida en una org de pruebas antes de escribir la semana indicada. Si algo no está disponible en
 el plan gratuito con repo público, se ajusta esa semana antes de escribirla y se anota aquí.
 
-⏳ pendiente · 📄 comprobado en la documentación, sin probar en una org real · ❌ no disponible.
+⏳ pendiente · 📄 comprobado en la documentación, sin probar en una org real · 🧪 probado en local, sin GitHub real · ❌ no disponible.
 
 | Qué | Antes de | Resultado |
 |---|:--:|---|
@@ -50,7 +50,7 @@ el plan gratuito con repo público, se ajusta esa semana antes de escribirla y s
 | Revisores obligatorios en environments de un repo público de org gratuita | S13 | ⏳ |
 | Attestations (`actions/attest`) y `gh attestation verify` en un repo público | S14 | ⏳ |
 | Runner JIT en contenedor en WSL2 | S15 | ⏳ |
-| ARC con GitHub App en kind, en WSL2 con 8 GB y con 16 GB | S16 | ⏳ |
+| ARC con GitHub App en kind, en WSL2 con 8 GB y con 16 GB | S16 | 🧪 Controller y scale set 0.15.1 instalados en kind v0.33.0 sobre WSL2 con 15 GB (2026-11-13); el pod endurecido arranca como uid 1001. Con otro clúster kind en marcha hace falta subir `fs.inotify.max_user_instances`. Sin probar con una GitHub App real ni con 8 GB |
 | Merge queue en un repo público de org gratuita | S18 | ⏳ |
 | act con la imagen equivalente a `ubuntu-24.04` | S08 | ⏳ |
 

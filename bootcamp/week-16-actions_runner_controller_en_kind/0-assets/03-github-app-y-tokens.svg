@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 560" role="img" aria-labelledby="t3">
+  <title id="t3">De la clave privada de la GitHub App al runner. La clave privada vive en tu máquina en ~/.config/tablero-arc/app.pem con permisos 600 y nunca en el repo. install.sh la copia con --from-file al secret tablero-arc-app del namespace arc-runners, junto al client ID y al installation ID. El controller de ARC firma con ella un JWT que dura como mucho diez minutos y lo cambia en GitHub por un token de instalación que caduca en una hora y solo vale para tablero, con Administration de lectura y escritura y Metadata de lectura. Con ese token ARC pide una configuración JIT de un solo uso, que es lo único que recibe el pod del runner. Abajo, a la izquierda, la App: de la organización, sin webhook, instalada solo en tablero. A la derecha, el antipatrón: un token personal, de una persona, con alcance sobre todos sus repos y sin caducidad corta.</title>
+  <rect width="1040" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="520" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">GitHub App: de la clave privada al runner</text>
+
+    <!-- columnas -->
+    <g font-size="11">
+      <rect x="30" y="80" width="180" height="170" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="44" y="104" fill="#d2a8ff" font-size="13" font-weight="600">Tu máquina</text>
+      <text x="44" y="128" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">~/.config/tablero-arc/</text>
+      <text x="44" y="144" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">  app.pem</text>
+      <text x="44" y="168" fill="#8b949e">chmod 600</text>
+      <text x="44" y="186" fill="#8b949e">la clave privada</text>
+      <text x="44" y="230" fill="#f85149" font-weight="600">nunca en el repo</text>
+
+      <rect x="244" y="80" width="190" height="170" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="258" y="104" fill="#d2a8ff" font-size="13" font-weight="600">secret de kind</text>
+      <text x="258" y="126" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">tablero-arc-app</text>
+      <text x="258" y="142" fill="#8b949e" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">ns arc-runners</text>
+      <text x="258" y="170" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">github_app_id</text>
+      <text x="258" y="188" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">github_app_installation_id</text>
+      <text x="258" y="206" fill="#f0f6fc" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10">github_app_private_key</text>
+      <text x="258" y="230" fill="#8b949e">values.yaml solo lo nombra</text>
+
+      <rect x="468" y="80" width="170" height="170" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="482" y="104" fill="#2088ff" font-size="13" font-weight="600">controller de ARC</text>
+      <text x="482" y="128" fill="#f0f6fc">firma un JWT</text>
+      <text x="482" y="146" fill="#f0f6fc">con la clave privada</text>
+      <text x="482" y="170" fill="#8b949e">prueba que habla</text>
+      <text x="482" y="186" fill="#8b949e">en nombre de la App</text>
+      <rect x="482" y="208" width="96" height="24" rx="12" fill="#0d1117" stroke="#e3b341"/>
+      <text x="530" y="224" fill="#e3b341" text-anchor="middle">≤ 10 min</text>
+
+      <rect x="672" y="80" width="180" height="170" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="686" y="104" fill="#79c0ff" font-size="13" font-weight="600">GitHub</text>
+      <text x="686" y="128" fill="#f0f6fc">token de instalación</text>
+      <text x="686" y="150" fill="#8b949e">solo tablero</text>
+      <text x="686" y="168" fill="#8b949e">Administration: RW</text>
+      <text x="686" y="186" fill="#8b949e">Metadata: R</text>
+      <rect x="686" y="208" width="72" height="24" rx="12" fill="#0d1117" stroke="#e3b341"/>
+      <text x="722" y="224" fill="#e3b341" text-anchor="middle">1 hora</text>
+
+      <rect x="886" y="80" width="124" height="170" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="900" y="104" fill="#3fb950" font-size="13" font-weight="600">pod runner</text>
+      <text x="900" y="128" fill="#f0f6fc">config JIT</text>
+      <text x="900" y="146" fill="#f0f6fc">y nada más</text>
+      <text x="900" y="170" fill="#8b949e">ni clave</text>
+      <text x="900" y="186" fill="#8b949e">ni token de App</text>
+      <rect x="900" y="208" width="80" height="24" rx="12" fill="#0d1117" stroke="#e3b341"/>
+      <text x="940" y="224" fill="#e3b341" text-anchor="middle">un job</text>
+    </g>
+
+    <!-- flechas -->
+    <g stroke="#79c0ff" stroke-width="2" fill="none">
+      <path d="M210 165 L242 165" marker-end="url(#a3)"/>
+      <path d="M434 165 L466 165" marker-end="url(#a3)"/>
+      <path d="M638 165 L670 165" marker-end="url(#a3)"/>
+      <path d="M852 165 L884 165" marker-end="url(#a3)"/>
+    </g>
+    <g fill="#79c0ff" font-size="10" text-anchor="middle">
+      <text x="227" y="272">install.sh</text>
+      <text x="227" y="286">--from-file</text>
+      <text x="451" y="272">el controller</text>
+      <text x="451" y="286">lee el secret</text>
+      <text x="655" y="272">JWT por</text>
+      <text x="655" y="286">token</text>
+      <text x="869" y="272">token por</text>
+      <text x="869" y="286">config JIT</text>
+    </g>
+
+    <!-- App frente a PAT -->
+    <rect x="30" y="320" width="470" height="170" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="346" fill="#3fb950" font-size="14" font-weight="600">GitHub App de &lt;tu-org&gt;</text>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="46" y="372">De la organización, no de una persona</text>
+      <text x="46" y="394">Instalada solo en tablero: Administration no llega a otro repo</text>
+      <text x="46" y="416">Sin webhook: ARC no necesita que GitHub le llame</text>
+      <text x="46" y="438">Tokens de una hora, generados cuando hacen falta</text>
+      <text x="46" y="460">Varias claves a la vez: se rota sin cortar el servicio</text>
+    </g>
+
+    <rect x="540" y="320" width="470" height="170" rx="8" fill="#161b22" stroke="#f85149" stroke-width="2" stroke-dasharray="8 5"/>
+    <text x="556" y="346" fill="#f85149" font-size="14" font-weight="600">Token personal (PAT): antipatrón para ARC</text>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="556" y="372">De una persona: se va con ella o se queda sin dueño</text>
+      <text x="556" y="394">Un PAT clásico con repo alcanza todos sus repos</text>
+      <text x="556" y="416">Caducidad larga, o ninguna</text>
+      <text x="556" y="438">Si se filtra, funciona al momento y con todo su alcance</text>
+      <text x="556" y="460">En el secret aparecería como github_token</text>
+    </g>
+
+    <text x="520" y="530" fill="#8b949e" font-size="11" text-anchor="middle">Morado: dónde vive la credencial. Amarillo: cuánto dura cada cosa. Cuanto más cerca del código del job, menos vale lo que hay.</text>
+  </g>
+</svg>

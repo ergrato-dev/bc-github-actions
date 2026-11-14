@@ -1,0 +1,126 @@
+{
+  "week": "16",
+  "title": "Actions Runner Controller en kind",
+  "context": "kind-gha",
+  "checks": [
+    {
+      "id": "arc-charts-pinned",
+      "description": "install.sh instala el controller y el scale set desde los charts OCI oficiales de ARC con la misma versión fijada",
+      "cmd": "f=ops/arc/install.sh; printf 'version=%s pinned=%s charts=%s' \"$(grep -oE '^ARC_VERSION=[0-9]+\\.[0-9]+\\.[0-9]+$' $f)\" \"$(grep -c -- '--version \"\\$ARC_VERSION\"' $f)\" \"$(grep -c 'oci://ghcr.io/actions/actions-runner-controller-charts' $f)\"",
+      "assert": "stdout~^version=ARC_VERSION=[0-9.]+ pinned=2 charts=[1-9]",
+      "hint": "2-practicas/02-arc-con-helm.md, paso 2"
+    },
+    {
+      "id": "arc-scope-repo",
+      "description": "values.yaml registra el scale set en el repositorio tablero, no en la organización",
+      "cmd": "yq '.githubConfigUrl' ops/arc/values.yaml | sed \"s#^https://github.com/$GH_REPO\\$#repo-ok#\"",
+      "assert": "stdout~^repo-ok$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 1"
+    },
+    {
+      "id": "arc-secret-by-name",
+      "description": "values.yaml referencia la credencial por el nombre de un secret de Kubernetes, sin credenciales en el archivo",
+      "cmd": "yq '.githubConfigSecret | type + \" \" + (. | tostring)' ops/arc/values.yaml",
+      "assert": "stdout~^!!str [a-z0-9][a-z0-9.-]*$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 1"
+    },
+    {
+      "id": "no-private-key-in-repo",
+      "description": "Ningún archivo de tablero contiene una clave privada",
+      "cmd": "git grep -lE -- '-----BEGIN [A-Z ]*PRIVATE KEY-----'",
+      "assert": "exit!=0",
+      "hint": "2-practicas/01-github-app-para-arc.md, paso 3"
+    },
+    {
+      "id": "scale-set-name",
+      "description": "El scale set se llama tablero-runners",
+      "cmd": "yq '.runnerScaleSetName' ops/arc/values.yaml",
+      "assert": "stdout~^tablero-runners$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 1"
+    },
+    {
+      "id": "scale-set-bounds",
+      "description": "tablero-runners escala desde 0 runners hasta como mucho 3",
+      "cmd": "yq '\"min=\" + (.minRunners | tostring) + \" max=\" + (.maxRunners | tostring)' ops/arc/values.yaml",
+      "assert": "stdout~^min=0 max=[123]$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 2"
+    },
+    {
+      "id": "arc-runner-image-matches",
+      "description": "El contenedor runner usa la misma imagen y el mismo digest que ops/runner/Dockerfile",
+      "cmd": "a=$(yq '.template.spec.containers[] | select(.name == \"runner\") | .image' ops/arc/values.yaml); b=$(sed -n 's/^FROM //p' ops/runner/Dockerfile); [ -n \"$a\" ] && [ \"$a\" = \"$b\" ] && echo \"$a\"",
+      "assert": "stdout~^ghcr\\.io/actions/actions-runner:[0-9.]+@sha256:[0-9a-f]{64}$",
+      "hint": "2-practicas/04-pod-del-runner-endurecido.md, paso 1"
+    },
+    {
+      "id": "runner-pod-nonroot",
+      "description": "El pod del runner corre como uid 1001 sin root, sin escalada de privilegios y sin capacidades",
+      "cmd": "yq '.template.spec as $p | ($p.containers[] | select(.name == \"runner\")) as $c | \"nonroot=\" + ($p.securityContext.runAsNonRoot | tostring) + \" uid=\" + ($p.securityContext.runAsUser | tostring) + \" escalation=\" + ($c.securityContext.allowPrivilegeEscalation | tostring) + \" drop=\" + ($c.securityContext.capabilities.drop | join(\",\"))' ops/arc/values.yaml",
+      "assert": "stdout~^nonroot=true uid=1001 escalation=false drop=ALL$",
+      "hint": "2-practicas/04-pod-del-runner-endurecido.md, paso 2"
+    },
+    {
+      "id": "runner-pod-limits",
+      "description": "El contenedor runner declara límites de CPU y de memoria",
+      "cmd": "yq '.template.spec.containers[] | select(.name == \"runner\") | .resources.limits | \"cpu=\" + (.cpu // \"\" | tostring) + \" memory=\" + (.memory // \"\" | tostring)' ops/arc/values.yaml",
+      "assert": "stdout~^cpu=[0-9.]+m? memory=[0-9]+(Mi|Gi)$",
+      "hint": "2-practicas/04-pod-del-runner-endurecido.md, paso 3"
+    },
+    {
+      "id": "runner-pod-no-k8s-token",
+      "description": "El pod del runner no monta el token de la API de Kubernetes",
+      "cmd": "yq '.template.spec.automountServiceAccountToken' ops/arc/values.yaml",
+      "assert": "stdout~^false$",
+      "hint": "2-practicas/04-pod-del-runner-endurecido.md, paso 2"
+    },
+    {
+      "id": "arc-no-dind",
+      "description": "El scale set no usa containerMode ni contenedores privilegiados",
+      "cmd": "printf 'mode=%s privileged=%s' \"$(yq '.containerMode.type // \"none\"' ops/arc/values.yaml)\" \"$(grep -c 'privileged: *true' ops/arc/values.yaml)\"",
+      "assert": "stdout~^mode=none privileged=0$",
+      "hint": "2-practicas/04-pod-del-runner-endurecido.md, paso 2"
+    },
+    {
+      "id": "lab-runs-on-arc",
+      "description": "El job de lab.yml corre en tablero-runners y actionlint conoce esa etiqueta",
+      "cmd": "printf 'runs-on=%s actionlint=%s' \"$(yq '.jobs[].\"runs-on\"' .github/workflows/lab.yml)\" \"$(yq '.\"self-hosted-runner\".labels | contains([\"tablero-runners\"])' .github/actionlint.yaml)\"",
+      "assert": "stdout~^runs-on=tablero-runners actionlint=true$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 4"
+    },
+    {
+      "id": "own-runners-only-in-lab",
+      "description": "Solo lab.yml pide un runner propio (self-hosted, tablero-lab o tablero-runners)",
+      "cmd": "yq -N '.jobs | to_entries | .[] | select(.value.\"runs-on\" | tostring | test(\"self-hosted|tablero-lab|tablero-runners\")) | (filename | sub(\".*/\"; \"\")) + \":\" + .key' .github/workflows/*.yml | tr '\\n' ' '",
+      "assert": "stdout~^(lab\\.yml:[A-Za-z0-9_-]+ )+$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 4"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "actionlint y zizmor pasan sin hallazgos sobre los workflows de tablero",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 4"
+    },
+    {
+      "id": "arc-installed-in-kind",
+      "description": "kind-gha tiene desplegadas las releases arc y tablero-runners con la versión de ARC de install.sh",
+      "cmd": "v=$(sed -n 's/^ARC_VERSION=//p' ops/arc/install.sh); helm list -A -o json | jq -r --arg v \"$v\" '[.[] | select(.status == \"deployed\" and (.chart | endswith(\"-\" + $v))) | .namespace + \"/\" + .name] | sort | join(\",\")'",
+      "assert": "stdout~^arc-runners/tablero-runners,arc-systems/arc$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 3"
+    },
+    {
+      "id": "arc-secret-in-kind",
+      "description": "El secret tablero-arc-app de arc-runners guarda la GitHub App y ningún token personal",
+      "cmd": "kubectl get secret tablero-arc-app -n arc-runners -o json | jq -r '.data | keys | join(\",\")'",
+      "assert": "stdout~^github_app_id,github_app_installation_id,github_app_private_key$",
+      "hint": "2-practicas/01-github-app-para-arc.md, paso 4"
+    },
+    {
+      "id": "lab-green-on-arc",
+      "description": "lab.yml terminó en success sobre el último commit de main en un runner de tablero-runners",
+      "cmd": "git fetch -q origin main && id=$(gh run list --workflow lab.yml --commit \"$(git rev-parse origin/main)\" --json databaseId --jq '.[0].databaseId') && gh api \"repos/{owner}/{repo}/actions/runs/$id/jobs\" --jq '.jobs[0] | \"conclusion=\\(.conclusion) runner=\\(.runner_name) labels=\\(.labels | join(\",\"))\"'",
+      "assert": "stdout~^conclusion=success runner=tablero-runners-[^ ]+ labels=tablero-runners$",
+      "hint": "2-practicas/03-scale-set-de-tablero.md, paso 5"
+    }
+  ]
+}

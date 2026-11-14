@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 780" role="img" aria-labelledby="t1">
+  <title id="t1">Arquitectura de ARC en el clúster kind gha. A la izquierda, GitHub con su API y el servicio de Actions. A la derecha, el clúster con dos namespaces. En arc-systems, el deployment arc-gha-rs-controller y el pod listener de tablero-runners. En arc-runners, el secret tablero-arc-app con la GitHub App, el AutoscalingRunnerSet tablero-runners con mínimo 0 y máximo 2, el EphemeralRunnerSet, el EphemeralRunner y el pod del runner. Pasos: 1, el controller usa la App para registrar o recuperar el scale set en GitHub; 2, crea el listener; 3, el listener espera con una conexión de long poll el mensaje Job Available; 4, parchea las réplicas del EphemeralRunnerSet; 5, se crea un EphemeralRunner con su configuración JIT y su pod; 6, el runner se registra, recibe el job y envía el log, y al terminar ARC borra el pod. Todas las conexiones salen del clúster hacia GitHub: no hay ningún puerto abierto.</title>
+  <rect width="1040" height="780" fill="#0d1117"/>
+  <defs>
+    <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker>
+    <marker id="p1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d2a8ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="520" y="40" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Arquitectura de ARC en kind</text>
+
+    <!-- GitHub -->
+    <rect x="30" y="76" width="220" height="544" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="140" y="100" fill="#f0f6fc" font-size="15" font-weight="600" text-anchor="middle">GitHub</text>
+    <rect x="48" y="118" width="184" height="112" rx="8" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="140" y="144" fill="#79c0ff" font-size="13" font-weight="600" text-anchor="middle">API de GitHub</text>
+    <text x="140" y="168" fill="#8b949e" font-size="11" text-anchor="middle">App → token de instalación</text>
+    <text x="140" y="186" fill="#8b949e" font-size="11" text-anchor="middle">scale set registrado</text>
+    <text x="140" y="204" fill="#8b949e" font-size="11" text-anchor="middle">configuración JIT</text>
+    <rect x="48" y="300" width="184" height="300" rx="8" fill="#0d1117" stroke="#79c0ff"/>
+    <text x="140" y="326" fill="#79c0ff" font-size="13" font-weight="600" text-anchor="middle">Servicio de Actions</text>
+    <text x="140" y="350" fill="#8b949e" font-size="11" text-anchor="middle">cola de jobs</text>
+    <text x="140" y="368" fill="#8b949e" font-size="11" text-anchor="middle">runs-on: tablero-runners</text>
+    <text x="140" y="560" fill="#8b949e" font-size="11" text-anchor="middle">registro del runner,</text>
+    <text x="140" y="578" fill="#8b949e" font-size="11" text-anchor="middle">job, log y estado</text>
+
+    <!-- clúster -->
+    <rect x="290" y="76" width="720" height="560" rx="10" fill="none" stroke="#30363d" stroke-dasharray="8 5"/>
+    <text x="306" y="100" fill="#f0f6fc" font-size="14" font-weight="600">kind · clúster gha</text>
+    <text x="994" y="100" fill="#8b949e" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">--context kind-gha</text>
+
+    <!-- arc-systems -->
+    <rect x="310" y="112" width="250" height="440" rx="8" fill="none" stroke="#2088ff"/>
+    <text x="324" y="132" fill="#2088ff" font-size="12" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ns arc-systems</text>
+    <rect x="326" y="146" width="218" height="96" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="340" y="170" fill="#f0f6fc" font-size="12" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">arc-gha-rs-controller</text>
+    <text x="340" y="192" fill="#8b949e" font-size="11">deployment · siempre vivo</text>
+    <text x="340" y="210" fill="#8b949e" font-size="11">controllers de los 4 CRD</text>
+    <text x="340" y="228" fill="#8b949e" font-size="11">chart: release arc</text>
+    <rect x="326" y="330" width="218" height="96" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="340" y="354" fill="#f0f6fc" font-size="12" font-weight="600">listener</text>
+    <text x="340" y="374" fill="#8b949e" font-size="10" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-runners-&lt;hash&gt;-listener</text>
+    <text x="340" y="394" fill="#8b949e" font-size="11">un pod por scale set</text>
+    <text x="340" y="412" fill="#8b949e" font-size="11">espera "Job Available"</text>
+
+    <!-- arc-runners -->
+    <rect x="590" y="112" width="400" height="440" rx="8" fill="none" stroke="#2088ff"/>
+    <text x="604" y="132" fill="#2088ff" font-size="12" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ns arc-runners</text>
+    <rect x="606" y="146" width="176" height="96" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="618" y="170" fill="#d2a8ff" font-size="12" font-weight="600">secret</text>
+    <text x="618" y="190" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-arc-app</text>
+    <text x="618" y="210" fill="#8b949e" font-size="10" font-family="ui-monospace, Menlo, Consolas, monospace">github_app_id</text>
+    <text x="618" y="226" fill="#8b949e" font-size="10" font-family="ui-monospace, Menlo, Consolas, monospace">…installation_id · …key</text>
+
+    <rect x="800" y="146" width="174" height="70" rx="6" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="812" y="168" fill="#f0f6fc" font-size="11" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">AutoscalingRunnerSet</text>
+    <text x="812" y="188" fill="#2088ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-runners</text>
+    <text x="812" y="206" fill="#8b949e" font-size="11">min 0 · max 2 · tus values</text>
+
+    <rect x="800" y="252" width="174" height="56" rx="6" fill="#161b22" stroke="#30363d"/>
+    <text x="812" y="274" fill="#f0f6fc" font-size="11" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">EphemeralRunnerSet</text>
+    <text x="812" y="294" fill="#8b949e" font-size="11">réplicas deseadas</text>
+
+    <rect x="800" y="356" width="174" height="56" rx="6" fill="#161b22" stroke="#30363d"/>
+    <text x="812" y="378" fill="#f0f6fc" font-size="11" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">EphemeralRunner</text>
+    <text x="812" y="398" fill="#8b949e" font-size="11">uno por job · config JIT</text>
+
+    <rect x="606" y="330" width="176" height="150" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="618" y="354" fill="#3fb950" font-size="12" font-weight="600">pod del runner</text>
+    <text x="618" y="374" fill="#8b949e" font-size="10" font-family="ui-monospace, Menlo, Consolas, monospace">tablero-runners-&lt;x&gt;-</text>
+    <text x="618" y="388" fill="#8b949e" font-size="10" font-family="ui-monospace, Menlo, Consolas, monospace">  runner-&lt;y&gt;</text>
+    <text x="618" y="410" fill="#f0f6fc" font-size="11">contenedor runner</text>
+    <text x="618" y="428" fill="#f0f6fc" font-size="11">ejecuta un job</text>
+    <text x="618" y="446" fill="#f0f6fc" font-size="11">y se borra al acabar</text>
+    <text x="618" y="466" fill="#8b949e" font-size="10">sin credenciales de la App</text>
+
+    <!-- flechas -->
+    <!-- 1 controller -> API -->
+    <path d="M326 180 L252 180" stroke="#79c0ff" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#a1)"/>
+    <!-- secret -> controller -->
+    <path d="M606 194 L546 194" stroke="#d2a8ff" stroke-width="2" stroke-dasharray="3 3" fill="none" marker-end="url(#p1)"/>
+    <text x="576" y="186" fill="#d2a8ff" font-size="10" text-anchor="middle">lee</text>
+    <!-- 2 controller -> listener -->
+    <path d="M435 242 L435 328" stroke="#8b949e" stroke-width="2" fill="none" marker-end="url(#g1)"/>
+    <!-- ARS -> ERS -> ER -->
+    <path d="M887 216 L887 250" stroke="#8b949e" stroke-width="2" fill="none" marker-end="url(#g1)"/>
+    <path d="M887 308 L887 354" stroke="#8b949e" stroke-width="2" fill="none" marker-end="url(#g1)"/>
+    <!-- 3 listener -> Actions -->
+    <path d="M326 390 L234 390" stroke="#79c0ff" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#a1)"/>
+    <!-- 4 listener -> ERS -->
+    <path d="M544 350 L572 350 L572 280 L798 280" stroke="#2088ff" stroke-width="2" fill="none" marker-end="url(#a1)"/>
+    <!-- 5 ER -> pod -->
+    <path d="M800 384 L784 384" stroke="#8b949e" stroke-width="2" fill="none" marker-end="url(#g1)"/>
+    <!-- 6 pod -> Actions -->
+    <path d="M694 480 L694 590 L234 590" stroke="#79c0ff" stroke-width="2" stroke-dasharray="6 4" fill="none" marker-end="url(#a1)"/>
+
+    <!-- números -->
+    <g font-size="11" font-weight="700" text-anchor="middle" fill="#0d1117">
+      <circle cx="289" cy="166" r="10" fill="#2088ff"/><text x="289" y="170">1</text>
+      <circle cx="452" cy="286" r="10" fill="#2088ff"/><text x="452" y="290">2</text>
+      <circle cx="289" cy="376" r="10" fill="#2088ff"/><text x="289" y="380">3</text>
+      <circle cx="690" cy="266" r="10" fill="#2088ff"/><text x="690" y="270">4</text>
+      <circle cx="904" cy="332" r="10" fill="#2088ff"/><text x="904" y="336">5</text>
+      <circle cx="460" cy="576" r="10" fill="#2088ff"/><text x="460" y="580">6</text>
+    </g>
+
+    <!-- leyenda -->
+    <g font-size="12" fill="#f0f6fc">
+      <text x="30" y="672"><tspan fill="#2088ff" font-weight="700">1</tspan>  El controller registra o recupera el scale set con la App.</text>
+      <text x="30" y="696"><tspan fill="#2088ff" font-weight="700">2</tspan>  Crea un listener para el scale set.</text>
+      <text x="30" y="720"><tspan fill="#2088ff" font-weight="700">3</tspan>  El listener espera "Job Available" con un long poll.</text>
+      <text x="530" y="672"><tspan fill="#2088ff" font-weight="700">4</tspan>  Parchea las réplicas del EphemeralRunnerSet.</text>
+      <text x="530" y="696"><tspan fill="#2088ff" font-weight="700">5</tspan>  Nace un EphemeralRunner con su config JIT y su pod.</text>
+      <text x="530" y="720"><tspan fill="#2088ff" font-weight="700">6</tspan>  El runner se registra, ejecuta el job y ARC lo borra.</text>
+    </g>
+    <text x="520" y="758" fill="#8b949e" font-size="11" text-anchor="middle">Azul discontinuo: conexiones que salen del clúster hacia GitHub. Ninguna entra: no hay puertos abiertos ni webhook.</text>
+  </g>
+</svg>

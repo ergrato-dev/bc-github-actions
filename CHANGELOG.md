@@ -23,6 +23,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - `bootcamp/week-13-secretos_entornos_y_oidc/`: Semana 13, secretos, entornos y OIDC
 - `bootcamp/week-14-releases_cadena_de_suministro_y_attestations/`: Semana 14, releases, cadena de suministro y attestations
 - `bootcamp/week-15-runners_self_hosted/`: Semana 15, runners propios
+- `bootcamp/week-16-actions_runner_controller_en_kind/`: Semana 16, Actions Runner Controller en kind
 - `app/tools/oidc-verifier/`: verificador del token OIDC de GitHub Actions (PyJWT, uv), que usa la Semana 13
 - `bootcamp/week-09-workflows_reutilizables/`: Semana 09, workflows reutilizables
 - `bootcamp/week-08-probar_y_depurar_workflows/`: Semana 08, probar y depurar workflows

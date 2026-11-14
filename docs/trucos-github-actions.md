@@ -249,6 +249,22 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   `ACTIONS_RUNNER_PRINT_LOG_TO_STDOUT=1`, así que `docker logs <contenedor>` ya es el log del
   listener.
 
+## Semana 16 — [Actions Runner Controller en kind](../bootcamp/week-16-actions_runner_controller_en_kind/README.md)
+
+- **Mira nacer y morir los runners**: `kubectl get ephemeralrunners -n arc-runners -w` en una
+  terminal mientras lanzas `lab.yml` en otra. Cada fila es un job; cuando termina, la fila se va.
+- **Todas las opciones del chart sin clonar el repo de ARC**:
+  `helm show values oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set --version 0.15.1`
+  imprime el `values.yaml` comentado de esa versión exacta.
+- **Lo que el clúster tiene aplicado, no lo que dice tu repo**: `helm get values tablero-runners -n arc-runners`
+  enseña los values de la última instalación. Si no coinciden con `ops/arc/values.yaml`, alguien
+  no volvió a lanzar `install.sh`.
+- **Las claves de un secret sin imprimir sus valores**:
+  `kubectl get secret tablero-arc-app -n arc-runners -o json | jq '.data | keys'`.
+  Comprueba que la App está bien guardada sin poner la clave en tu terminal.
+- **Por qué no aparece el listener**: `kubectl logs -n arc-systems deploy/arc-gha-rs-controller | grep -i error`
+  da el motivo (clave mal copiada, installation ID equivocado) antes de que mires en GitHub.
+
 ---
 
 | ← Anterior | Siguiente → |

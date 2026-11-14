@@ -1,0 +1,29 @@
+# Values del chart gha-runner-scale-set para el scale set de tablero.
+# Se copia a ops/arc/values.yaml de <tu-org>/tablero y lo aplica ops/arc/install.sh.
+
+# TODO 3: registra el scale set en el repositorio tablero, no en la organización.
+githubConfigUrl: https://github.com/<tu-org>
+
+# TODO 4: cambia la credencial en claro por el nombre del secret que crea install.sh.
+githubConfigSecret:
+  github_token: "<TOKEN>"
+
+# TODO 5: llama tablero-runners al scale set y haz que escale de 0 a como mucho 3 runners.
+runnerScaleSetName: arc
+minRunners: 1
+maxRunners: 10
+
+# TODO 6: quita containerMode: dind arranca un contenedor privilegiado en cada pod.
+containerMode:
+  type: dind
+
+template:
+  spec:
+    # TODO 7: que el pod no monte el token de la API de Kubernetes.
+    # TODO 8: corre el pod como uid y gid 1001, sin root y con el perfil seccomp RuntimeDefault.
+    containers:
+      - name: runner
+        # TODO 9: fija la imagen por digest, el mismo de ops/runner/Dockerfile.
+        image: ghcr.io/actions/actions-runner:2.338.2
+        command: ["/home/runner/run.sh"]
+        # TODO 10: sin escalada de privilegios, sin capacidades y con límites de CPU y memoria.

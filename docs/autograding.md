@@ -156,6 +156,9 @@ lo que cuenta es la semana en curso.
 | `writes-only-where-needed` | 13 | 14 | `release.yml` y `dependency-review.yml` escriben |
 | `dependabot-ecosystems` | 12 | 14 | Se añade el ecosistema `docker` en `/api` y `/web` |
 | `dependabot-docker` | 14 | 15 | Se añade `/ops/runner` al ecosistema `docker` para vigilar la imagen del runner |
+| `lab-runs-on` | 15 | 16 | `lab.yml` pasa de `[self-hosted, tablero-lab]` a `tablero-runners` (ARC) |
+| `self-hosted-only-in-lab` | 15 | 16 | `runs-on: tablero-runners` ya no contiene `self-hosted`; la S16 lo comprueba con `own-runners-only-in-lab` |
+| `lab-green-on-own-runner` | 15 | 16 | El run lo ejecuta un runner `tablero-runners-…` de ARC, no uno `tablero-lab-…` |
 | `org-default-token-read` | 11 | 14 | release-please necesita `can_approve_pull_request_reviews=true`; la Semana 18 cierra el riesgo con revisión obligatoria |
 
 ## Permisos de `gh` por semana
