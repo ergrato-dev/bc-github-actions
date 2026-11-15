@@ -4,7 +4,7 @@
 > lo metes en el CI sin escribir un solo job propio. `ci-worker.yml` llama a `_python.yml` del
 > repo central, `ci.yml` lo llama cuando su área cambia y `ci-gate` lo espera.
 
-**Tiempo estimado**: 1.5 h
+**Tiempo estimado**: 1.25 h
 
 ## 🎯 Qué vas a conseguir
 

@@ -36,7 +36,7 @@ digest que `tablero` ya había corregido en la Semana 14 en su propio código.
 
 | Capa | Qué se revisa | Con qué | Lo que se escapa si no la miras |
 |---|---|---|---|
-| **Workflows** | YAML de `.github/workflows/`, `action.yml`, Dockerfiles | actionlint, zizmor, tu política | Un job sin timeout, una imagen sin digest, una etiqueta `-latest` |
+| **Workflows** | YAML de `.github/workflows/`, `action.yml`, Dockerfiles | actionlint y zizmor (también `action.yml`); tu política, solo workflows y Dockerfiles | Un job sin timeout, una imagen sin digest, una etiqueta `-latest` |
 | **Ajustes** | Org y repo: actions permitidas, token por defecto, aprobación de forks, ruleset, environments, retención | La API con `gh api` | Un token por defecto en `write` hace inútil el `permissions:` que olvidaste |
 | **Cadena de suministro** | Lo que tu pipeline consume y publica: el repo central, imágenes base, dependencias, attestations | Dependabot, `dependency-review`, tu política sobre el central, `gh attestation verify` | Un reutilizable del central con una imagen sin fijar |
 | **Ejecución** | Lo que de verdad corrió: en qué commit, con qué resultado, con qué runner | `gh run list`, `gh run view`, los checks del ruleset | Un workflow que existe pero nunca se dispara, o que lleva semanas en rojo |

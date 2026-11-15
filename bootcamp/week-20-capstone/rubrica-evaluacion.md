@@ -454,7 +454,7 @@ cancelaría. Semana 07.
 **A6.** Diseñas una cadena de workflows reutilizables. ¿Qué límite es real?
 
 - A) Un reutilizable puede vivir en una subcarpeta de `.github/workflows/`
-- B) Hasta 10 niveles de anidamiento y 50 reutilizables únicos por run
+- B) Hasta 10 niveles de anidamiento y 50 reutilizables por archivo de nivel superior, contando los anidados
 - C) Un reutilizable no puede llamar a otro reutilizable
 - D) Un llamador solo puede llamar a un reutilizable por workflow
 
@@ -462,7 +462,7 @@ cancelaría. Semana 07.
 <summary>Solución</summary>
 
 **B.** Hasta 10 niveles (el llamador más nueve reutilizables encadenados) y 50 reutilizables
-únicos; nada en subcarpetas. Un reutilizable sí puede llamar a otro, y un llamador puede tener
+por archivo de nivel superior, contando los anidados; nada en subcarpetas. Un reutilizable sí puede llamar a otro, y un llamador puede tener
 varios jobs que llaman a reutilizables distintos. Semana 09.
 
 </details>

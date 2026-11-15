@@ -220,7 +220,7 @@ rojo. Si cambió, las notas de release de `actions/runner-images` dicen qué se 
 ## 📚 Recursos Adicionales
 
 - [GitHub Docs: Reusing workflow configurations](https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations)
-- [GitHub Changelog: Actions YAML anchors and non-public workflow templates (2025-09-18)](https://github.blog/changelog/)
+- [GitHub Changelog: Actions YAML anchors and non-public workflow templates (2025-09-18)](https://github.blog/changelog/2025-09-18-actions-yaml-anchors-and-non-public-workflow-templates/)
 - [actions/runner-images](https://github.com/actions/runner-images)
 - [GitHub Docs: Managing allowed IP addresses for your organization](https://docs.github.com/en/organizations/keeping-your-organization-secure/managing-security-settings-for-your-organization/managing-allowed-ip-addresses-for-your-organization)
 - [GitHub roadmap #592: immutable actions](https://github.com/github/roadmap/issues/592)

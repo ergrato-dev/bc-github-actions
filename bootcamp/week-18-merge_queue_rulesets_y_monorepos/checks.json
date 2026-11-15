@@ -11,7 +11,7 @@
     },
     {
       "id": "ci-triggers",
-      "description": "ci.yml corre en pull_request, en merge_group y en push a main",
+      "description": "ci.yml corre en pull_request, en merge_group y en push a main, y a mano",
       "cmd": "yq '(.on | keys | sort | join(\",\")) + \" push=\" + (.on.push.branches // [] | join(\",\"))' .github/workflows/ci.yml",
       "assert": "stdout~^merge_group,pull_request,push,workflow_dispatch push=main$",
       "hint": "2-practicas/03-merge-queue.md, paso 1"

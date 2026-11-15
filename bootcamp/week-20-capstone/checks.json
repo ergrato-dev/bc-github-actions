@@ -56,7 +56,7 @@
       "description": "Dependabot vigila el uv.lock y el Dockerfile de worker/",
       "cmd": "yq '[.updates[] | select(.\"package-ecosystem\" == \"uv\" or .\"package-ecosystem\" == \"docker\") | .\"package-ecosystem\" + \"=\" + ((.directories // [.directory]) | contains([\"/worker\"]) | tostring)] | join(\" \")' .github/dependabot.yml",
       "assert": "stdout~^uv=true docker=true$",
-      "hint": "2-practicas/02-imagen-y-release-del-worker.md, paso 4"
+      "hint": "2-practicas/01-integrar-el-worker.md, paso 5, y 2-practicas/02-imagen-y-release-del-worker.md, paso 4"
     },
     {
       "id": "audit-script",

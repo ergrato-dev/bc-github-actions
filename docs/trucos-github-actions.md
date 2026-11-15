@@ -314,16 +314,13 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 
 - **El YAML de un workflow en otra rama sin clonar**: `gh workflow view ci.yml --ref main --yaml`.
   Sirve para auditar lo que de verdad está en `main`, no lo que tienes en tu copia local.
-- **Por qué una lista de IP no encaja con los runners alojados**: `gh api /meta --jq '.actions | length'`
-  devuelve miles de rangos, y cambian. Con una lista de IP permitidas, Actions necesita runners
-  propios o runners grandes con IP estática.
+- **Qué cambia una release del repo central antes de moverte a ella**:
+  `gh api repos/<tu-org>/actions-tablero/compare/v1.0.0...v1.1.0 --jq '.files[].filename'`.
+  Si sale un reutilizable que usas, léelo antes de cambiar el SHA en `tablero`.
 - **Auditar otro repo con tu política**: `scripts/audit-workflows.sh ../actions-tablero` pasa las
   mismas reglas a un clon del repo central. Acepta varias raíces a la vez.
-- **Parar un workflow sin perder su historial**: `gh workflow disable nightly.yml`, y después
-  `gh workflow enable nightly.yml`. Si borras el archivo, sus runs se quedan, y cada uno se borra
-  con `gh run delete <id>`.
-- **Qué imagen ejecutó un job**: en el log, el paso "Set up job" trae un grupo "Runner Image" con
-  la versión de la imagen y el enlace a su lista de software preinstalado.
+- **El estado de todos los workflows de un vistazo**: `gh api 'repos/{owner}/{repo}/actions/workflows' --jq '.workflows[] | "\(.state) \(.path)"'`.
+  Un `disabled_manually` o `disabled_inactivity` es un workflow que existe pero ya no protege nada.
 
 ---
 

@@ -41,24 +41,24 @@ cuánto cuesta y dónde se va el tiempo de cada run.
 
 ## ✅ Requisitos verificables
 
-- scripts/changed-areas.sh marca solo las áreas que tocan los archivos cambiados, y todas si cambia .github/ o no hay base
-- ci.yml corre en pull_request, en merge_group y en push a main
-- El job changes de ci.yml calcula las áreas con scripts/changed-areas.sh contra la base del PR, de la cola o del push, con el historial completo
-- ci.yml llama a ci-api, ci-web, ci-tools, smoke y lint-workflows como reutilizables, cada uno solo si su área cambia
-- ci-api, ci-web, ci-tools, smoke y lint-workflows solo se disparan por workflow_call o a mano, y sin concurrency propia
-- ci-gate corre siempre, sin permisos, después de todos los jobs de ci.yml salvo runner-info y summary
-- ci-gate pasa si todo terminó en success o skipped, y falla si algún job falló o se canceló
-- pr-report.yml escucha a ci y solo comenta cuando el run trae el artefacto dist-report
-- actionlint y zizmor pasan sin hallazgos sobre los workflows de tablero
-- CODEOWNERS asigna dueño a /.github/ y a /ops/
-- ops/github/ruleset-main.yaml protege la rama por defecto sin excepciones: sin borrado ni force push, PR obligatorio sin aprobaciones, ci-gate de GitHub Actions como check y merge queue
-- El job release-please de release.yml no da permisos a GITHUB_TOKEN y usa un token de la GitHub App, limitado a contents y pull-requests, desde el environment release
-- La rama main de tablero tiene activas las reglas del ruleset, con ci-gate de GitHub Actions como check obligatorio
-- GitHub no encuentra errores en el CODEOWNERS de tablero
-- Ni la organización ni tablero dejan que GITHUB_TOKEN cree o apruebe pull requests
-- El environment release solo admite main y guarda la clave privada y el client ID de la App
-- El PR del último commit de main pasó ci-gate en la merge queue y ci volvió a pasar en el push a main
-- El último PR de release lo abrió la GitHub App, no GITHUB_TOKEN, y ci-gate corrió en verde sobre él
+- [ ] scripts/changed-areas.sh marca solo las áreas que tocan los archivos cambiados, y todas si cambia .github/ o no hay base
+- [ ] ci.yml corre en pull_request, en merge_group y en push a main, y a mano
+- [ ] El job changes de ci.yml calcula las áreas con scripts/changed-areas.sh contra la base del PR, de la cola o del push, con el historial completo
+- [ ] ci.yml llama a ci-api, ci-web, ci-tools, smoke y lint-workflows como reutilizables, cada uno solo si su área cambia
+- [ ] ci-api, ci-web, ci-tools, smoke y lint-workflows solo se disparan por workflow_call o a mano, y sin concurrency propia
+- [ ] ci-gate corre siempre, sin permisos, después de todos los jobs de ci.yml salvo runner-info y summary
+- [ ] ci-gate pasa si todo terminó en success o skipped, y falla si algún job falló o se canceló
+- [ ] pr-report.yml escucha a ci y solo comenta cuando el run trae el artefacto dist-report
+- [ ] actionlint y zizmor pasan sin hallazgos sobre los workflows de tablero
+- [ ] CODEOWNERS asigna dueño a /.github/ y a /ops/
+- [ ] ops/github/ruleset-main.yaml protege la rama por defecto sin excepciones: sin borrado ni force push, PR obligatorio sin aprobaciones, ci-gate de GitHub Actions como check y merge queue
+- [ ] El job release-please de release.yml no da permisos a GITHUB_TOKEN y usa un token de la GitHub App, limitado a contents y pull-requests, desde el environment release
+- [ ] La rama main de tablero tiene activas las reglas del ruleset, con ci-gate de GitHub Actions como check obligatorio
+- [ ] GitHub no encuentra errores en el CODEOWNERS de tablero
+- [ ] Ni la organización ni tablero dejan que GITHUB_TOKEN cree o apruebe pull requests
+- [ ] El environment release solo admite main y guarda la clave privada y el client ID de la App
+- [ ] El PR del último commit de main pasó ci-gate en la merge queue y ci volvió a pasar en el push a main
+- [ ] El último PR de release lo abrió la GitHub App, no GITHUB_TOKEN, y ci-gate corrió en verde sobre él
 
 ## 🎨 Criterios de calidad
 

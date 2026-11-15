@@ -5,7 +5,7 @@
 > escribes cadena de suministro nueva. Fijas su Dockerfile por digest y lo añades a lo que ya
 > tenías.
 
-**Tiempo estimado**: 1.5 h
+**Tiempo estimado**: 1.25 h
 
 ## 🎯 Qué vas a conseguir
 
