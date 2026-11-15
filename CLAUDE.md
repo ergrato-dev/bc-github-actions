@@ -123,7 +123,7 @@ capstone. Al terminar el alumno defiende un pipeline de producción completo.
 | 16 ✅ | `week-16-actions_runner_controller_en_kind` | Actions Runner Controller en kind |
 | 17 ✅ | `week-17-despliegue_continuo_a_kubernetes` | Despliegue continuo a Kubernetes |
 | 18 ✅ | `week-18-merge_queue_rulesets_y_monorepos` | Merge queue, rulesets y monorepos |
-| 19 | `week-19-rendimiento_coste_y_observabilidad` | Rendimiento, coste y observabilidad |
+| 19 ✅ | `week-19-rendimiento_coste_y_observabilidad` | Rendimiento, coste y observabilidad |
 | 20 | `week-20-capstone` | Capstone: un pipeline de producción defendido |
 
 Qué funcionalidad de Actions introduce cada semana:

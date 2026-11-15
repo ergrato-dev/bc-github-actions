@@ -1,0 +1,59 @@
+# Copia en <tu-org>/tablero como .github/workflows/ci-metrics.yml.
+# Observabilidad del CI: tiempos por job de cada run de ci en main y, cada semana,
+# la tendencia de duración y éxito contra un presupuesto.
+name: ci-metrics
+on:
+  # Corre después de ci y con su propio token: lee la API, no ejecuta nada del run medido.
+  workflow_run: # zizmor: ignore[dangerous-triggers] solo lee la API; el checkout es de main
+    workflows: [ci]
+    types: [completed]
+    # TODO 5: mide solo los runs de ci en main: los de PR y de la merge queue no cuentan.
+  schedule:
+    - cron: "41 6 * * 1"
+  workflow_dispatch:
+permissions: {}
+defaults:
+  run:
+    shell: bash
+jobs:
+  run:
+    name: Tiempos del run
+    if: github.event_name == 'workflow_run'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      # workflow_run hace checkout de main, nunca del commit del run medido.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Jobs del run en el resumen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          {
+            echo "## Tiempos de ci, run $RUN_ID"
+            echo
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/jobs" --paginate --jq '.jobs[]' |
+              scripts/job-timings.sh
+          } >> "$GITHUB_STEP_SUMMARY"
+  trend:
+    name: Tendencia de ci en main
+    if: github.event_name != 'workflow_run'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # TODO 6: añade al resumen la tabla de scripts/ci-trend.sh con los runs completados de
+      # ci en main (workflows/ci.yml/runs?branch=main&status=completed&per_page=100), pasando
+      # el presupuesto vars.CI_P95_BUDGET_SECONDS en la variable de entorno BUDGET.
+      - name: Últimos 100 runs en el resumen
+        run: echo "## Tendencia de ci en main" >> "$GITHUB_STEP_SUMMARY"

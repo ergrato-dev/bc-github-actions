@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 980" role="img" aria-labelledby="t19">
+  <title id="t19">Mapa del pipeline de tablero en la capa 19. Arriba, la regla de todos los workflows desde la capa 12: permissions vacío en la raíz, permisos por job y ninguna expresión dentro de run. A la izquierda, lo que ya existía y sigue igual: images, nightly, labeler y codeql, dependency-review y dependabot, lab.yml en tablero-runners, deploy.yml, release.yml con la App tablero-release, pr-report, los reutilizables de área y el ruleset de main con ci-gate y merge queue. A la derecha, lo que cambia o llega en la capa 19. En ci.yml desaparece el job runner-info y summary pasa a necesitar solo structure, version y sql; el job changes clona con fetch-depth 0 y filter blob:none. ci-metrics.yml escucha el final de ci en main por workflow_run y escribe con job-timings.sh los tiempos de cada job en el resumen; los lunes a las 6:41 o a mano, ci-trend.sh calcula p50, p95 y tasa de éxito y avisa si el p95 pasa del presupuesto. cleanup.yml corre cada día a las 4:23 y borra con prune-caches.sh las cachés de PR cerrados y de ramas borradas; a mano, solo lista por defecto. Piezas nuevas del repo: los scripts job-timings.sh, ci-trend.sh y prune-caches.sh. Configuración: la variable CI_P95_BUDGET_SECONDS, la retención de artefactos y logs a 14 días y ninguna action nueva. En gris, lo que llega después: el capstone de la Semana 20.</title>
+  <rect width="960" height="980" fill="#0d1117"/>
+  <defs>
+    <marker id="a19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 19</text>
+
+    <!-- regla común -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="85" fill="#3fb950" font-size="12" font-weight="600">en todos los workflows</text>
+    <text x="210" y="85" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · permisos por job · nada de ${{ }} en run:</text>
+
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">Ya existían</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Capa 19 · medir, recortar y limpiar</text>
+
+    <!-- existentes -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="146" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="169" fill="#f0f6fc" font-size="12" font-weight="600">images</text>
+      <text x="304" y="169" fill="#8b949e" text-anchor="end">paths · no es check exigido</text>
+
+      <rect x="30" y="190" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="213" fill="#f0f6fc" font-size="12" font-weight="600">nightly</text>
+      <text x="304" y="213" fill="#8b949e" text-anchor="end">ci-api · ci-web · smoke</text>
+
+      <rect x="30" y="234" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="257" fill="#f0f6fc" font-size="12" font-weight="600">labeler · codeql</text>
+
+      <rect x="30" y="278" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="301" fill="#f0f6fc" font-size="12" font-weight="600">dependency-review.yml</text>
+      <text x="304" y="301" fill="#8b949e" text-anchor="end">dependabot.yml</text>
+
+      <rect x="30" y="322" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="345" fill="#f0f6fc" font-size="12" font-weight="600">lab.yml</text>
+      <text x="304" y="345" fill="#3fb950" text-anchor="end">runs-on: tablero-runners</text>
+
+      <rect x="30" y="366" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="389" fill="#f0f6fc" font-size="12" font-weight="600">deploy.yml</text>
+      <text x="304" y="389" fill="#8b949e" text-anchor="end">staging → production</text>
+
+      <rect x="30" y="410" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="433" fill="#f0f6fc" font-size="12" font-weight="600">release.yml</text>
+      <text x="304" y="433" fill="#8b949e" text-anchor="end">App tablero-release</text>
+
+      <rect x="30" y="454" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="477" fill="#f0f6fc" font-size="12" font-weight="600">pr-report</text>
+      <text x="304" y="477" fill="#8b949e" text-anchor="end">workflow_run: [ci]</text>
+
+      <rect x="30" y="498" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="521" fill="#f0f6fc" font-size="12" font-weight="600">reutilizables de área</text>
+      <text x="304" y="521" fill="#8b949e" text-anchor="end">workflow_call</text>
+
+      <rect x="30" y="542" width="290" height="64" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="565" fill="#f0f6fc" font-size="12" font-weight="600">ruleset main</text>
+      <text x="304" y="565" fill="#8b949e" text-anchor="end">Semana 18</text>
+      <text x="46" y="587" fill="#8b949e">ci-gate · merge queue</text>
+    </g>
+
+    <!-- ci.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="146" width="580" height="196" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="170" fill="#2088ff" font-size="13" font-weight="600">ci.yml</text>
+      <text x="914" y="170" fill="#79c0ff" text-anchor="end">push main · pull_request · merge_group · dispatch</text>
+
+      <rect x="366" y="184" width="176" height="144" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="378" y="204" fill="#f0f6fc" font-size="12" font-weight="600">changes</text>
+      <text x="378" y="226" fill="#f0f6fc">fetch-depth: 0</text>
+      <text x="378" y="246" fill="#3fb950" font-weight="600">filter: blob:none</text>
+      <text x="378" y="264" fill="#8b949e">árboles sí, blobs</text>
+      <text x="378" y="280" fill="#8b949e">solo los de HEAD</text>
+      <text x="378" y="310" fill="#f0f6fc">changed-areas.sh</text>
+
+      <rect x="556" y="184" width="176" height="144" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="568" y="204" fill="#e3b341">if: área == 'true'</text>
+      <text x="568" y="228" fill="#f0f6fc">api · web · tools</text>
+      <text x="568" y="246" fill="#f0f6fc">smoke · workflows</text>
+      <text x="568" y="280" fill="#3fb950" font-weight="600">ci-gate</text>
+      <text x="568" y="298" fill="#8b949e">el único check</text>
+
+      <rect x="746" y="184" width="168" height="144" rx="6" fill="#0d1117" stroke="#f85149" stroke-dasharray="5 3"/>
+      <text x="758" y="204" fill="#f85149" font-size="12" font-weight="600">runner-info</text>
+      <line x1="756" y1="200" x2="842" y2="200" stroke="#f85149" stroke-width="1.5"/>
+      <text x="758" y="224" fill="#f85149">eliminado</text>
+      <text x="758" y="244" fill="#8b949e">1 min por run</text>
+      <text x="758" y="276" fill="#f0f6fc">summary needs:</text>
+      <text x="758" y="294" fill="#f0f6fc">[structure,</text>
+      <text x="758" y="310" fill="#f0f6fc"> version, sql]</text>
+    </g>
+    <path d="M542 256 L552 256" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a19)"/>
+
+    <!-- ci-metrics.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="354" width="580" height="122" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="378" fill="#2088ff" font-size="13" font-weight="600">ci-metrics.yml</text>
+      <text x="914" y="378" fill="#d2a8ff" text-anchor="end">actions: read · contents: read</text>
+      <text x="366" y="402" fill="#79c0ff">workflow_run [ci] completed · main</text>
+      <text x="914" y="402" fill="#f0f6fc" text-anchor="end">run → job-timings.sh → resumen</text>
+      <text x="366" y="424" fill="#79c0ff">schedule lunes 06:41 · dispatch</text>
+      <text x="914" y="424" fill="#f0f6fc" text-anchor="end">trend → ci-trend.sh → p50 · p95 · éxito</text>
+      <text x="366" y="446" fill="#e3b341">p95 &gt; CI_P95_BUDGET_SECONDS → ::warning</text>
+      <text x="914" y="464" fill="#3fb950" text-anchor="end">checkout de main, nunca del run medido</text>
+    </g>
+
+    <!-- cleanup.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="488" width="580" height="118" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="512" fill="#2088ff" font-size="13" font-weight="600">cleanup.yml</text>
+      <text x="914" y="512" fill="#8b949e" text-anchor="end">concurrency sin cancelar · shell: bash</text>
+      <text x="366" y="536" fill="#79c0ff">schedule diario 04:23</text>
+      <text x="914" y="536" fill="#f85149" text-anchor="end">borra de verdad</text>
+      <text x="366" y="558" fill="#79c0ff">workflow_dispatch</text>
+      <text x="914" y="558" fill="#3fb950" text-anchor="end">dry-run: true por defecto</text>
+      <text x="366" y="580" fill="#f0f6fc">prune-caches.sh: cachés de PR cerrados y ramas borradas</text>
+      <text x="366" y="598" fill="#d2a8ff">actions: write · contents: read · pull-requests: read</text>
+    </g>
+
+    <!-- piezas del repo -->
+    <text x="30" y="644" fill="#f0f6fc" font-size="14" font-weight="600">Piezas nuevas del repo</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="656" width="290" height="96" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="680" fill="#2088ff" font-size="13" font-weight="600">scripts/job-timings.sh</text>
+      <text x="46" y="702" fill="#f0f6fc">API de jobs → tabla por job</text>
+      <text x="46" y="720" fill="#79c0ff">cola · duración · minutos</text>
+      <text x="46" y="738" fill="#8b949e">reloj y total facturable</text>
+
+      <rect x="340" y="656" width="290" height="96" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="356" y="680" fill="#2088ff" font-size="13" font-weight="600">scripts/ci-trend.sh</text>
+      <text x="356" y="702" fill="#f0f6fc">API de runs → Runs · Éxito</text>
+      <text x="356" y="720" fill="#79c0ff">p50 · p95 por rango cercano</text>
+      <text x="356" y="738" fill="#e3b341">::warning por stderr</text>
+
+      <rect x="650" y="656" width="280" height="96" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="666" y="680" fill="#2088ff" font-size="13" font-weight="600">scripts/prune-caches.sh</text>
+      <text x="666" y="702" fill="#f0f6fc">ramas y PR abiertos, una vez</text>
+      <text x="666" y="720" fill="#79c0ff">borra por id · main nunca</text>
+      <text x="666" y="738" fill="#3fb950">DRY_RUN=true: solo lista</text>
+    </g>
+
+    <!-- configuración -->
+    <text x="30" y="788" fill="#d2a8ff" font-size="14" font-weight="600">Configuración de &lt;tu-org&gt;/tablero</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="800" width="290" height="72" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="46" y="824" fill="#d2a8ff" font-size="13" font-weight="600">variable del repo</text>
+      <text x="46" y="846" fill="#f0f6fc">CI_P95_BUDGET_SECONDS</text>
+      <text x="46" y="862" fill="#8b949e">gh variable set</text>
+
+      <rect x="340" y="800" width="290" height="72" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="356" y="824" fill="#d2a8ff" font-size="13" font-weight="600">retención</text>
+      <text x="356" y="846" fill="#f0f6fc">artefactos y logs: 14 días</text>
+      <text x="356" y="862" fill="#8b949e">antes 90 · gh api -X PUT</text>
+
+      <rect x="650" y="800" width="280" height="72" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="666" y="824" fill="#3fb950" font-size="13" font-weight="600">ninguna action nueva</text>
+      <text x="666" y="846" fill="#f0f6fc">la lista permitida de la</text>
+      <text x="666" y="862" fill="#f0f6fc">org no cambia</text>
+    </g>
+
+    <!-- después -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="892" width="900" height="40" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="917"><tspan font-weight="600">Semana 20</tspan> · capstone: un pipeline de producción defendido</text>
+    </g>
+    <text x="480" y="954" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y piezas nuevas o ampliadas. Verde: lo fijado, verificado o seguro por defecto. Morado: permisos y configuración.</text>
+    <text x="480" y="970" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: condiciones y avisos. Rojo: lo que se quita o se borra. Gris discontinuo: lo que añade la siguiente semana.</text>
+  </g>
+</svg>

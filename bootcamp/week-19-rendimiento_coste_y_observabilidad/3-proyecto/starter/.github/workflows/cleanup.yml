@@ -1,0 +1,42 @@
+# Copia en <tu-org>/tablero como .github/workflows/cleanup.yml.
+# Limpieza diaria: borra las cachés de PR cerrados y de ramas que ya no existen antes de que
+# ocupen el sitio de las de main. Los artefactos y logs caducan solos por la retención del repo.
+name: cleanup
+on:
+  schedule:
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Solo listar lo que se borraría
+        type: boolean
+        # TODO 10: a mano, lo seguro es listar sin borrar: el valor por defecto es true.
+        default: false
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+permissions: {}
+# shell: bash explícito activa pipefail: sin él, un fallo del script se pierde tras el tee.
+defaults:
+  run:
+    shell: bash
+jobs:
+  caches:
+    name: Cachés sin dueño
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # TODO 11: borrar cachés es escribir en Actions; listar ramas y PR, leer contents y
+    # pull-requests. Nada más.
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Borrar las cachés de refs que ya no existen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          # TODO 12: pasa el input dry-run al script en DRY_RUN. En el cron no hay inputs:
+          # vacío cuenta como borrar de verdad.
+        run: scripts/prune-caches.sh | tee -a "$GITHUB_STEP_SUMMARY"

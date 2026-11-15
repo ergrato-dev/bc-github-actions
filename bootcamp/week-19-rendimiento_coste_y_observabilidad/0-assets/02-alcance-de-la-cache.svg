@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="t02">
+  <title id="t02">Desde qué refs puede restaurar caché un run. Un push a feature/login lee su propia ref y la de main, pero no la de una rama hija, una hermana ni un tag, y escribe en su ref. Un pull_request número 31 hacia main lee refs/pull/31/merge, main, que es su base y la rama por defecto, y la rama del PR, pero no otro PR; lo que guarda va a refs/pull/31/merge y solo lo leen los re-runs de ese PR. workflow_run, pull_request_target e issue_comment corren en el contexto de main y solo pueden leer su caché, nunca escribir, para que un PR de un fork no envenene la caché de main. Abajo, los eventos que sí escriben en la caché de main y el orden de búsqueda: key exacta, luego restore-keys en la ref del run, luego lo mismo en la rama por defecto y la base; cache-hit es true solo con la key exacta.</title>
+  <rect width="960" height="600" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Alcance de la caché: qué ref puede leer qué</text>
+    <rect x="30" y="56" width="280" height="400" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="80" fill="#2088ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">push a feature/login</text>
+    <text x="46" y="120" fill="#8b949e" font-size="11">el run corre en</text>
+    <text x="46" y="136" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/feature/login</text>
+    <line x1="46" y1="150" x2="294" y2="150" stroke="#30363d"/>
+    <text x="46" y="174" fill="#3fb950" font-size="13" font-weight="600">✓</text>
+    <text x="64" y="174" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/feature/login</text>
+    <text x="64" y="190" fill="#8b949e" font-size="11">la suya</text>
+    <text x="46" y="218" fill="#3fb950" font-size="13" font-weight="600">✓</text>
+    <text x="64" y="218" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/main</text>
+    <text x="64" y="234" fill="#8b949e" font-size="11">la rama por defecto</text>
+    <text x="46" y="262" fill="#f85149" font-size="13" font-weight="600">✗</text>
+    <text x="64" y="262" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/feature/login-ui</text>
+    <text x="64" y="278" fill="#8b949e" font-size="11">una rama hija</text>
+    <text x="46" y="306" fill="#f85149" font-size="13" font-weight="600">✗</text>
+    <text x="64" y="306" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/feature/search</text>
+    <text x="64" y="322" fill="#8b949e" font-size="11">una rama hermana</text>
+    <text x="46" y="350" fill="#f85149" font-size="13" font-weight="600">✗</text>
+    <text x="64" y="350" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/tags/v1.2.0</text>
+    <text x="64" y="366" fill="#8b949e" font-size="11">los tags no comparten</text>
+    <rect x="42" y="402" width="256" height="32" rx="6" fill="#0d1117" stroke="#3fb950"/>
+    <text x="54" y="422" fill="#3fb950" font-size="11">escribe en refs/heads/feature/login</text>
+    <rect x="340" y="56" width="280" height="400" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="356" y="80" fill="#2088ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">pull_request #31 → main</text>
+    <text x="356" y="120" fill="#8b949e" font-size="11">el run corre en</text>
+    <text x="356" y="136" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/pull/31/merge</text>
+    <line x1="356" y1="150" x2="604" y2="150" stroke="#30363d"/>
+    <text x="356" y="174" fill="#3fb950" font-size="13" font-weight="600">✓</text>
+    <text x="374" y="174" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/pull/31/merge</text>
+    <text x="374" y="190" fill="#8b949e" font-size="11">la suya</text>
+    <text x="356" y="218" fill="#3fb950" font-size="13" font-weight="600">✓</text>
+    <text x="374" y="218" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/main</text>
+    <text x="374" y="234" fill="#8b949e" font-size="11">la base y la por defecto</text>
+    <text x="356" y="262" fill="#3fb950" font-size="13" font-weight="600">✓</text>
+    <text x="374" y="262" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/feature/login</text>
+    <text x="374" y="278" fill="#8b949e" font-size="11">la rama del PR</text>
+    <text x="356" y="306" fill="#f85149" font-size="13" font-weight="600">✗</text>
+    <text x="374" y="306" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/pull/30/merge</text>
+    <text x="374" y="322" fill="#8b949e" font-size="11">otro PR</text>
+    <rect x="352" y="386" width="256" height="48" rx="6" fill="#0d1117" stroke="#e3b341"/>
+    <text x="364" y="406" fill="#e3b341" font-size="11">escribe en refs/pull/31/merge: solo la</text>
+    <text x="364" y="422" fill="#e3b341" font-size="11">leen los re-runs de #31</text>
+    <rect x="650" y="56" width="280" height="400" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="666" y="80" fill="#e3b341" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">workflow_run · issue_comment ·</text>
+    <text x="666" y="98" fill="#e3b341" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">pull_request_target</text>
+    <text x="666" y="120" fill="#8b949e" font-size="11">el run corre en</text>
+    <text x="666" y="136" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">contexto de main</text>
+    <line x1="666" y1="150" x2="914" y2="150" stroke="#30363d"/>
+    <text x="666" y="174" fill="#3fb950" font-size="13" font-weight="600">✓</text>
+    <text x="684" y="174" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">refs/heads/main</text>
+    <text x="684" y="190" fill="#8b949e" font-size="11">solo lectura</text>
+    <text x="666" y="218" fill="#f85149" font-size="13" font-weight="600">✗</text>
+    <text x="684" y="218" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">escribir en refs/heads/main</text>
+    <text x="684" y="234" fill="#8b949e" font-size="11">baja confianza</text>
+    <rect x="662" y="386" width="256" height="48" rx="6" fill="#0d1117" stroke="#f85149"/>
+    <text x="674" y="406" fill="#f85149" font-size="11">no escribe: un PR de un fork no envenena</text>
+    <text x="674" y="422" fill="#f85149" font-size="11">la caché de main (S12)</text>
+    <rect x="30" y="476" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950"/>
+    <text x="46" y="503" fill="#3fb950" font-size="12" font-weight="600">Escriben en la caché de main</text>
+    <text x="236" y="503" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">push · workflow_dispatch · repository_dispatch · delete · registry_package · page_build · schedule</text>
+    <rect x="30" y="532" width="900" height="44" rx="8" fill="#161b22" stroke="#d2a8ff"/>
+    <text x="46" y="559" fill="#d2a8ff" font-size="12" font-weight="600">Orden de búsqueda</text>
+    <text x="180" y="559" fill="#f0f6fc" font-size="12">key exacta → restore-keys en la ref del run → lo mismo en main y la base · <tspan font-family="ui-monospace, Menlo, Consolas, monospace" fill="#e3b341">cache-hit: true</tspan> solo con key exacta</text>
+  </g>
+</svg>

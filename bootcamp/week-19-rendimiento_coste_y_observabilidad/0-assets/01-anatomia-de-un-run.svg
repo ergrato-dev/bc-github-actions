@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 592" role="img" aria-labelledby="t01">
+  <title id="t01">Línea de tiempo de un run de ci con valores de ejemplo. Cada job tiene tres tramos: cola en amarillo, desde created_at hasta started_at; arranque en azul claro; y trabajo en azul. structure y changes empiezan a la vez; summary espera a structure; api y web esperan a changes; dist-report espera a web; ci-gate espera a todos y termina a los 140 segundos. El camino crítico, marcado con borde discontinuo, es changes, web, dist-report y ci-gate: acelerar api no acorta el run. Abajo, el reloj del run es 140 segundos, del primer created_at al último completed_at, y la cola cuenta. Los minutos facturables son la suma de cada job redondeado por arriba, sin la cola: 1 más 1 más 1 más 2 más 2 más 1 más 1, nueve minutos.</title>
+  <rect width="960" height="592" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Anatomía de un run de ci</text>
+    <text x="480" y="56" fill="#8b949e" font-size="12" text-anchor="middle">valores de ejemplo · segundos desde que se encola el primer job</text>
+    <rect x="230" y="70" width="14" height="12" fill="#e3b341"/><text x="250" y="80" fill="#f0f6fc" font-size="12">cola · no factura</text>
+    <rect x="370" y="70" width="14" height="12" fill="#79c0ff"/><text x="390" y="80" fill="#f0f6fc" font-size="12">arranque</text>
+    <rect x="470" y="70" width="14" height="12" fill="#2088ff"/><text x="490" y="80" fill="#f0f6fc" font-size="12">trabajo</text>
+    <rect x="570" y="70" width="14" height="12" fill="none" stroke="#f0f6fc" stroke-dasharray="3 2"/><text x="590" y="80" fill="#f0f6fc" font-size="12">camino crítico</text>
+    <text x="930" y="112" fill="#8b949e" font-size="12" text-anchor="end">facturable</text>
+    <line x1="230" y1="122" x2="776.0" y2="122" stroke="#30363d"/>
+    <line x1="230.0" y1="118" x2="230.0" y2="126" stroke="#30363d"/><text x="230.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">0</text>
+    <line x1="308.0" y1="118" x2="308.0" y2="126" stroke="#30363d"/><text x="308.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">20</text>
+    <line x1="386.0" y1="118" x2="386.0" y2="126" stroke="#30363d"/><text x="386.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">40</text>
+    <line x1="464.0" y1="118" x2="464.0" y2="126" stroke="#30363d"/><text x="464.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">60</text>
+    <line x1="542.0" y1="118" x2="542.0" y2="126" stroke="#30363d"/><text x="542.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">80</text>
+    <line x1="620.0" y1="118" x2="620.0" y2="126" stroke="#30363d"/><text x="620.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">100</text>
+    <line x1="698.0" y1="118" x2="698.0" y2="126" stroke="#30363d"/><text x="698.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">120</text>
+    <line x1="776.0" y1="118" x2="776.0" y2="126" stroke="#30363d"/><text x="776.0" y="112" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">140</text>
+    <text x="30" y="157" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">structure</text>
+    <rect x="230.0" y="142" width="11.7" height="20" fill="#e3b341"/>
+    <rect x="241.7" y="142" width="19.5" height="20" fill="#79c0ff"/>
+    <rect x="261.2" y="142" width="27.3" height="20" fill="#2088ff"/>
+    <text x="930" y="157" fill="#f0f6fc" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">12 s → 1 min</text>
+    <text x="30" y="197" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="600">changes</text>
+    <rect x="230.0" y="182" width="11.7" height="20" fill="#e3b341"/>
+    <rect x="241.7" y="182" width="23.4" height="20" fill="#79c0ff"/>
+    <rect x="265.1" y="182" width="15.6" height="20" fill="#2088ff"/>
+    <rect x="227.0" y="178" width="56.7" height="28" rx="4" fill="none" stroke="#f0f6fc" stroke-dasharray="5 3"/>
+    <text x="930" y="197" fill="#f0f6fc" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">10 s → 1 min</text>
+    <text x="30" y="237" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">summary</text>
+    <rect x="288.5" y="222" width="11.7" height="20" fill="#e3b341"/>
+    <rect x="300.2" y="222" width="15.6" height="20" fill="#79c0ff"/>
+    <rect x="315.8" y="222" width="11.7" height="20" fill="#2088ff"/>
+    <text x="930" y="237" fill="#f0f6fc" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">7 s → 1 min</text>
+    <text x="30" y="277" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">api / …</text>
+    <rect x="280.7" y="262" width="15.6" height="20" fill="#e3b341"/>
+    <rect x="296.3" y="262" width="97.5" height="20" fill="#79c0ff"/>
+    <rect x="393.8" y="262" width="195.0" height="20" fill="#2088ff"/>
+    <text x="930" y="277" fill="#f0f6fc" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">75 s → 2 min</text>
+    <text x="30" y="317" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="600">web / … / Node 26</text>
+    <rect x="280.7" y="302" width="15.6" height="20" fill="#e3b341"/>
+    <rect x="296.3" y="302" width="117.0" height="20" fill="#79c0ff"/>
+    <rect x="413.3" y="302" width="273.0" height="20" fill="#2088ff"/>
+    <rect x="277.7" y="298" width="411.6" height="28" rx="4" fill="none" stroke="#f0f6fc" stroke-dasharray="5 3"/>
+    <text x="930" y="317" fill="#f0f6fc" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">100 s → 2 min</text>
+    <text x="30" y="357" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="600">dist-report</text>
+    <rect x="686.3" y="342" width="11.7" height="20" fill="#e3b341"/>
+    <rect x="698.0" y="342" width="31.2" height="20" fill="#79c0ff"/>
+    <rect x="729.2" y="342" width="19.5" height="20" fill="#2088ff"/>
+    <rect x="683.3" y="338" width="68.4" height="28" rx="4" fill="none" stroke="#f0f6fc" stroke-dasharray="5 3"/>
+    <text x="930" y="357" fill="#f0f6fc" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">13 s → 1 min</text>
+    <text x="30" y="397" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="600">ci-gate</text>
+    <rect x="748.7" y="382" width="11.7" height="20" fill="#e3b341"/>
+    <rect x="760.4" y="382" width="7.8" height="20" fill="#79c0ff"/>
+    <rect x="768.2" y="382" width="7.8" height="20" fill="#2088ff"/>
+    <rect x="745.7" y="378" width="33.3" height="28" rx="4" fill="none" stroke="#f0f6fc" stroke-dasharray="5 3"/>
+    <text x="930" y="397" fill="#f0f6fc" font-size="12" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">4 s → 1 min</text>
+    <line x1="776.0" y1="126" x2="776.0" y2="420" stroke="#8b949e" stroke-dasharray="2 3"/>
+    <rect x="30" y="436" width="440" height="104" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="462" fill="#2088ff" font-size="14" font-weight="600">Reloj del run: 140 s</text>
+    <text x="46" y="486" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">último completed_at − primer created_at</text>
+    <text x="46" y="508" fill="#8b949e" font-size="12">La cola cuenta: es tiempo que alguien espera.</text>
+    <text x="46" y="524" fill="#8b949e" font-size="12">Lo marca el camino crítico, no la suma de jobs.</text>
+    <rect x="490" y="436" width="440" height="104" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="506" y="462" fill="#e3b341" font-size="14" font-weight="600">Minutos facturables: 9</text>
+    <text x="506" y="486" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">Σ ⌈(completed_at − started_at) / 60⌉</text>
+    <text x="506" y="508" fill="#8b949e" font-size="12">Cada job se redondea por arriba; la cola no factura.</text>
+    <text x="506" y="524" fill="#8b949e" font-size="12">En un repo público con runners estándar: 0 USD.</text>
+    <text x="480" y="572" fill="#8b949e" font-size="12" text-anchor="middle">Acelerar api no acorta el run: no está en el camino crítico. Quitar un job de 7 s ahorra un minuto facturable.</text>
+  </g>
+</svg>

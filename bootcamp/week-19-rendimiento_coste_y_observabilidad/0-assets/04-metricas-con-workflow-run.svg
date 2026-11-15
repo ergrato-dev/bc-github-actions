@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="t04">
+  <title id="t04">Métricas del CI con workflow_run. Arriba, cada run de ci en main, al terminar, dispara ci-metrics por workflow_run con types completed y branches main; los runs de PR y de la merge queue no lo disparan. El job run hace checkout de main, nunca del run medido, recibe el id del run por env, lee la API de jobs con gh api y paginate, y job-timings.sh escribe en el resumen una tabla con cola, duración y minutos facturables de cada job, más el reloj y el total. Abajo, un cron los lunes a las 6:41 o un workflow_dispatch lanzan el job trend, que lee los últimos 100 runs completados de ci en main; ci-trend.sh calcula runs, tasa de éxito, p50 y p95, y si el p95 supera el presupuesto, que llega de la variable del repo CI_P95_BUDGET_SECONDS por env BUDGET, emite un warning por stderr que aparece como anotación. Los dos jobs tienen permisos actions read y contents read, con permissions vacío en la raíz.</title>
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="a04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+    <marker id="p04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#d2a8ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Métricas del CI: cada run y la tendencia</text>
+    <text x="30" y="68" fill="#79c0ff" font-size="13" font-weight="600">Cada run de ci en main</text>
+    <rect x="30" y="80" width="160" height="126" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="42" y="102" fill="#2088ff" font-size="12" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci</text>
+    <text x="42" y="122" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">push a main</text>
+    <text x="42" y="139" fill="#8b949e" font-size="11">PR y merge queue:</text>
+    <text x="42" y="156" fill="#f85149" font-size="11">no se miden</text>
+    <rect x="215" y="80" width="160" height="126" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+    <text x="227" y="102" fill="#79c0ff" font-size="12" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">workflow_run</text>
+    <text x="227" y="122" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">workflows: [ci]</text>
+    <text x="227" y="139" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">types: [completed]</text>
+    <text x="227" y="156" fill="#3fb950" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">branches: [main]</text>
+    <text x="227" y="173" fill="#8b949e" font-size="11">arranca al terminar ci</text>
+    <rect x="400" y="80" width="160" height="126" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="412" y="102" fill="#2088ff" font-size="12" font-weight="600">ci-metrics · run</text>
+    <text x="412" y="122" fill="#3fb950" font-size="11">checkout de main</text>
+    <text x="412" y="139" fill="#8b949e" font-size="11">nunca del run medido</text>
+    <text x="412" y="156" fill="#d2a8ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">RUN_ID por env:</text>
+    <rect x="585" y="80" width="160" height="126" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="597" y="102" fill="#2088ff" font-size="12" font-weight="600">API de jobs</text>
+    <text x="597" y="122" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">gh api .../runs/</text>
+    <text x="597" y="139" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">$RUN_ID/jobs</text>
+    <text x="597" y="156" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">--paginate</text>
+    <text x="597" y="173" fill="#79c0ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">| job-timings.sh</text>
+    <rect x="770" y="80" width="160" height="126" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="782" y="102" fill="#3fb950" font-size="12" font-weight="600">Resumen del run</text>
+    <text x="782" y="122" fill="#f0f6fc" font-size="11">cola · duración ·</text>
+    <text x="782" y="139" fill="#f0f6fc" font-size="11">minutos por job</text>
+    <text x="782" y="156" fill="#f0f6fc" font-size="11">reloj y total</text>
+    <text x="782" y="173" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">$GITHUB_STEP_SUMMARY</text>
+    <path d="M192 143.0 L211 143.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M377 143.0 L396 143.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M562 143.0 L581 143.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M747 143.0 L766 143.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <text x="30" y="250" fill="#79c0ff" font-size="13" font-weight="600">Tendencia semanal contra un presupuesto</text>
+    <rect x="30" y="262" width="160" height="126" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+    <text x="42" y="284" fill="#79c0ff" font-size="12" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">schedule</text>
+    <text x="42" y="304" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">"41 6 * * 1"</text>
+    <text x="42" y="321" fill="#8b949e" font-size="11">lunes 06:41 UTC</text>
+    <text x="42" y="338" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">workflow_dispatch</text>
+    <text x="42" y="355" fill="#8b949e" font-size="11">a mano</text>
+    <rect x="215" y="262" width="160" height="126" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="227" y="284" fill="#2088ff" font-size="12" font-weight="600">ci-metrics · trend</text>
+    <text x="227" y="304" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">if: no es</text>
+    <text x="227" y="321" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">workflow_run</text>
+    <text x="227" y="338" fill="#3fb950" font-size="11">checkout de main</text>
+    <rect x="400" y="262" width="160" height="126" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="412" y="284" fill="#2088ff" font-size="12" font-weight="600">API de runs</text>
+    <text x="412" y="304" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">workflows/ci.yml/</text>
+    <text x="412" y="321" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">runs?branch=main</text>
+    <text x="412" y="338" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">&amp;status=completed</text>
+    <text x="412" y="355" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">&amp;per_page=100</text>
+    <rect x="585" y="262" width="160" height="126" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="597" y="284" fill="#2088ff" font-size="12" font-weight="600">ci-trend.sh</text>
+    <text x="597" y="304" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">updated_at −</text>
+    <text x="597" y="321" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">run_started_at</text>
+    <text x="597" y="338" fill="#79c0ff" font-size="11">p50 · p95 · éxito</text>
+    <text x="597" y="355" fill="#8b949e" font-size="11">rango más cercano</text>
+    <rect x="770" y="262" width="160" height="126" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="782" y="284" fill="#e3b341" font-size="12" font-weight="600">Resumen y aviso</text>
+    <text x="782" y="304" fill="#f0f6fc" font-size="11">tabla Runs · Éxito ·</text>
+    <text x="782" y="321" fill="#f0f6fc" font-size="11">p50 · p95</text>
+    <text x="782" y="338" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">p95 &gt; BUDGET:</text>
+    <text x="782" y="355" fill="#e3b341" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">::warning por stderr</text>
+    <path d="M192 325.0 L211 325.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M377 325.0 L396 325.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M562 325.0 L581 325.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <path d="M747 325.0 L766 325.0" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a04)"/>
+    <rect x="400" y="420" width="345" height="44" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="412" y="447" fill="#d2a8ff" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">vars.CI_P95_BUDGET_SECONDS → env BUDGET</text>
+    <path d="M665.0 418 L665.0 392" stroke="#d2a8ff" stroke-width="2" fill="none" marker-end="url(#p04)"/>
+    <rect x="30" y="486" width="900" height="56" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="46" y="510" fill="#d2a8ff" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · actions: read · contents: read en cada job</text>
+    <text x="46" y="530" fill="#8b949e" font-size="12">workflow_run solo dispara si ci-metrics.yml está en la rama por defecto, y corre con el token de main: por eso no ejecuta nada del run medido.</text>
+  </g>
+</svg>

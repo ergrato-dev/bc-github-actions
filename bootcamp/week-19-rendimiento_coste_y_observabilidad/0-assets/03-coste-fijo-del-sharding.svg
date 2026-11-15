@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 472" role="img" aria-labelledby="t03">
+  <title id="t03">Coste fijo del sharding con valores de ejemplo: arranque A de 40 segundos por job y trabajo W de 90 segundos en total. Con un job, el reloj es 130 segundos y factura 3 minutos. Con 2 shards, cada job hace 40 de arranque y 45 de trabajo: reloj 85 segundos, factura 4 minutos. Con 3 shards, 40 más 30: reloj 70 segundos, factura 6 minutos. El arranque se repite en cada job mientras el trabajo se reparte, así que cada shard más gana menos reloj y cuesta lo mismo. Abajo, las fórmulas: reloj aproximado A más W entre N; facturable aproximado N por el techo de A más W entre N, dividido entre 60. En la web de tablero, con dos archivos de test, W es pequeño frente a A y el sharding pierde; además, juntar los informes exige otro job con su propio arranque.</title>
+  <rect width="960" height="472" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">El coste fijo del sharding</text>
+    <text x="480" y="56" fill="#8b949e" font-size="12" text-anchor="middle">valores de ejemplo · A = 40 s de arranque por job · W = 90 s de trabajo en total</text>
+    <rect x="200" y="70" width="14" height="12" fill="#79c0ff"/><text x="220" y="80" fill="#f0f6fc" font-size="12">A · arranque: se repite en cada job</text>
+    <rect x="450" y="70" width="14" height="12" fill="#2088ff"/><text x="470" y="80" fill="#f0f6fc" font-size="12">W / N · trabajo: se reparte</text>
+    <text x="800" y="108" fill="#8b949e" font-size="12" text-anchor="middle">reloj</text>
+    <text x="890" y="108" fill="#8b949e" font-size="12" text-anchor="middle">facturable</text>
+    <rect x="24" y="112" width="912" height="34" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="40" y="134" fill="#f0f6fc" font-size="13" font-weight="600">1 job</text>
+    <rect x="200" y="120" width="136.0" height="18" fill="#79c0ff"/>
+    <rect x="336.0" y="120" width="306" height="18" fill="#2088ff"/>
+    <text x="650" y="134" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">⌈130/60⌉ = 3</text>
+    <line x1="642" y1="116" x2="642" y2="142" stroke="#e3b341" stroke-dasharray="3 3"/>
+    <text x="800" y="134" fill="#f0f6fc" font-size="13" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">130 s</text>
+    <text x="890" y="134" fill="#3fb950" font-size="13" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">3 min</text>
+    <rect x="24" y="160" width="912" height="60" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="40" y="195" fill="#f0f6fc" font-size="13" font-weight="600">2 shards</text>
+    <rect x="200" y="168" width="136.0" height="18" fill="#79c0ff"/>
+    <rect x="336.0" y="168" width="153" height="18" fill="#2088ff"/>
+    <text x="497" y="182" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">⌈85/60⌉ = 2</text>
+    <rect x="200" y="194" width="136.0" height="18" fill="#79c0ff"/>
+    <rect x="336.0" y="194" width="153" height="18" fill="#2088ff"/>
+    <text x="497" y="208" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">⌈85/60⌉ = 2</text>
+    <line x1="489" y1="164" x2="489" y2="216" stroke="#e3b341" stroke-dasharray="3 3"/>
+    <text x="800" y="195" fill="#f0f6fc" font-size="13" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">85 s</text>
+    <text x="890" y="195" fill="#f85149" font-size="13" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">4 min</text>
+    <rect x="24" y="234" width="912" height="86" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="40" y="282" fill="#f0f6fc" font-size="13" font-weight="600">3 shards</text>
+    <rect x="200" y="242" width="136.0" height="18" fill="#79c0ff"/>
+    <rect x="336.0" y="242" width="102" height="18" fill="#2088ff"/>
+    <text x="446" y="256" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">⌈70/60⌉ = 2</text>
+    <rect x="200" y="268" width="136.0" height="18" fill="#79c0ff"/>
+    <rect x="336.0" y="268" width="102" height="18" fill="#2088ff"/>
+    <text x="446" y="282" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">⌈70/60⌉ = 2</text>
+    <rect x="200" y="294" width="136.0" height="18" fill="#79c0ff"/>
+    <rect x="336.0" y="294" width="102" height="18" fill="#2088ff"/>
+    <text x="446" y="308" fill="#8b949e" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">⌈70/60⌉ = 2</text>
+    <line x1="438" y1="238" x2="438" y2="316" stroke="#e3b341" stroke-dasharray="3 3"/>
+    <text x="800" y="282" fill="#f0f6fc" font-size="13" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">70 s</text>
+    <text x="890" y="282" fill="#f85149" font-size="13" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">6 min</text>
+    <rect x="24" y="342" width="440" height="110" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="40" y="368" fill="#d2a8ff" font-size="14" font-weight="600">El modelo</text>
+    <text x="40" y="394" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">reloj      ≈ A + W/N</text>
+    <text x="40" y="416" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">facturable ≈ N × ⌈(A + W/N) / 60⌉</text>
+    <text x="40" y="440" fill="#8b949e" font-size="12">Cada shard más gana menos reloj y paga lo mismo de A.</text>
+    <rect x="496" y="342" width="440" height="110" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="512" y="368" fill="#e3b341" font-size="14" font-weight="600">web/ en tablero</text>
+    <text x="512" y="394" fill="#f0f6fc" font-size="12">2 archivos de test: como mucho --shard=x/2.</text>
+    <text x="512" y="416" fill="#f0f6fc" font-size="12">W pequeño frente a A: el sharding pierde.</text>
+    <text x="512" y="440" fill="#8b949e" font-size="12">Juntar informes (--merge-reports) es otro job y otro A.</text>
+  </g>
+</svg>

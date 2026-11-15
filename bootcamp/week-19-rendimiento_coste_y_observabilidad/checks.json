@@ -1,0 +1,111 @@
+{
+  "week": "19",
+  "title": "Rendimiento, coste y observabilidad",
+  "checks": [
+    {
+      "id": "no-runner-info",
+      "description": "ci.yml ya no tiene el job runner-info: solo imprimía datos del runner y costaba un job por run",
+      "cmd": "yq '[.jobs | has(\"runner-info\"), (.jobs.summary.needs | sort | join(\",\"))] | join(\" \")' .github/workflows/ci.yml",
+      "assert": "stdout~^false sql,structure,version$",
+      "hint": "2-practicas/01-medir-la-linea-base.md, paso 4"
+    },
+    {
+      "id": "changes-blobless",
+      "description": "El job changes de ci.yml clona el historial completo sin blobs (filter: blob:none)",
+      "cmd": "yq '.jobs.changes.steps[] | select(.uses // \"\" | test(\"^actions/checkout@\")) | \"depth=\" + (.with.\"fetch-depth\" | tostring) + \" filter=\" + (.with.filter // \"none\")' .github/workflows/ci.yml",
+      "assert": "stdout~^depth=0 filter=blob:none$",
+      "hint": "2-practicas/01-medir-la-linea-base.md, paso 5"
+    },
+    {
+      "id": "job-timings-script",
+      "description": "scripts/job-timings.sh calcula cola, duración y minutos facturables redondeados por job, y el reloj del run",
+      "cmd": "printf '%s' '{\"name\":\"api / Tests\",\"created_at\":\"2026-11-14T10:00:00Z\",\"started_at\":\"2026-11-14T10:00:05Z\",\"completed_at\":\"2026-11-14T10:01:35Z\"}{\"name\":\"changes\",\"created_at\":\"2026-11-14T10:00:00Z\",\"started_at\":\"2026-11-14T10:00:03Z\",\"completed_at\":\"2026-11-14T10:00:43Z\"}{\"name\":\"web\",\"created_at\":\"2026-11-14T10:00:00Z\",\"started_at\":\"2026-11-14T10:00:00Z\",\"completed_at\":\"2026-11-14T10:00:00Z\"}' | scripts/job-timings.sh | grep -E '^(Reloj|\\| (api / Tests|web|\\*\\*Total\\*\\*) )' | tr '\\n' ' '",
+      "assert": "stdout~^Reloj del run: 95 s · minutos facturables: 3 \\| api / Tests \\| 5 \\| 90 \\| 2 \\| \\| web \\| 0 \\| 0 \\| 0 \\| \\| \\*\\*Total\\*\\* \\| 8 \\| 130 \\| 3 \\| $",
+      "hint": "2-practicas/01-medir-la-linea-base.md, paso 2"
+    },
+    {
+      "id": "ci-trend-script",
+      "description": "scripts/ci-trend.sh da runs, tasa de éxito, p50 y p95, y avisa con ::warning si el p95 pasa de BUDGET",
+      "cmd": "f=$(jq -nc 'range(20) as $i | {conclusion: (if $i < 17 then \"success\" else \"failure\" end), run_started_at: \"2026-11-14T10:00:00Z\", updated_at: (1794650400 + ($i + 1) * 30 | todate)}'); a=$(printf '%s' \"$f\" | BUDGET=900 scripts/ci-trend.sh 2>&1 | tail -1); w=$(printf '%s' \"$f\" | BUDGET=500 scripts/ci-trend.sh 2>&1 >/dev/null); echo \"$a $w\"",
+      "assert": "stdout~^\\| 20 \\| 85 % \\| 300 \\| 570 \\| ::warning[^:]*::.*570.*500",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 1"
+    },
+    {
+      "id": "ci-metrics-triggers",
+      "description": "ci-metrics.yml corre al terminar ci en main, cada semana por cron y a mano",
+      "cmd": "yq '(.on | keys | sort | join(\",\")) + \" from=\" + (.on.workflow_run.workflows | join(\",\")) + \" types=\" + (.on.workflow_run.types | join(\",\")) + \" branches=\" + (.on.workflow_run.branches | join(\",\"))' .github/workflows/ci-metrics.yml",
+      "assert": "stdout~^schedule,workflow_dispatch,workflow_run from=ci types=completed branches=main$",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 2"
+    },
+    {
+      "id": "ci-metrics-read-only",
+      "description": "ci-metrics.yml tiene permissions vacío en la raíz y sus jobs solo leen Actions y el código, con timeout",
+      "cmd": "yq '\"root=\" + (.permissions | length | tostring) + \" \" + ([.jobs | to_entries[] | .key + \":\" + (.value.permissions | to_entries | map(.key + \"=\" + .value) | sort | join(\"+\")) + \":\" + (.value | has(\"timeout-minutes\") | tostring)] | join(\" \"))' .github/workflows/ci-metrics.yml",
+      "assert": "stdout~^root=0 run:actions=read\\+contents=read:true trend:actions=read\\+contents=read:true$",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 2"
+    },
+    {
+      "id": "ci-metrics-summary",
+      "description": "El job run vuelca los jobs del run medido en scripts/job-timings.sh, y el job trend los runs de ci en main en scripts/ci-trend.sh con el presupuesto de vars.CI_P95_BUDGET_SECONDS; los dos al resumen",
+      "cmd": "yq '.jobs.run.steps[-1].run as $r | .jobs.trend.steps[-1] as $t | \"run=\" + ([($r | test(\"runs/\\$RUN_ID/jobs\")), ($r | test(\"job-timings\\.sh\")), ($r | test(\"GITHUB_STEP_SUMMARY\"))] | all | tostring) + \" trend=\" + ([($t.run | test(\"workflows/ci\\.yml/runs\")), ($t.run | test(\"branch=main\")), ($t.run | test(\"ci-trend\\.sh\")), ($t.run | test(\"GITHUB_STEP_SUMMARY\"))] | all | tostring) + \" budget=\" + ($t.env.BUDGET // \"\")' .github/workflows/ci-metrics.yml",
+      "assert": "stdout~^run=true trend=true budget=\\$\\{\\{ vars\\.CI_P95_BUDGET_SECONDS \\}\\}$",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 2"
+    },
+    {
+      "id": "prune-caches-script",
+      "description": "scripts/prune-caches.sh borra solo las cachés de PR cerrados y de ramas que ya no existen, y con DRY_RUN=true no borra nada",
+      "cmd": "s=\"$PWD/scripts/prune-caches.sh\"; t=$(mktemp -d); printf '%s\\n' '#!/usr/bin/env bash' 'case \"$1 $2\" in' '\"api repos/{owner}/{repo}/branches?per_page=100\") printf \"main\\nfeat/x\\n\" ;;' '\"pr list\") echo 7 ;;' '\"cache list\") printf \"1 refs/heads/main\\n2 refs/pull/7/merge\\n3 refs/pull/8/merge\\n4 refs/heads/gh-readonly-queue/main/pr-8-abc\\n5 refs/heads/feat/x\\n6 refs/tags/v1.0.0\\n\" ;;' '\"cache delete\") echo \"$3\" >> \"${0%/gh}/deleted\" ;;' 'esac' > \"$t/gh\"; chmod +x \"$t/gh\"; PATH=\"$t:$PATH\" DRY_RUN=true \"$s\" >/dev/null && d=$(cat \"$t/deleted\" 2>/dev/null | tr '\\n' ','); PATH=\"$t:$PATH\" \"$s\" >/dev/null && r=$(tr '\\n' ',' < \"$t/deleted\"); rm -rf \"$t\"; echo \"dry=$d real=$r\"",
+      "assert": "stdout~^dry= real=3,4,$",
+      "hint": "2-practicas/04-retencion-y-limpieza.md, paso 2"
+    },
+    {
+      "id": "cleanup-workflow",
+      "description": "cleanup.yml corre cada día y a mano (con dry-run por defecto), y solo su job escribe en Actions",
+      "cmd": "yq '(.on | keys | sort | join(\",\")) + \" dry=\" + (.on.workflow_dispatch.inputs.\"dry-run\".default | tostring) + \" root=\" + (.permissions | length | tostring) + \" jobs=\" + ([.jobs[] | (.permissions.actions // \"none\") + \":\" + (has(\"timeout-minutes\") | tostring)] | join(\",\")) + \" env=\" + ([.jobs[].steps[] | select(.run // \"\" | test(\"prune-caches\\.sh\")) | .env.DRY_RUN] | join(\"\"))' .github/workflows/cleanup.yml",
+      "assert": "stdout~^schedule,workflow_dispatch dry=true root=0 jobs=write:true env=\\$\\{\\{ inputs\\.dry-run \\}\\}$",
+      "hint": "2-practicas/04-retencion-y-limpieza.md, paso 3"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "Todos los workflows pasan actionlint y zizmor sin hallazgos",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 3"
+    },
+    {
+      "id": "budget-variable",
+      "description": "La variable de repositorio CI_P95_BUDGET_SECONDS fija el presupuesto de p95 del CI en segundos",
+      "cmd": "gh variable get CI_P95_BUDGET_SECONDS",
+      "assert": "stdout~^[1-9][0-9]*$",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 4"
+    },
+    {
+      "id": "ci-metrics-ran-after-ci",
+      "description": "ci-metrics terminó en success tras el ci del último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci-metrics.yml --event workflow_run --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '[.[].conclusion] | first'",
+      "assert": "stdout~^success$",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 3"
+    },
+    {
+      "id": "ci-metrics-trend-ran",
+      "description": "La tendencia de ci-metrics corrió a mano en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow ci-metrics.yml --event workflow_dispatch --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '[.[].conclusion] | first'",
+      "assert": "stdout~^success$",
+      "hint": "2-practicas/03-metricas-del-ci.md, paso 4"
+    },
+    {
+      "id": "artifact-retention",
+      "description": "El repo guarda artefactos y logs 14 días",
+      "cmd": "gh api repos/{owner}/{repo}/actions/permissions/artifact-and-log-retention --jq .days",
+      "assert": "stdout~^14$",
+      "hint": "2-practicas/04-retencion-y-limpieza.md, paso 1"
+    },
+    {
+      "id": "cleanup-ran",
+      "description": "cleanup terminó en success sobre el último commit de main",
+      "cmd": "git fetch -q origin main && gh run list --workflow cleanup.yml --commit \"$(git rev-parse origin/main)\" --json conclusion --jq '[.[].conclusion] | first'",
+      "assert": "stdout~^success$",
+      "hint": "2-practicas/04-retencion-y-limpieza.md, paso 4"
+    }
+  ]
+}

@@ -298,6 +298,18 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
 - **El ruleset en un archivo que puedes versionar**: `gh api repos/{owner}/{repo}/rulesets/<id> --jq '{name, target, enforcement, conditions, bypass_actors, rules}' | yq -P`
   saca el que hiciste en la UI con la forma que acepta el `PUT`.
 
+## Semana 19 — [Rendimiento, coste y observabilidad](../bootcamp/week-19-rendimiento_coste_y_observabilidad/README.md)
+
+- **El reloj de un run sin abrir la UI**: `gh api repos/{owner}/{repo}/actions/runs/<id>/timing --jq .run_duration_ms`.
+  En un repo privado, el mismo endpoint trae `billable` con los milisegundos facturables de cada
+  job y sistema operativo.
+- **Las cachés que más ocupan**: `gh cache list --sort size_in_bytes --limit 5 --json key,ref,sizeInBytes`.
+  Si arriba sale una de `refs/pull/…/merge`, esa caché solo la puede usar ese PR.
+- **Cuánto ocupa la caché del repo entero**: `gh api repos/{owner}/{repo}/actions/cache/usage --jq '"\(.active_caches_count) cachés, \(.active_caches_size_in_bytes / 1048576 | floor) MiB"'`.
+- **Borrar de un golpe las cachés de un PR cerrado**: `gh cache delete --all --ref refs/pull/42/merge --succeed-on-no-caches`.
+  Sin `--succeed-on-no-caches`, un PR sin cachés hace fallar el script.
+- **Duración de cada job de un run en una línea**: `gh run view <id> --json jobs --jq '.jobs[] | "\(.name): \((.completedAt | fromdate) - (.startedAt | fromdate)) s"'`.
+
 ---
 
 | ← Anterior | Siguiente → |
