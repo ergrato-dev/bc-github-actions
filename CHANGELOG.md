@@ -27,6 +27,8 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - `bootcamp/week-17-despliegue_continuo_a_kubernetes/`: Semana 17, despliegue continuo a Kubernetes
 - `bootcamp/week-18-merge_queue_rulesets_y_monorepos/`: Semana 18, merge queue, rulesets y monorepos
 - `bootcamp/week-19-rendimiento_coste_y_observabilidad/`: Semana 19, rendimiento, coste y observabilidad
+- `bootcamp/week-20-capstone/`: Semana 20, capstone: `worker/` integrado solo con reutilizables, auditoría propia en el CI, repo central v1.1.0, defensa del pipeline y simulacro tipo GH-200
+- `app/worker/`: purga programada de las tareas hechas antiguas, con uv, tests unitarios y de integración e imagen sin root
 - `app/tools/oidc-verifier/`: verificador del token OIDC de GitHub Actions (PyJWT, uv), que usa la Semana 13
 - `bootcamp/week-09-workflows_reutilizables/`: Semana 09, workflows reutilizables
 - `bootcamp/week-08-probar_y_depurar_workflows/`: Semana 08, probar y depurar workflows

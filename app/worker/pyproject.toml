@@ -1,0 +1,36 @@
+[project]
+name = "tablero-worker"
+version = "1.0.0"
+description = "Tareas programadas de tablero: purga las tareas hechas más antiguas que la retención"
+requires-python = ">=3.15"
+dependencies = [
+    "psycopg[binary]>=3.3.6",
+]
+
+[project.scripts]
+tablero-worker = "tablero_worker.purge:main"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.3",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: necesita PostgreSQL en DATABASE_URL"]
+
+[tool.coverage.run]
+# migrate.py solo prepara el esquema de la API para los tests de integración, y allí corre entero.
+omit = ["*/tablero_worker/migrate.py"]

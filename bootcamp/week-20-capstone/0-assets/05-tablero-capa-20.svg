@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 980" role="img" aria-labelledby="t20">
+  <title id="t20">Mapa del pipeline de tablero en la capa 20, la última. Arriba, la regla de todos los workflows desde la capa 12: permissions vacío en la raíz, permisos por job y ninguna expresión dentro de run. A la izquierda, lo que ya existía y sigue igual: nightly, labeler y codeql, dependency-review, lab.yml en tablero-runners, deploy.yml, pr-report, ci-metrics y cleanup, los reutilizables de área y el ruleset de main con ci-gate y merge queue. A la derecha, lo que cambia o llega en la capa 20. En ci.yml, changes gana el área worker, que se activa con worker/ o api/migrations/, el job worker llama a ci-worker.yml y ci-gate lo espera; structure comprueba worker/uv.lock. ci-worker.yml no tiene steps: solo llama a _python.yml del repo central con integración. images.yml y release.yml construyen, publican, escanean y firman tablero-worker con la matriz api, web y worker. lint-workflows.yml gana el job policy, que pasa scripts/audit-workflows.sh. Piezas nuevas del repo: worker/ con su Dockerfile por digest, scripts/audit-workflows.sh con seis reglas y docs/pipeline.md con cinco secciones. Configuración: actions-tablero v1.1.0 corrige tres hallazgos y todas las referencias de tablero apuntan a su commit; Dependabot vigila uv y docker en /worker; deploy.yml no cambia y el worker no se despliega, un riesgo aceptado. Abajo, el cierre: a partir de aquí el pipeline es tuyo.</title>
+  <rect width="960" height="980" fill="#0d1117"/>
+  <defs>
+    <marker id="a20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="36" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">tablero · capa 20</text>
+
+    <!-- regla común -->
+    <rect x="30" y="58" width="900" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="85" fill="#3fb950" font-size="12" font-weight="600">en todos los workflows</text>
+    <text x="210" y="85" fill="#f0f6fc" font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">permissions: {} en la raíz · permisos por job · nada de ${{ }} en run:</text>
+
+    <text x="30" y="134" fill="#f0f6fc" font-size="14" font-weight="600">Ya existían</text>
+    <text x="930" y="134" fill="#2088ff" font-size="14" font-weight="600" text-anchor="end">Capa 20 · integrar, auditar y defender</text>
+
+    <!-- existentes -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="146" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="169" fill="#f0f6fc" font-size="12" font-weight="600">nightly</text>
+      <text x="304" y="169" fill="#8b949e" text-anchor="end">ci-api · ci-web · smoke</text>
+
+      <rect x="30" y="190" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="213" fill="#f0f6fc" font-size="12" font-weight="600">labeler · codeql</text>
+
+      <rect x="30" y="234" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="257" fill="#f0f6fc" font-size="12" font-weight="600">dependency-review.yml</text>
+
+      <rect x="30" y="278" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="301" fill="#f0f6fc" font-size="12" font-weight="600">lab.yml</text>
+      <text x="304" y="301" fill="#3fb950" text-anchor="end">runs-on: tablero-runners</text>
+
+      <rect x="30" y="322" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="345" fill="#f0f6fc" font-size="12" font-weight="600">deploy.yml</text>
+      <text x="304" y="345" fill="#8b949e" text-anchor="end">staging → production</text>
+
+      <rect x="30" y="366" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="389" fill="#f0f6fc" font-size="12" font-weight="600">pr-report</text>
+      <text x="304" y="389" fill="#8b949e" text-anchor="end">workflow_run: [ci]</text>
+
+      <rect x="30" y="410" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="433" fill="#f0f6fc" font-size="12" font-weight="600">ci-metrics · cleanup</text>
+      <text x="304" y="433" fill="#8b949e" text-anchor="end">Semana 19</text>
+
+      <rect x="30" y="454" width="290" height="36" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="477" fill="#f0f6fc" font-size="12" font-weight="600">reutilizables de área</text>
+      <text x="304" y="477" fill="#8b949e" text-anchor="end">workflow_call</text>
+
+      <rect x="30" y="498" width="290" height="64" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="521" fill="#f0f6fc" font-size="12" font-weight="600">ruleset main</text>
+      <text x="304" y="521" fill="#8b949e" text-anchor="end">Semana 18</text>
+      <text x="46" y="543" fill="#8b949e">ci-gate · merge queue</text>
+    </g>
+
+    <!-- ci.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="146" width="580" height="150" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="170" fill="#2088ff" font-size="13" font-weight="600">ci.yml</text>
+      <text x="914" y="170" fill="#79c0ff" text-anchor="end">push main · pull_request · merge_group · dispatch</text>
+
+      <rect x="366" y="184" width="176" height="98" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="378" y="204" fill="#f0f6fc" font-size="12" font-weight="600">changes</text>
+      <text x="378" y="226" fill="#3fb950" font-weight="600">worker=</text>
+      <text x="378" y="244" fill="#79c0ff">worker/ o</text>
+      <text x="378" y="262" fill="#79c0ff">api/migrations/</text>
+
+      <rect x="556" y="184" width="176" height="98" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="568" y="204" fill="#e3b341">if: worker == 'true'</text>
+      <text x="568" y="226" fill="#3fb950" font-weight="600">job worker</text>
+      <text x="568" y="244" fill="#f0f6fc">→ ci-worker.yml</text>
+      <text x="568" y="270" fill="#8b949e">+ api · web · tools…</text>
+
+      <rect x="746" y="184" width="168" height="98" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="758" y="204" fill="#3fb950" font-size="12" font-weight="600">ci-gate</text>
+      <text x="758" y="226" fill="#f0f6fc">needs: +worker</text>
+      <text x="758" y="252" fill="#f0f6fc">structure:</text>
+      <text x="758" y="270" fill="#f0f6fc">+worker/uv.lock</text>
+    </g>
+    <path d="M542 233 L552 233" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a20)"/>
+    <path d="M732 233 L742 233" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a20)"/>
+
+    <!-- ci-worker.yml -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="308" width="580" height="84" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="332" fill="#2088ff" font-size="13" font-weight="600">ci-worker.yml</text>
+      <text x="914" y="332" fill="#3fb950" text-anchor="end">sin runs-on · sin steps</text>
+      <text x="366" y="356" fill="#d2a8ff">uses: &lt;tu-org&gt;/actions-tablero/…/_python.yml@&lt;sha-de-v1.1.0&gt;</text>
+      <text x="366" y="376" fill="#f0f6fc">worker · tablero_worker · coverage-min 60 · integration</text>
+    </g>
+
+    <!-- images y release -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="404" width="580" height="84" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="428" fill="#2088ff" font-size="13" font-weight="600">images.yml · release.yml</text>
+      <text x="914" y="428" fill="#79c0ff" text-anchor="end">paths: worker/**</text>
+      <text x="366" y="452" fill="#f0f6fc">images: job worker → _image.yml · summary con 3 digests</text>
+      <text x="366" y="472" fill="#3fb950">release: [api, web, worker] → Trivy · SBOM · attest ×2</text>
+    </g>
+
+    <!-- lint-workflows policy -->
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="350" y="500" width="580" height="62" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="366" y="524" fill="#2088ff" font-size="13" font-weight="600">lint-workflows.yml · job policy</text>
+      <text x="914" y="524" fill="#d2a8ff" text-anchor="end">contents: read</text>
+      <text x="366" y="546" fill="#f0f6fc">actionlint · zizmor · </text>
+      <text x="516" y="546" fill="#3fb950" font-weight="600">scripts/audit-workflows.sh</text>
+    </g>
+
+    <!-- piezas del repo -->
+    <text x="30" y="600" fill="#f0f6fc" font-size="14" font-weight="600">Piezas nuevas del repo</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="612" width="290" height="96" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="636" fill="#2088ff" font-size="13" font-weight="600">worker/</text>
+      <text x="46" y="658" fill="#f0f6fc">purga tareas done</text>
+      <text x="46" y="676" fill="#79c0ff">RETENTION_DAYS (30)</text>
+      <text x="46" y="694" fill="#3fb950">FROM y COPY --from por digest</text>
+
+      <rect x="340" y="612" width="290" height="96" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="356" y="636" fill="#2088ff" font-size="13" font-weight="600">scripts/audit-workflows.sh</text>
+      <text x="356" y="658" fill="#f0f6fc">permissions-root · write-all</text>
+      <text x="356" y="676" fill="#f0f6fc">timeout · runner-latest</text>
+      <text x="356" y="694" fill="#f0f6fc">unpinned-uses · image-digest</text>
+
+      <rect x="650" y="612" width="280" height="96" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="666" y="636" fill="#2088ff" font-size="13" font-weight="600">docs/pipeline.md</text>
+      <text x="666" y="658" fill="#f0f6fc">mapa · amenazas · decisiones</text>
+      <text x="666" y="676" fill="#f0f6fc">riesgos aceptados</text>
+      <text x="666" y="694" fill="#79c0ff">evidencias: ≥3 runs</text>
+    </g>
+
+    <!-- configuración -->
+    <text x="30" y="744" fill="#d2a8ff" font-size="14" font-weight="600">Configuración y repo central</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="30" y="756" width="290" height="96" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="46" y="780" fill="#d2a8ff" font-size="13" font-weight="600">actions-tablero v1.1.0</text>
+      <text x="46" y="802" fill="#f0f6fc">3 hallazgos corregidos</text>
+      <text x="46" y="820" fill="#f0f6fc">release inmutable</text>
+      <text x="46" y="838" fill="#3fb950">todo tablero al mismo SHA</text>
+
+      <rect x="340" y="756" width="290" height="96" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="356" y="780" fill="#d2a8ff" font-size="13" font-weight="600">dependabot.yml</text>
+      <text x="356" y="802" fill="#f0f6fc">/worker en uv</text>
+      <text x="356" y="820" fill="#f0f6fc">/worker en docker</text>
+      <text x="356" y="838" fill="#8b949e">services: a mano</text>
+
+      <rect x="650" y="756" width="280" height="96" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="666" y="780" fill="#8b949e" font-size="13" font-weight="600">deploy.yml sin cambios</text>
+      <text x="666" y="802" fill="#8b949e">el worker no se despliega</text>
+      <text x="666" y="820" fill="#e3b341">riesgo aceptado</text>
+      <text x="666" y="838" fill="#8b949e">cierre: CronJob en deploy/k8s</text>
+    </g>
+
+    <!-- cierre -->
+    <g font-size="12" fill="#8b949e">
+      <rect x="30" y="872" width="900" height="40" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="46" y="897"><tspan font-weight="600">Fin del bootcamp</tspan> · lo que queda abierto está en "Riesgos aceptados"; a partir de aquí, el pipeline es tuyo</text>
+    </g>
+    <text x="480" y="944" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows y piezas nuevas o ampliadas. Verde: lo fijado, verificado o seguro por defecto. Morado: permisos, repo central y configuración.</text>
+    <text x="480" y="960" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: condiciones y riesgos aceptados. Gris discontinuo: lo que la capa deja fuera a propósito.</text>
+  </g>
+</svg>

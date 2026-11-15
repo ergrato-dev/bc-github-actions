@@ -10,3 +10,7 @@ tools/oidc-verifier/.venv/
 tools/oidc-verifier/.coverage
 tools/oidc-verifier/.pytest_cache/
 tools/oidc-verifier/.ruff_cache/
+worker/.venv/
+worker/.coverage
+worker/.pytest_cache/
+worker/.ruff_cache/

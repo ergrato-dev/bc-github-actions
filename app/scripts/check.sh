@@ -2,7 +2,7 @@
 #
 # check.sh — lo que tiene que pasar para que tablero esté sano:
 #   1. API: dependencias exactas, lint, formato y tests unitarios
-#      (y lo mismo para tools/oidc-verifier)
+#      (y lo mismo para tools/oidc-verifier y worker)
 #   2. Web: dependencias exactas, lint, tests y build
 #   3. Todo junto: imágenes construidas, compose levantado y smoke test
 #
@@ -28,6 +28,15 @@ echo "== 1. API =="
 echo "== 1b. tools/oidc-verifier =="
 (
   cd tools/oidc-verifier
+  uv sync --locked
+  uv run --no-sync ruff check .
+  uv run --no-sync ruff format --check .
+  uv run --no-sync pytest tests/unit -q
+)
+
+echo "== 1c. worker =="
+(
+  cd worker
   uv sync --locked
   uv run --no-sync ruff check .
   uv run --no-sync ruff format --check .

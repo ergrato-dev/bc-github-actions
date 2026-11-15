@@ -1,0 +1,16 @@
+# Copia en <tu-org>/tablero como .github/workflows/ci-worker.yml.
+# CI del worker sin jobs propios: lint, tests unitarios e integración los pone el reutilizable
+# de Python del repo central, el mismo que ya usan ci-api.yml y ci-tools.yml.
+name: ci-worker
+on:
+  # TODO 1: que lo pueda llamar ci.yml como reutilizable, además de lanzarlo a mano.
+  workflow_dispatch:
+permissions: {}
+jobs:
+  worker:
+    name: Worker
+    # TODO 2: pásale con with: el directorio worker, el paquete tablero_worker, cobertura
+    # mínima 60 e integración contra PostgreSQL.
+    uses: <tu-org>/actions-tablero/.github/workflows/_python.yml@<sha-de-v1.0.0> # v1.0.0
+    permissions:
+      contents: read

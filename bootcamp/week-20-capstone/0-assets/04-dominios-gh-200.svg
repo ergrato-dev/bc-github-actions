@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="t04">
+  <title id="t04">Los cinco dominios del examen GH-200 según la guía vigente de enero de 2026, con su peso y las semanas del bootcamp que cubren cada uno. D1, Author and manage workflows, 20-25 %: semanas 01, 02, 03, 04, 05, 06, 07, 08, 09, 17, 18, 20. D2, Consume and troubleshoot workflows, 15-20 %: semanas 01, 04, 06, 08, 09, 12, 13, 14, 17, 19, 20. D3, Author and maintain actions, 15-20 %: semanas 10, 11, 12, 20. D4, Manage GitHub Actions for the enterprise, 20-25 %: semanas 01, 11, 12, 13, 14, 15, 16, 18, 19, 20. D5, Secure and optimize automation, 10-15 %: semanas 03, 04, 11, 12, 13, 14, 17, 18, 19, 20. La semana 20 repasa los cinco. Las fases del bootcamp aparecen como bandas sobre las columnas de semanas.</title>
+  <rect width="960" height="470" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">GH-200: cinco dominios y dónde los practicaste</text>
+    <text x="480" y="56" fill="#8b949e" font-size="12" text-anchor="middle">Guía "Skills measured as of January 2026" · aprobado con 700 sobre 1000</text>
+    <rect x="330" y="76" width="113" height="20" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="386.5" y="90" fill="#8b949e" font-size="10" text-anchor="middle">Fundamentos</text>
+    <rect x="446" y="76" width="113" height="20" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="502.5" y="90" fill="#8b949e" font-size="10" text-anchor="middle">Integración</text>
+    <rect x="562" y="76" width="84" height="20" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="604.0" y="90" fill="#8b949e" font-size="10" text-anchor="middle">Reutilización</text>
+    <rect x="649" y="76" width="84" height="20" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="691.0" y="90" fill="#8b949e" font-size="10" text-anchor="middle">Seguridad</text>
+    <rect x="736" y="76" width="84" height="20" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="778.0" y="90" fill="#8b949e" font-size="10" text-anchor="middle">Runners</text>
+    <rect x="823" y="76" width="84" height="20" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="865.0" y="90" fill="#8b949e" font-size="10" text-anchor="middle">Escala</text>
+    <text x="343" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">01</text>
+    <text x="372" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">02</text>
+    <text x="401" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">03</text>
+    <text x="430" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">04</text>
+    <text x="459" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">05</text>
+    <text x="488" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">06</text>
+    <text x="517" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">07</text>
+    <text x="546" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">08</text>
+    <text x="575" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">09</text>
+    <text x="604" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">10</text>
+    <text x="633" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">11</text>
+    <text x="662" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">12</text>
+    <text x="691" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">13</text>
+    <text x="720" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">14</text>
+    <text x="749" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">15</text>
+    <text x="778" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">16</text>
+    <text x="807" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">17</text>
+    <text x="836" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">18</text>
+    <text x="865" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">19</text>
+    <text x="894" y="118" fill="#f0f6fc" font-size="11" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">20</text>
+    <rect x="30" y="132" width="900" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="44" y="152" fill="#2088ff" font-size="13" font-weight="600">D1 · 20-25 %</text>
+    <text x="44" y="169" fill="#f0f6fc" font-size="11">Author and manage workflows</text>
+    <rect x="330" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="359" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="388" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="417" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="446" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="475" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="504" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="533" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="562" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="591" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="620" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="649" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="678" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="707" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="736" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="765" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="794" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="823" y="143" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="852" y="143" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="881" y="143" width="25" height="24" rx="4" fill="#d2a8ff"/>
+    <rect x="30" y="188" width="900" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="44" y="208" fill="#2088ff" font-size="13" font-weight="600">D2 · 15-20 %</text>
+    <text x="44" y="225" fill="#f0f6fc" font-size="11">Consume and troubleshoot workflows</text>
+    <rect x="330" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="359" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="388" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="417" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="446" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="475" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="504" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="533" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="562" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="591" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="620" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="649" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="678" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="707" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="736" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="765" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="794" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="823" y="199" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="852" y="199" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="881" y="199" width="25" height="24" rx="4" fill="#d2a8ff"/>
+    <rect x="30" y="244" width="900" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="44" y="264" fill="#2088ff" font-size="13" font-weight="600">D3 · 15-20 %</text>
+    <text x="44" y="281" fill="#f0f6fc" font-size="11">Author and maintain actions</text>
+    <rect x="330" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="359" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="388" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="417" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="446" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="475" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="504" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="533" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="562" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="591" y="255" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="620" y="255" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="649" y="255" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="678" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="707" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="736" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="765" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="794" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="823" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="852" y="255" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="881" y="255" width="25" height="24" rx="4" fill="#d2a8ff"/>
+    <rect x="30" y="300" width="900" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="44" y="320" fill="#2088ff" font-size="13" font-weight="600">D4 · 20-25 %</text>
+    <text x="44" y="337" fill="#f0f6fc" font-size="11">Manage GitHub Actions for the enterprise</text>
+    <rect x="330" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="359" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="388" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="417" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="446" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="475" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="504" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="533" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="562" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="591" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="620" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="649" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="678" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="707" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="736" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="765" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="794" y="311" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="823" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="852" y="311" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="881" y="311" width="25" height="24" rx="4" fill="#d2a8ff"/>
+    <rect x="30" y="356" width="900" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="44" y="376" fill="#2088ff" font-size="13" font-weight="600">D5 · 10-15 %</text>
+    <text x="44" y="393" fill="#f0f6fc" font-size="11">Secure and optimize automation</text>
+    <rect x="330" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="359" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="388" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="417" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="446" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="475" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="504" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="533" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="562" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="591" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="620" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="649" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="678" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="707" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="736" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="765" y="367" width="25" height="24" rx="4" fill="#0d1117" stroke="#30363d"/>
+    <rect x="794" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="823" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="852" y="367" width="25" height="24" rx="4" fill="#3fb950"/>
+    <rect x="881" y="367" width="25" height="24" rx="4" fill="#d2a8ff"/>
+    <rect x="30" y="420" width="14" height="14" rx="3" fill="#3fb950"/>
+    <text x="52" y="432" fill="#8b949e" font-size="12">la semana introduce algo de ese dominio</text>
+    <rect x="330" y="420" width="14" height="14" rx="3" fill="#d2a8ff"/>
+    <text x="352" y="432" fill="#8b949e" font-size="12">semana 20: repaso de los cinco y temas que faltaban</text>
+    <text x="480" y="456" fill="#8b949e" font-size="11" text-anchor="middle">Fuente: columna GH-200 de docs/mapa-funcionalidades.md. D3 es el dominio con menos semanas detrás.</text>
+  </g>
+</svg>

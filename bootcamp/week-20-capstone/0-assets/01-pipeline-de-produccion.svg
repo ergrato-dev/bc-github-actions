@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 760" role="img" aria-labelledby="t01">
+  <title id="t01">Camino de un cambio en tablero, de un pull request a producción, con los siete criterios de un pipeline de producción. Primera fila: el pull request dispara ci.yml, donde changes decide las áreas, cada área llama a su reutilizable del repo central fijado por SHA y ci-gate, el único check requerido, las espera a todas; en paralelo corren images sin publicar, dependency-review, labeler y pr-report. Segunda fila: la merge queue vuelve a correr ci.yml con merge_group y fusiona en main, donde images publica por SHA y ci-metrics mide el run. Tercera fila: el PR de release-please se fusiona y release.yml publica cada imagen por versión en una matriz api, web y worker, con Trivy, SBOM de syft y dos attestations firmadas. Cuarta fila: deploy.yml verifica las attestations y despliega por digest con Helm a staging y, tras aprobación, a production, en runners efímeros de ARC con un token OIDC que verifica el apiserver; si falla, rollback. Abajo, la leyenda de los siete criterios: una sola puerta, privilegio mínimo, todo fijado, reutilización versionada, artefactos firmados, despliegue verificado y reversible, observable.</title>
+  <rect width="960" height="760" fill="#0d1117"/>
+  <defs>
+    <marker id="a01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">De un pull request a producción</text>
+
+    <!-- fila 1: PR -->
+    <text x="30" y="70" fill="#8b949e" font-size="12" font-weight="600">1 · PULL REQUEST</text>
+    <rect x="30" y="80" width="120" height="120" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+    <text x="90" y="134" fill="#79c0ff" font-size="13" font-weight="600" text-anchor="middle">pull_request</text>
+    <text x="90" y="154" fill="#8b949e" font-size="11" text-anchor="middle">rama → main</text>
+
+    <rect x="170" y="80" width="500" height="120" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="186" y="102" fill="#2088ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">ci.yml</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="186" y="114" width="130" height="74" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="198" y="136" fill="#f0f6fc" font-size="12" font-weight="600">changes</text>
+      <text x="198" y="156" fill="#8b949e">changed-areas.sh</text>
+      <text x="198" y="174" fill="#8b949e">contra la base</text>
+
+      <rect x="336" y="114" width="170" height="74" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="348" y="136" fill="#f0f6fc" font-size="12" font-weight="600">áreas</text>
+      <text x="348" y="156" fill="#f0f6fc">api · web · tools</text>
+      <text x="348" y="174" fill="#f0f6fc">worker · smoke · …</text>
+
+      <rect x="526" y="114" width="130" height="74" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="538" y="136" fill="#3fb950" font-size="12" font-weight="600">ci-gate</text>
+      <text x="538" y="156" fill="#8b949e">if: always()</text>
+      <text x="538" y="174" fill="#8b949e">único check</text>
+    </g>
+    <path d="M150 140 L166 140" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M316 151 L332 151" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M506 151 L522 151" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+
+    <rect x="690" y="80" width="240" height="120" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="706" y="102" fill="#f0f6fc" font-size="12" font-weight="600">en paralelo</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11" fill="#8b949e">
+      <text x="706" y="126">images: build sin push</text>
+      <text x="706" y="146">dependency-review</text>
+      <text x="706" y="166">labeler · pr-report</text>
+      <text x="706" y="186">codeql</text>
+    </g>
+
+    <!-- fila 2: merge queue y main -->
+    <text x="30" y="236" fill="#8b949e" font-size="12" font-weight="600">2 · MERGE QUEUE Y MAIN</text>
+    <rect x="30" y="246" width="420" height="80" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="46" y="272" fill="#e3b341" font-size="13" font-weight="600">merge queue</text>
+    <text x="46" y="294" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">merge_group → ci.yml otra vez</text>
+    <text x="46" y="312" fill="#8b949e" font-size="11">sobre lo que quedará en main</text>
+
+    <rect x="490" y="246" width="440" height="80" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="506" y="272" fill="#2088ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">push a main</text>
+    <text x="506" y="294" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">images: publica por SHA en GHCR</text>
+    <text x="506" y="312" fill="#f0f6fc" font-size="11" font-family="ui-monospace, Menlo, Consolas, monospace">ci-metrics: tiempos del run de ci</text>
+    <path d="M590 200 L590 214 L240 214 L240 242" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M450 286 L486 286" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+
+    <!-- fila 3: release -->
+    <text x="30" y="364" fill="#8b949e" font-size="12" font-weight="600">3 · RELEASE</text>
+    <rect x="30" y="374" width="240" height="92" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="400" fill="#2088ff" font-size="13" font-weight="600">release-please</text>
+    <text x="46" y="422" fill="#f0f6fc" font-size="11">PR de release con la</text>
+    <text x="46" y="440" fill="#f0f6fc" font-size="11">App tablero-release</text>
+    <text x="46" y="456" fill="#8b949e" font-size="11">entra por la cola</text>
+
+    <rect x="290" y="374" width="640" height="92" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="306" y="400" fill="#2088ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">release.yml · matriz [api, web, worker]</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="306" y="412" width="140" height="42" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="376" y="438" fill="#f0f6fc" text-anchor="middle">push :versión</text>
+      <rect x="462" y="412" width="140" height="42" rx="6" fill="#0d1117" stroke="#f85149"/>
+      <text x="532" y="438" fill="#f0f6fc" text-anchor="middle">Trivy CRITICAL</text>
+      <rect x="618" y="412" width="140" height="42" rx="6" fill="#0d1117" stroke="#30363d"/>
+      <text x="688" y="438" fill="#f0f6fc" text-anchor="middle">SBOM con syft</text>
+      <rect x="774" y="412" width="140" height="42" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="844" y="438" fill="#3fb950" text-anchor="middle">attest ×2</text>
+    </g>
+    <path d="M270 420 L286 420" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M710 326 L710 346 L150 346 L150 370" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+
+    <!-- fila 4: despliegue -->
+    <text x="30" y="504" fill="#8b949e" font-size="12" font-weight="600">4 · DESPLIEGUE</text>
+    <rect x="30" y="514" width="900" height="110" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="538" fill="#2088ff" font-size="13" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">deploy.yml</text>
+    <text x="914" y="538" fill="#d2a8ff" font-size="11" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">id-token: write · OIDC verificado por el apiserver</text>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <rect x="46" y="552" width="200" height="58" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="58" y="574" fill="#3fb950" font-size="12" font-weight="600">verify</text>
+      <text x="58" y="596" fill="#8b949e">attestations → digest</text>
+
+      <rect x="270" y="552" width="190" height="58" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="282" y="574" fill="#f0f6fc" font-size="12" font-weight="600">staging</text>
+      <text x="282" y="596" fill="#8b949e">Helm por digest</text>
+
+      <rect x="484" y="552" width="180" height="58" rx="6" fill="#0d1117" stroke="#e3b341" stroke-width="2"/>
+      <text x="496" y="574" fill="#e3b341" font-size="12" font-weight="600">aprobación</text>
+      <text x="496" y="596" fill="#8b949e">revisor obligatorio</text>
+
+      <rect x="688" y="552" width="226" height="58" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="700" y="574" fill="#f0f6fc" font-size="12" font-weight="600">production</text>
+      <text x="700" y="596" fill="#f85149">si falla: rollback</text>
+    </g>
+    <path d="M246 581 L266 581" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M460 581 L480 581" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M664 581 L684 581" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <path d="M844 466 L844 492 L480 492 L480 510" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a01)"/>
+    <text x="490" y="488" fill="#8b949e" font-size="11">el job deploy de release.yml lo lanza · runners tablero-runners de ARC</text>
+
+    <!-- criterios -->
+    <text x="30" y="660" fill="#f0f6fc" font-size="14" font-weight="600">Los siete criterios</text>
+    <g font-size="12">
+      <text x="30" y="686" fill="#3fb950">1 una sola puerta</text>
+      <text x="200" y="686" fill="#d2a8ff">2 privilegio mínimo</text>
+      <text x="380" y="686" fill="#3fb950">3 todo fijado</text>
+      <text x="520" y="686" fill="#2088ff">4 reutilización versionada</text>
+      <text x="740" y="686" fill="#3fb950">5 artefactos firmados</text>
+      <text x="30" y="710" fill="#e3b341">6 despliegue verificado y reversible</text>
+      <text x="320" y="710" fill="#79c0ff">7 observable: ci-metrics, cleanup y retención</text>
+    </g>
+    <text x="480" y="744" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows. Verde: puerta, verificación y firma. Amarillo: espera o aprobación. Rojo: lo que rompe o revierte. Morado: identidad y permisos.</text>
+  </g>
+</svg>

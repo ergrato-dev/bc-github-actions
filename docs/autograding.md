@@ -169,6 +169,10 @@ lo que cuenta es la semana en curso.
 | `lint-green-on-main`, `callers-green-on-main`, `test-actions-green-on-main` y `green-on-main` | 08, 09, 10, 11 y 12 | 18 | `ci-api`, `ci-web` y `lint-workflows` ya no tienen runs propios: corren dentro del run de `ci`, que la S18 comprueba con `merged-through-queue` |
 | `pr-report-safe` | 12 | 18 | `pr-report.yml` escucha a `ci` en vez de a `ci-web` |
 | `release-please-permissions` | 14 | 18 | El job `release-please` deja `GITHUB_TOKEN` sin permisos: escribe con el token de la GitHub App |
+| `images-paths` y `images-digests-summary` | 07 y 09 | 20 | `images.yml` construye también `tablero-worker`: `worker/**` en `paths` y un tercer digest en el resumen |
+| `images-versioned` | 14 | 20 | La matriz de `release.yml` pasa a `api,web,worker` |
+| `dependabot-runner-image` | 15 | 20 | El ecosistema `docker` vigila también `/worker` |
+| `changed-areas-script`, `ci-changes-job`, `areas-called-by-changes` y `ci-gate-needs-all` | 18 | 20 | `scripts/changed-areas.sh` y `ci.yml` ganan el área `worker`, y `ci-gate` la espera |
 
 ## Permisos de `gh` por semana
 

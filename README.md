@@ -92,7 +92,7 @@ Equipo: Linux o WSL2 con Docker, **8 GB de RAM** (16 GB recomendados desde la Se
 | [17](bootcamp/week-17-despliegue_continuo_a_kubernetes/README.md) | Despliegue continuo a Kubernetes |
 | [18](bootcamp/week-18-merge_queue_rulesets_y_monorepos/README.md) | Merge queue, rulesets y monorepos |
 | [19](bootcamp/week-19-rendimiento_coste_y_observabilidad/README.md) | Rendimiento, coste y observabilidad |
-| 20 | Capstone: un pipeline de producción defendido |
+| [20](bootcamp/week-20-capstone/README.md) | Capstone: un pipeline de producción defendido |
 
 Estado de publicación de cada semana: [`bootcamp/README.md`](bootcamp/README.md). Qué funcionalidad de Actions introduce cada semana: [`docs/mapa-funcionalidades.md`](docs/mapa-funcionalidades.md).
 

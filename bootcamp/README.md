@@ -59,7 +59,7 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 |:--:|---|:--:|
 | [18](week-18-merge_queue_rulesets_y_monorepos/README.md) | Merge queue, rulesets y monorepos | ✅ |
 | [19](week-19-rendimiento_coste_y_observabilidad/README.md) | Rendimiento, coste y observabilidad | ✅ |
-| 20 | Capstone: un pipeline de producción defendido | ⬜ |
+| [20](week-20-capstone/README.md) | Capstone: un pipeline de producción defendido | ✅ |
 
 ---
 

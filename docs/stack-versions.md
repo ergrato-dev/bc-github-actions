@@ -114,7 +114,11 @@ nuevo, en la tanda que escribe la semana que la usa.
 | Merge queue y revisores de environment en una org gratuita con repo público | 13, 18 | Merge queue: disponible en todo repo público de una organización (docs de merge queue, 2026-11-14). Rulesets de repositorio: disponibles en repos públicos de GitHub Free for organizations; los de organización piden Team y `evaluate`, Enterprise. Revisores de environment: ver `decision-laboratorio.md` |
 | Referencia `$/` (runner 2.336.0 o superior) y su soporte en actionlint | 11 | Changelog de GitHub del 2026-07-30. actionlint 1.7.12 la rechaza (rhysd/actionlint#711, abierto el 2026-11-03): el repo central la tolera con `.github/actionlint.yaml` |
 | Configuración OIDC del apiserver (`AuthenticationConfiguration` `apiserver.config.k8s.io/v1`) en el nodo de kind v1.37.0 | 17 | Probado el 2026-11-14: `--authentication-config` por `kubeadmConfigPatches`, recarga en caliente al cambiar el archivo y hash SHA-256 del archivo cargado en `apiserver_authentication_config_controller_last_config_info` de `/metrics`. El token OIDC de GitHub vive 5 minutos (`iat` → `exp` del ejemplo de la documentación): `deploy.yml` lo pide con un plugin `exec` que declara su caducidad |
-| Dominios vigentes del examen GH-200 | 20 | `mapa-funcionalidades.md` |
+| Dominios vigentes del examen GH-200 | 20 | Guía de estudio de Microsoft Learn, "Skills measured as of January 2026" (comprobada el 2026-11-14): cinco dominios, con pesos en `mapa-funcionalidades.md`. Aprobado con 700 sobre 1000 |
+| Anclas y alias de YAML en workflows | 20 | Changelog de GitHub del 2025-09-18 y docs de reutilización de configuración (2026-11-14): `&` y `*` sí; la clave de fusión `<<` no, y actionlint 1.7.12 la rechaza (`GitHub Actions does not support YAML merge key "<<"`) |
+| Immutable actions (actions publicadas como paquetes OCI en GHCR) | 20 | `actions/publish-immutable-action` sigue marcada "not ready for public use" (roadmap #592, último push 2025-08-08; comprobado 2026-11-14). Lo que hay hoy: releases inmutables (S11) y fijar por SHA |
+| Etiquetas de runners alojados | 20 | Changelog 2026-05-14: `windows-latest` pasa a Visual Studio 2026 (junio de 2026) y `macos-latest` a macOS 26 (desde el 2026-06-15). Changelog 2026-06-25: en Team y Enterprise se pueden deshabilitar las etiquetas estándar como `ubuntu-latest` |
+| Listas de IP permitidas | 20 | Solo GitHub Enterprise Cloud (docs, 2026-11-14). Con la lista activa, Actions necesita runners propios o runners grandes con IP estática |
 
 ## Retirado: no se usa
 

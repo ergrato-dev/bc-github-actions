@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" role="img" aria-labelledby="t02">
+  <title id="t02">Cómo entra worker en el pipeline sin un solo job propio. A la izquierda, el repo tablero; a la derecha, el repo central actions-tablero en v1.1.0. Arriba, el CI: changes marca worker=true si cambia worker/ o api/migrations/; el job worker de ci.yml llama a ci-worker.yml, que no tiene steps y solo llama a _python.yml del central por SHA con working-directory worker, package tablero_worker, coverage-min 60 e integration true; _python.yml trae sus tres jobs: lint con ruff, tests unitarios con cobertura y tests de integración contra PostgreSQL por digest. ci-gate necesita al job worker. Abajo, la imagen y la release: images.yml llama a _image.yml del central con component worker y publica ghcr.io/tu-org/tablero-worker; release.yml añade worker a su matriz y obtiene gratis Trivy, el SBOM y las dos attestations. Dependabot vigila uv y docker en /worker. deploy.yml no cambia.</title>
+  <rect width="960" height="700" fill="#0d1117"/>
+  <defs>
+    <marker id="a02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker>
+  </defs>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">worker/ entra solo con llamadas</text>
+    <text x="30" y="70" fill="#f0f6fc" font-size="14" font-weight="600">&lt;tu-org&gt;/tablero</text>
+    <text x="930" y="70" fill="#d2a8ff" font-size="14" font-weight="600" text-anchor="end">&lt;tu-org&gt;/actions-tablero @ &lt;sha-de-v1.1.0&gt;</text>
+    <line x1="560" y1="84" x2="560" y2="560" stroke="#30363d" stroke-dasharray="6 4"/>
+
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">
+      <!-- ci.yml -->
+      <rect x="30" y="84" width="500" height="176" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="108" fill="#2088ff" font-size="13" font-weight="600">ci.yml</text>
+      <rect x="46" y="120" width="228" height="64" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="58" y="142" fill="#f0f6fc" font-size="12" font-weight="600">changes</text>
+      <text x="58" y="162" fill="#79c0ff">worker/ o api/migrations/</text>
+      <text x="58" y="176" fill="#8b949e">→ worker=true</text>
+      <rect x="296" y="120" width="218" height="64" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="308" y="142" fill="#f0f6fc" font-size="12" font-weight="600">worker</text>
+      <text x="308" y="162" fill="#e3b341">if: outputs.worker</text>
+      <text x="308" y="176" fill="#8b949e">uses: ./…/ci-worker.yml</text>
+      <rect x="46" y="196" width="468" height="50" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="2"/>
+      <text x="58" y="218" fill="#3fb950" font-size="12" font-weight="600">ci-gate</text>
+      <text x="58" y="236" fill="#f0f6fc">needs: [..., worker, ...] · structure: worker/uv.lock</text>
+      <path d="M274 152 L292 152" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+
+      <!-- ci-worker.yml -->
+      <rect x="30" y="280" width="500" height="110" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="304" fill="#2088ff" font-size="13" font-weight="600">ci-worker.yml</text>
+      <text x="514" y="304" fill="#3fb950" text-anchor="end">sin runs-on · sin steps</text>
+      <text x="46" y="328" fill="#f0f6fc">working-directory: worker</text>
+      <text x="46" y="346" fill="#f0f6fc">package: tablero_worker</text>
+      <text x="46" y="364" fill="#f0f6fc">coverage-min: 60 · integration: true</text>
+      <text x="46" y="382" fill="#d2a8ff">permissions: contents: read</text>
+      <path d="M514 160 L522 160 L522 276" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+
+      <!-- _python.yml -->
+      <rect x="590" y="84" width="340" height="306" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="606" y="108" fill="#d2a8ff" font-size="13" font-weight="600">_python.yml</text>
+      <text x="914" y="108" fill="#8b949e" text-anchor="end">workflow_call</text>
+      <rect x="606" y="124" width="308" height="56" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="618" y="146" fill="#f0f6fc" font-size="12" font-weight="600">Lint y formato (ruff)</text>
+      <text x="618" y="166" fill="#8b949e">uv sync --locked</text>
+      <rect x="606" y="192" width="308" height="56" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="618" y="214" fill="#f0f6fc" font-size="12" font-weight="600">Tests unitarios</text>
+      <text x="618" y="234" fill="#8b949e">tests/unit · --cov=tablero_worker</text>
+      <rect x="606" y="260" width="308" height="76" rx="6" fill="#0d1117" stroke="#2088ff"/>
+      <text x="618" y="282" fill="#f0f6fc" font-size="12" font-weight="600">Tests de integración</text>
+      <text x="618" y="302" fill="#8b949e">python -m tablero_worker.migrate</text>
+      <text x="618" y="320" fill="#8b949e">tests/integration</text>
+      <text x="606" y="362" fill="#3fb950">postgres:17.11-alpine@sha256:…</text>
+      <text x="606" y="380" fill="#8b949e">corregido en v1.1.0</text>
+      <path d="M530 335 L560 335 L560 250 L586 250" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+
+      <!-- images.yml -->
+      <rect x="30" y="414" width="500" height="64" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="438" fill="#2088ff" font-size="13" font-weight="600">images.yml</text>
+      <text x="514" y="438" fill="#79c0ff" text-anchor="end">paths: worker/**</text>
+      <text x="46" y="462" fill="#f0f6fc">job worker · component: worker · summary: 3 digests</text>
+
+      <rect x="590" y="414" width="340" height="64" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="606" y="438" fill="#d2a8ff" font-size="13" font-weight="600">_image.yml</text>
+      <text x="606" y="462" fill="#f0f6fc">worker/Dockerfile → tablero-worker</text>
+      <path d="M530 446 L586 446" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+
+      <!-- release.yml -->
+      <rect x="30" y="496" width="500" height="64" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+      <text x="46" y="520" fill="#2088ff" font-size="13" font-weight="600">release.yml</text>
+      <text x="46" y="544" fill="#f0f6fc">component: [api, web, worker]</text>
+      <rect x="590" y="496" width="340" height="64" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="606" y="520" fill="#3fb950" font-size="13" font-weight="600">gratis para el worker</text>
+      <text x="606" y="544" fill="#f0f6fc">Trivy · SBOM · attest ×2</text>
+      <path d="M530 528 L586 528" stroke="#79c0ff" stroke-width="2" fill="none" marker-end="url(#a02)"/>
+
+      <!-- abajo -->
+      <rect x="30" y="582" width="440" height="50" rx="8" fill="#161b22" stroke="#30363d"/>
+      <text x="46" y="604" fill="#f0f6fc" font-size="12" font-weight="600">dependabot.yml</text>
+      <text x="46" y="622" fill="#8b949e">/worker en uv y en docker</text>
+      <rect x="490" y="582" width="440" height="50" rx="8" fill="#0d1117" stroke="#30363d" stroke-dasharray="6 4"/>
+      <text x="506" y="604" fill="#8b949e" font-size="12" font-weight="600">deploy.yml no cambia</text>
+      <text x="506" y="622" fill="#8b949e">el chart no despliega el worker: riesgo aceptado</text>
+    </g>
+    <text x="480" y="668" fill="#8b949e" font-size="11" text-anchor="middle">Azul: workflows de tablero. Morado: reutilizables del repo central, fijados por SHA. Verde: puerta, digest y firma.</text>
+    <text x="480" y="684" fill="#8b949e" font-size="11" text-anchor="middle">Amarillo: condición del área. Gris discontinuo: lo que la capa deja fuera a propósito.</text>
+  </g>
+</svg>

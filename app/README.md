@@ -10,6 +10,7 @@ bootcamp no la programas: escribes todo lo que la rodea, empezando por sus workf
 | `compose.yaml` | Docker Compose | PostgreSQL 17, API y web, puertos solo en `127.0.0.1` |
 | `scripts/` | bash | `check.sh` (todo lo que tiene que pasar) y `smoke-test.sh` |
 | `tools/oidc-verifier/` | Python 3.15 + PyJWT, con **uv** | Verifica un token OIDC de GitHub Actions como lo haría la nube; llega en la Semana 13 |
+| `worker/` | Python 3.15 + psycopg, con **uv** | Purga programada de las tareas hechas antiguas; llega en la Semana 20, el capstone |
 | `deploy/k8s/` | Chart de Helm | PostgreSQL, API y web para Kubernetes, solo con imágenes por digest y pods sin privilegios; llega en la Semana 17 |
 
 Las versiones exactas están en `api/uv.lock`, `web/pnpm-lock.yaml` y

@@ -310,6 +310,21 @@ buscarlos sin saber en qué semana aparecieron. Cada semana añade aquí los suy
   Sin `--succeed-on-no-caches`, un PR sin cachés hace fallar el script.
 - **Duración de cada job de un run en una línea**: `gh run view <id> --json jobs --jq '.jobs[] | "\(.name): \((.completedAt | fromdate) - (.startedAt | fromdate)) s"'`.
 
+## Semana 20 — [Capstone: un pipeline de producción defendido](../bootcamp/week-20-capstone/README.md)
+
+- **El YAML de un workflow en otra rama sin clonar**: `gh workflow view ci.yml --ref main --yaml`.
+  Sirve para auditar lo que de verdad está en `main`, no lo que tienes en tu copia local.
+- **Por qué una lista de IP no encaja con los runners alojados**: `gh api /meta --jq '.actions | length'`
+  devuelve miles de rangos, y cambian. Con una lista de IP permitidas, Actions necesita runners
+  propios o runners grandes con IP estática.
+- **Auditar otro repo con tu política**: `scripts/audit-workflows.sh ../actions-tablero` pasa las
+  mismas reglas a un clon del repo central. Acepta varias raíces a la vez.
+- **Parar un workflow sin perder su historial**: `gh workflow disable nightly.yml`, y después
+  `gh workflow enable nightly.yml`. Si borras el archivo, sus runs se quedan, y cada uno se borra
+  con `gh run delete <id>`.
+- **Qué imagen ejecutó un job**: en el log, el paso "Set up job" trae un grupo "Runner Image" con
+  la versión de la imagen y el enlace a su lista de software preinstalado.
+
 ---
 
 | ← Anterior | Siguiente → |

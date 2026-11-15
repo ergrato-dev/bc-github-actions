@@ -86,7 +86,7 @@ Hardware: Linux or WSL2 with Docker, **8 GB RAM** (16 GB recommended from Week 1
 | [17](bootcamp/week-17-despliegue_continuo_a_kubernetes/README.md) | Continuous deployment to Kubernetes |
 | [18](bootcamp/week-18-merge_queue_rulesets_y_monorepos/README.md) | Merge queue, rulesets and monorepos |
 | [19](bootcamp/week-19-rendimiento_coste_y_observabilidad/README.md) | Performance, cost and observability |
-| 20 | Capstone: a defended production pipeline |
+| [20](bootcamp/week-20-capstone/README.md) | Capstone: a defended production pipeline |
 
 Publication status per week: [`bootcamp/README.md`](bootcamp/README.md).
 

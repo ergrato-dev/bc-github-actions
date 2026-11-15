@@ -1,0 +1,125 @@
+{
+  "week": "20",
+  "title": "Capstone: un pipeline de producción defendido",
+  "checks": [
+    {
+      "id": "worker-component",
+      "description": "worker/ está en tablero con su uv.lock, su Dockerfile y sus tests unitarios y de integración",
+      "cmd": "ls worker/uv.lock worker/Dockerfile worker/src/tablero_worker/purge.py worker/tests/unit worker/tests/integration >/dev/null",
+      "assert": "exit0",
+      "hint": "2-practicas/01-integrar-el-worker.md, paso 1"
+    },
+    {
+      "id": "ci-worker-reusable-only",
+      "description": "ci-worker.yml no tiene steps propios: su único job llama a _python.yml del repo central por SHA, con integración",
+      "cmd": "yq '[(.on | keys | sort | join(\",\")), (.jobs | length), (.jobs[] | (has(\"steps\"), (.uses | test(\"/actions-tablero/\\.github/workflows/_python\\.yml@[0-9a-f]{40}$\")), .with.\"working-directory\", .with.package, .with.integration))] | join(\" \")' .github/workflows/ci-worker.yml",
+      "assert": "stdout~^workflow_call,workflow_dispatch 1 false true worker tablero_worker true$",
+      "hint": "2-practicas/01-integrar-el-worker.md, paso 2"
+    },
+    {
+      "id": "changed-areas-worker",
+      "description": "scripts/changed-areas.sh marca worker si cambia worker/ o api/migrations/, y no si solo cambia web/",
+      "cmd": "s=$PWD/scripts/changed-areas.sh; d=$(mktemp -d) && cd \"$d\" && export GIT_AUTHOR_NAME=ci GIT_AUTHOR_EMAIL=ci@example.invalid GIT_COMMITTER_NAME=ci GIT_COMMITTER_EMAIL=ci@example.invalid && git init -q && git commit -q --allow-empty -m base && mkdir -p api/migrations web && touch api/migrations/002_x.sql && git add . && git commit -qm m && a=$(\"$s\" HEAD~1 | grep ^worker=) && touch web/a.ts && git add . && git commit -qm w && echo \"$a $(\"$s\" HEAD~1 | grep ^worker=)\"",
+      "assert": "stdout~^worker=true worker=false$",
+      "hint": "2-practicas/01-integrar-el-worker.md, paso 3"
+    },
+    {
+      "id": "ci-calls-worker",
+      "description": "ci.yml llama a ci-worker.yml cuando el área worker cambia y ci-gate lo espera",
+      "cmd": "yq '\"output=\" + (.jobs.changes.outputs | has(\"worker\") | tostring) + \" uses=\" + .jobs.worker.uses + \" if=\" + .jobs.worker.if + \" gate=\" + (.jobs.\"ci-gate\".needs | contains([\"worker\"]) | tostring)' .github/workflows/ci.yml",
+      "assert": "stdout~^output=true uses=\\./\\.github/workflows/ci-worker\\.yml if=needs\\.changes\\.outputs\\.worker == 'true' gate=true$",
+      "hint": "2-practicas/01-integrar-el-worker.md, paso 4"
+    },
+    {
+      "id": "worker-base-by-digest",
+      "description": "worker/Dockerfile trae su imagen base y uv fijadas por digest",
+      "cmd": "test -f worker/Dockerfile && grep -iE '^(FROM|COPY --from=[^ ]*[/:])' worker/Dockerfile | grep -vc '@sha256:[0-9a-f]\\{64\\}'",
+      "assert": "stdout~^0$",
+      "hint": "2-practicas/02-imagen-y-release-del-worker.md, paso 1"
+    },
+    {
+      "id": "images-worker",
+      "description": "images.yml construye tablero-worker con _image.yml del repo central y lo resume con los otros dos digests",
+      "cmd": "yq '[(.on.push.paths | contains([\"worker/**\"])), .jobs.worker.with.component, (.jobs.worker.uses | test(\"/actions-tablero/\\.github/workflows/_image\\.yml@[0-9a-f]{40}$\")), (.jobs.summary.needs | contains([\"worker\"]))] | join(\" \")' .github/workflows/images.yml",
+      "assert": "stdout~^true worker true true$",
+      "hint": "2-practicas/02-imagen-y-release-del-worker.md, paso 2"
+    },
+    {
+      "id": "release-worker",
+      "description": "release.yml publica, escanea y firma tablero-worker en la misma matriz que api y web",
+      "cmd": "yq '.jobs.images.strategy.matrix.component | join(\",\")' .github/workflows/release.yml",
+      "assert": "stdout~^api,web,worker$",
+      "hint": "2-practicas/02-imagen-y-release-del-worker.md, paso 3"
+    },
+    {
+      "id": "dependabot-worker",
+      "description": "Dependabot vigila el uv.lock y el Dockerfile de worker/",
+      "cmd": "yq '[.updates[] | select(.\"package-ecosystem\" == \"uv\" or .\"package-ecosystem\" == \"docker\") | .\"package-ecosystem\" + \"=\" + ((.directories // [.directory]) | contains([\"/worker\"]) | tostring)] | join(\" \")' .github/dependabot.yml",
+      "assert": "stdout~^uv=true docker=true$",
+      "hint": "2-practicas/02-imagen-y-release-del-worker.md, paso 4"
+    },
+    {
+      "id": "audit-script",
+      "description": "scripts/audit-workflows.sh detecta cada regla de la política en un repo de prueba y sale con 1",
+      "cmd": "d=$(mktemp -d); mkdir -p \"$d/.github/workflows\"; printf 'on: push\\njobs:\\n  a:\\n    runs-on: [ubuntu-latest]\\n    permissions: write-all\\n    container: node:26\\n    steps:\\n      - uses: actions/checkout@v7\\n      - uses: ./local\\n  b:\\n    uses: o/r/.github/workflows/x.yml@main\\n' > \"$d/.github/workflows/bad.yml\"; printf 'FROM python:3.15 AS build\\nCOPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /uv\\nFROM build\\nCOPY --from=build /a /a\\n' > \"$d/Dockerfile\"; { scripts/audit-workflows.sh \"$d\"; echo \"rc=$?\"; } | awk -F': ' 'NF>=3{n[$2]++} /^rc=/{rc=$0} END{printf \"%s image-digest=%d permissions-root=%d write-all=%d timeout=%d runner-latest=%d unpinned-uses=%d\", rc, n[\"image-digest\"], n[\"permissions-root\"], n[\"write-all\"], n[\"timeout\"], n[\"runner-latest\"], n[\"unpinned-uses\"]}'",
+      "assert": "stdout~^rc=1 image-digest=3 permissions-root=1 write-all=1 timeout=1 runner-latest=1 unpinned-uses=2$",
+      "hint": "2-practicas/03-auditoria-completa.md, paso 2"
+    },
+    {
+      "id": "audit-clean",
+      "description": "scripts/audit-workflows.sh no encuentra nada en tablero",
+      "cmd": "scripts/audit-workflows.sh",
+      "assert": "stdout~^0 hallazgos$",
+      "hint": "2-practicas/03-auditoria-completa.md, paso 3"
+    },
+    {
+      "id": "audit-in-ci",
+      "description": "lint-workflows.yml pasa scripts/audit-workflows.sh en cada cambio de workflows",
+      "cmd": "yq '[.jobs[].steps[]? | .run // \"\" | select(test(\"scripts/audit-workflows\\.sh\"))] | length' .github/workflows/lint-workflows.yml",
+      "assert": "stdout~^1$",
+      "hint": "2-practicas/03-auditoria-completa.md, paso 7"
+    },
+    {
+      "id": "central-clean",
+      "description": "La release v1.1.0 de actions-tablero pasa la auditoría sin hallazgos",
+      "cmd": "owner=${GH_REPO%%/*}; d=$(mktemp -d); gh repo clone \"$owner/actions-tablero\" \"$d\" -- -q --depth 1 --branch v1.1.0 && scripts/audit-workflows.sh \"$d\" | tail -1",
+      "assert": "stdout~^0 hallazgos$",
+      "hint": "2-practicas/03-auditoria-completa.md, paso 5"
+    },
+    {
+      "id": "central-pinned-v1.1.0",
+      "description": "Todas las referencias de tablero al repo central apuntan al commit de v1.1.0",
+      "cmd": "owner=${GH_REPO%%/*}; have=$(grep -rhoE 'actions-tablero/[^@ ]+@[0-9a-f]{40}' .github | sed 's/.*@//' | sort -u | tr '\\n' ' '); want=$(gh api \"repos/$owner/actions-tablero/commits/v1.1.0\" --jq .sha); [[ \"$have\" == \"$want \" ]] && echo v1.1.0 || echo \"$have\"",
+      "assert": "stdout~^v1\\.1\\.0$",
+      "hint": "2-practicas/03-auditoria-completa.md, paso 6"
+    },
+    {
+      "id": "workflows-lint",
+      "description": "Todos los workflows pasan actionlint y zizmor sin hallazgos",
+      "cmd": "actionlint && GH_TOKEN=$(gh auth token) zizmor -q .github/",
+      "assert": "exit0",
+      "hint": "2-practicas/03-auditoria-completa.md, paso 8"
+    },
+    {
+      "id": "ci-full-run-green",
+      "description": "El último commit de main pasó un ci completo lanzado a mano, con los tres jobs del worker en verde",
+      "cmd": "git fetch -q origin main && id=$(gh run list --workflow ci.yml --event workflow_dispatch --commit \"$(git rev-parse origin/main)\" --json databaseId,conclusion --jq '[.[] | select(.conclusion == \"success\")][0].databaseId') && gh run view \"$id\" --json jobs --jq '[.jobs[] | select(.name | startswith(\"worker /\")) | .conclusion] | \"\\(length) \\(unique | join(\",\"))\"'",
+      "assert": "stdout~^3 success$",
+      "hint": "2-practicas/01-integrar-el-worker.md, paso 6"
+    },
+    {
+      "id": "worker-image-attested",
+      "description": "tablero-worker de la última release tiene attestations de procedencia y de SBOM firmadas por release.yml",
+      "cmd": "owner=${GH_REPO%%/*}; v=$(gh release view --json tagName --jq .tagName); img=\"oci://ghcr.io/${owner,,}/tablero-worker:${v#v}\"; for p in https://slsa.dev/provenance/v1 https://spdx.dev/Document/v2.3; do gh attestation verify \"$img\" --repo \"$GH_REPO\" --signer-workflow \"$GH_REPO/.github/workflows/release.yml\" --predicate-type \"$p\" >/dev/null 2>&1 && printf 'ok ' || printf 'mal '; done",
+      "assert": "stdout~^ok ok $",
+      "hint": "2-practicas/02-imagen-y-release-del-worker.md, paso 6"
+    },
+    {
+      "id": "defense-doc",
+      "description": "docs/pipeline.md tiene las cinco secciones de la defensa y enlaza al menos tres runs como evidencia",
+      "cmd": "f=docs/pipeline.md; printf 'secciones=%s runs=%s' \"$(grep -cE '^## (Mapa del pipeline|Modelo de amenazas|Decisiones|Riesgos aceptados|Evidencias)$' $f)\" \"$(grep -oE 'https://github\\.com/[^/]+/tablero/actions/runs/[0-9]+' $f | sort -u | wc -l)\"",
+      "assert": "stdout~^secciones=5 runs=([3-9]|[1-9][0-9]+)$",
+      "hint": "2-practicas/04-defensa-del-pipeline.md, paso 3"
+    }
+  ]
+}

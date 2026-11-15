@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="t03">
+  <title id="t03">Las cuatro capas de una auditoría de un pipeline, cada una con lo que se revisa, la herramienta que la mira y lo que se escapa si no la miras. Workflows: el YAML, los action.yml y los Dockerfiles, con actionlint para la sintaxis, zizmor para las vulnerabilidades y audit-workflows.sh para la política propia; se escapa un job sin timeout o una imagen sin digest. Ajustes del repo y de la org: actions permitidas, token por defecto, aprobación de forks, ruleset, environments y retención, leídos con gh api; se escapa un token por defecto en write. Cadena de suministro: el repo central, las imágenes base, las dependencias y las attestations, con Dependabot, dependency-review, la misma política sobre el central y gh attestation verify; se escapa un reutilizable del central con una imagen sin fijar, como los tres hallazgos de la v1.0.0. Ejecución: lo que de verdad corrió, con gh run list y view y los checks del ruleset; se escapa un workflow que nunca se dispara o que lleva semanas en rojo.</title>
+  <rect width="960" height="640" fill="#0d1117"/>
+  <g font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="480" y="34" fill="#f0f6fc" font-size="20" font-weight="600" text-anchor="middle">Cuatro capas de auditoría</text>
+    <g font-size="12" font-weight="600" fill="#8b949e">
+      <text x="200" y="68">QUÉ SE REVISA</text>
+      <text x="470" y="68">CON QUÉ</text>
+      <text x="720" y="68">SE ESCAPA SI NO LA MIRAS</text>
+    </g>
+
+    <!-- capa 1 -->
+    <rect x="30" y="80" width="900" height="120" rx="8" fill="#161b22" stroke="#2088ff" stroke-width="2"/>
+    <text x="46" y="108" fill="#2088ff" font-size="15" font-weight="600">1 · Workflows</text>
+    <text x="46" y="130" fill="#8b949e" font-size="11">lo que está en el repo</text>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="200" y="108">.github/workflows/*.yml</text>
+      <text x="200" y="128">action.yml del central</text>
+      <text x="200" y="148">Dockerfiles</text>
+    </g>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="470" y="108" fill="#f0f6fc">actionlint · sintaxis</text>
+      <text x="470" y="128" fill="#f0f6fc">zizmor · vulnerabilidades</text>
+      <text x="470" y="148" fill="#3fb950" font-weight="600">audit-workflows.sh</text>
+      <text x="470" y="166" fill="#8b949e" font-size="11">tu política, en el job policy</text>
+    </g>
+    <g font-size="12" fill="#f85149">
+      <text x="720" y="108">job sin timeout-minutes</text>
+      <text x="720" y="128">imagen sin @sha256:</text>
+      <text x="720" y="148">runs-on: *-latest</text>
+    </g>
+
+    <!-- capa 2 -->
+    <rect x="30" y="214" width="900" height="120" rx="8" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="46" y="242" fill="#d2a8ff" font-size="15" font-weight="600">2 · Ajustes</text>
+    <text x="46" y="264" fill="#8b949e" font-size="11">repo y org: ningún YAML</text>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="200" y="242">actions permitidas · SHA obligatorio</text>
+      <text x="200" y="262">token por defecto · forks</text>
+      <text x="200" y="282">ruleset · environments</text>
+      <text x="200" y="302">retención de artefactos y logs</text>
+    </g>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="470" y="242" fill="#f0f6fc">gh api …/actions/permissions</text>
+      <text x="470" y="262" fill="#f0f6fc">gh api …/rules/branches/main</text>
+      <text x="470" y="282" fill="#f0f6fc">gh api …/environments</text>
+    </g>
+    <g font-size="12" fill="#f85149">
+      <text x="720" y="242">token por defecto en write</text>
+      <text x="720" y="262">ruleset con bypass</text>
+      <text x="720" y="282">production sin revisor</text>
+    </g>
+
+    <!-- capa 3 -->
+    <rect x="30" y="348" width="900" height="120" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="46" y="376" fill="#3fb950" font-size="15" font-weight="600">3 · Cadena de</text>
+    <text x="46" y="394" fill="#3fb950" font-size="15" font-weight="600">suministro</text>
+    <text x="46" y="414" fill="#8b949e" font-size="11">lo que consumes y publicas</text>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="200" y="376">repo central actions-tablero</text>
+      <text x="200" y="396">imágenes base y de services</text>
+      <text x="200" y="416">dependencias de uv y pnpm</text>
+      <text x="200" y="436">imágenes publicadas</text>
+    </g>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="470" y="376" fill="#3fb950" font-weight="600">audit-workflows.sh</text>
+      <text x="470" y="394" fill="#8b949e" font-size="11">  ../actions-tablero</text>
+      <text x="470" y="416" fill="#f0f6fc">Dependabot · dependency-review</text>
+      <text x="470" y="436" fill="#f0f6fc">gh attestation verify</text>
+    </g>
+    <g font-size="12" fill="#f85149">
+      <text x="720" y="436">3 hallazgos en el central v1.0.0</text>
+    </g>
+    <g font-size="11" fill="#8b949e" font-family="ui-monospace, Menlo, Consolas, monospace">
+      <text x="720" y="376">postgres en _python.yml</text>
+      <text x="720" y="394">FROM python en sql-lint</text>
+      <text x="720" y="412">COPY --from=uv en sql-lint</text>
+    </g>
+
+    <!-- capa 4 -->
+    <rect x="30" y="482" width="900" height="100" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="46" y="510" fill="#e3b341" font-size="15" font-weight="600">4 · Ejecución</text>
+    <text x="46" y="532" fill="#8b949e" font-size="11">lo que de verdad corrió</text>
+    <g font-size="12" fill="#f0f6fc">
+      <text x="200" y="510">runs sobre el último commit</text>
+      <text x="200" y="530">de main y su resultado</text>
+      <text x="200" y="550">runner que los ejecutó</text>
+    </g>
+    <g font-size="12" font-family="ui-monospace, Menlo, Consolas, monospace" fill="#f0f6fc">
+      <text x="470" y="510">gh run list --commit &lt;sha&gt;</text>
+      <text x="470" y="530">gh run view --log</text>
+      <text x="470" y="550">checks del ruleset: ci-gate</text>
+    </g>
+    <g font-size="12" fill="#f85149">
+      <text x="720" y="510">workflow que nunca se dispara</text>
+      <text x="720" y="530">semanas en rojo sin aviso</text>
+    </g>
+
+    <text x="480" y="612" fill="#8b949e" font-size="11" text-anchor="middle">actionlint y zizmor cubren parte de la capa 1. Las otras tres, y tu política, las cubres tú.</text>
+  </g>
+</svg>
