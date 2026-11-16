@@ -15,51 +15,51 @@ Las semanas sin publicar no llevan enlace. El contenido se escribe en orden.
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| [01](week-01-primer_workflow_y_modelo_de_ejecucion/README.md) | Primer workflow y modelo de ejecución | ✅ |
-| [02](week-02-expresiones_contextos_y_flujo_de_datos/README.md) | Expresiones, contextos y flujo de datos | ✅ |
-| [03](week-03-ci_de_python_con_uv/README.md) | CI de Python con uv | ✅ |
-| [04](week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md) | CI de frontend con pnpm, matrices y artefactos | ✅ |
+| [01](week-01-primer_workflow_y_modelo_de_ejecucion/README.md) | [Primer workflow y modelo de ejecución](week-01-primer_workflow_y_modelo_de_ejecucion/README.md) | ✅ |
+| [02](week-02-expresiones_contextos_y_flujo_de_datos/README.md) | [Expresiones, contextos y flujo de datos](week-02-expresiones_contextos_y_flujo_de_datos/README.md) | ✅ |
+| [03](week-03-ci_de_python_con_uv/README.md) | [CI de Python con uv](week-03-ci_de_python_con_uv/README.md) | ✅ |
+| [04](week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md) | [CI de frontend con pnpm, matrices y artefactos](week-04-ci_de_frontend_pnpm_matrices_y_artefactos/README.md) | ✅ |
 
 ### Fase 2 — Pipelines de Integración (S05-08, 40 h)
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| [05](week-05-service_containers_y_postgresql/README.md) | Service containers y PostgreSQL | ✅ |
-| [06](week-06-imagenes_docker_y_ghcr/README.md) | Imágenes Docker y GHCR | ✅ |
-| [07](week-07-disparadores_filtros_y_concurrencia/README.md) | Disparadores, filtros y concurrencia | ✅ |
-| [08](week-08-probar_y_depurar_workflows/README.md) | Probar y depurar workflows | ✅ |
+| [05](week-05-service_containers_y_postgresql/README.md) | [Service containers y PostgreSQL](week-05-service_containers_y_postgresql/README.md) | ✅ |
+| [06](week-06-imagenes_docker_y_ghcr/README.md) | [Imágenes Docker y GHCR](week-06-imagenes_docker_y_ghcr/README.md) | ✅ |
+| [07](week-07-disparadores_filtros_y_concurrencia/README.md) | [Disparadores, filtros y concurrencia](week-07-disparadores_filtros_y_concurrencia/README.md) | ✅ |
+| [08](week-08-probar_y_depurar_workflows/README.md) | [Probar y depurar workflows](week-08-probar_y_depurar_workflows/README.md) | ✅ |
 
 ### Fase 3 — Reutilización (S09-11, 30 h)
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| [09](week-09-workflows_reutilizables/README.md) | Workflows reutilizables | ✅ |
-| [10](week-10-actions_propias/README.md) | Actions propias: composite, JavaScript y Docker | ✅ |
-| [11](week-11-actions_a_escala_de_organizacion/README.md) | Actions a escala de organización | ✅ |
+| [09](week-09-workflows_reutilizables/README.md) | [Workflows reutilizables](week-09-workflows_reutilizables/README.md) | ✅ |
+| [10](week-10-actions_propias/README.md) | [Actions propias: composite, JavaScript y Docker](week-10-actions_propias/README.md) | ✅ |
+| [11](week-11-actions_a_escala_de_organizacion/README.md) | [Actions a escala de organización](week-11-actions_a_escala_de_organizacion/README.md) | ✅ |
 
 ### Fase 4 — Seguridad (S12-14, 30 h)
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| [12](week-12-modelo_de_amenazas_y_endurecimiento/README.md) | Modelo de amenazas y endurecimiento | ✅ |
-| [13](week-13-secretos_entornos_y_oidc/README.md) | Secretos, entornos y OIDC | ✅ |
-| [14](week-14-releases_cadena_de_suministro_y_attestations/README.md) | Releases, cadena de suministro y attestations | ✅ |
+| [12](week-12-modelo_de_amenazas_y_endurecimiento/README.md) | [Modelo de amenazas y endurecimiento](week-12-modelo_de_amenazas_y_endurecimiento/README.md) | ✅ |
+| [13](week-13-secretos_entornos_y_oidc/README.md) | [Secretos, entornos y OIDC](week-13-secretos_entornos_y_oidc/README.md) | ✅ |
+| [14](week-14-releases_cadena_de_suministro_y_attestations/README.md) | [Releases, cadena de suministro y attestations](week-14-releases_cadena_de_suministro_y_attestations/README.md) | ✅ |
 
 ### Fase 5 — Runners y Despliegue (S15-17, 30 h)
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| [15](week-15-runners_self_hosted/README.md) | Runners propios | ✅ |
-| [16](week-16-actions_runner_controller_en_kind/README.md) | Actions Runner Controller en kind | ✅ |
-| [17](week-17-despliegue_continuo_a_kubernetes/README.md) | Despliegue continuo a Kubernetes | ✅ |
+| [15](week-15-runners_self_hosted/README.md) | [Runners propios](week-15-runners_self_hosted/README.md) | ✅ |
+| [16](week-16-actions_runner_controller_en_kind/README.md) | [Actions Runner Controller en kind](week-16-actions_runner_controller_en_kind/README.md) | ✅ |
+| [17](week-17-despliegue_continuo_a_kubernetes/README.md) | [Despliegue continuo a Kubernetes](week-17-despliegue_continuo_a_kubernetes/README.md) | ✅ |
 
 ### Fase 6 — Escala y Operación (S18-20, 30 h)
 
 | Semana | Tema | Estado |
 |:--:|---|:--:|
-| [18](week-18-merge_queue_rulesets_y_monorepos/README.md) | Merge queue, rulesets y monorepos | ✅ |
-| [19](week-19-rendimiento_coste_y_observabilidad/README.md) | Rendimiento, coste y observabilidad | ✅ |
-| [20](week-20-capstone/README.md) | Capstone: un pipeline de producción defendido | ✅ |
+| [18](week-18-merge_queue_rulesets_y_monorepos/README.md) | [Merge queue, rulesets y monorepos](week-18-merge_queue_rulesets_y_monorepos/README.md) | ✅ |
+| [19](week-19-rendimiento_coste_y_observabilidad/README.md) | [Rendimiento, coste y observabilidad](week-19-rendimiento_coste_y_observabilidad/README.md) | ✅ |
+| [20](week-20-capstone/README.md) | [Capstone: un pipeline de producción defendido](week-20-capstone/README.md) | ✅ |
 
 ---
 
